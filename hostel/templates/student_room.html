@@ -1,0 +1,129 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Room</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* CARD */
+        .card {
+            background: white;
+            padding: 30px;
+            width: 350px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            background: #3498db;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin: 0 auto 15px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .info {
+            text-align: left;
+            margin-top: 15px;
+        }
+
+        .row {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            background: #f4f6f9;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .value {
+            float: right;
+            color: #333;
+        }
+
+        .clear {
+            clear: both;
+        }
+
+        /* BUTTON */
+        .btn {
+            margin-top: 20px;
+            padding: 10px;
+            width: 100%;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="card">
+
+    <!-- AVATAR -->
+    <div class="avatar">
+        {{ student.user.username|first|upper }}
+    </div>
+
+    <h2>🏠 My Room Details</h2>
+
+    <div class="info">
+
+        <div class="row">
+            <span class="label">Name:</span>
+            <span class="value">{{ student.user.username }}</span>
+            <div class="clear"></div>
+        </div>
+
+        <div class="row">
+            <span class="label">Room No:</span>
+            <span class="value">🏢 {{ student.room_no }}</span>
+            <div class="clear"></div>
+        </div>
+
+        <div class="row">
+            <span class="label">Hostel ID:</span>
+            <span class="value">🆔 {{ student.hostel_id }}</span>
+            <div class="clear"></div>
+        </div>
+
+    </div>
+
+    <button class="btn">👤 Profile</button>
+
+</div>
+
+</body>
+</html>

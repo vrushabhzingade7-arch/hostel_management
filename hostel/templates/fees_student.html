@@ -1,0 +1,142 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Fees</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        /* CARD */
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+        }
+
+        .amount {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .status {
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: white;
+        }
+
+        .Paid {
+            background: #2ecc71;
+        }
+
+        .Pending {
+            background: #e74c3c;
+        }
+
+        .empty {
+            text-align: center;
+            color: gray;
+            margin-top: 20px;
+        }
+
+        /* SUMMARY BOX */
+        .summary {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .box {
+            background: white;
+            flex: 1;
+            margin: 5px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .box h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .box p {
+            margin: 5px 0 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h2>💰 My Fees</h2>
+
+    <!-- SUMMARY -->
+    <!-- SUMMARY -->
+<div class="summary">
+    <div class="box">
+        <h3>Total Fees</h3>
+        <p>₹{{ total }}</p>
+    </div>
+
+    <div class="box">
+        <h3>Paid</h3>
+        <p>₹{{ paid }}</p>
+    </div>
+
+    <div class="box">
+        <h3>Pending</h3>
+        <p>₹{{ pending }}</p>
+    </div>
+</div>
+    </div>
+
+    <!-- FEES LIST -->
+    {% for fee in fees %}
+    <div class="card">
+        <div class="amount">
+            💵 ₹{{ fee.amount }}
+        </div>
+
+        <div class="status {{ fee.status }}">
+            {{ fee.status }}
+        </div>
+    </div>
+    {% empty %}
+        <p class="empty">No fee records found</p>
+    {% endfor %}
+
+</div>
+
+</body>
+</html>

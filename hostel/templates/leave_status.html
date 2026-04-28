@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leave Status</title>
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
+</head>
+<body>
+
+<div class="main">
+
+    <h2>Leave Status</h2>
+
+    {% for leave in leaves %}
+    <div class="cards">
+
+        <div class="card">
+            <h3>CC Status</h3>
+            <p>{{ leave.cc_status }}</p>
+        </div>
+
+        <div class="card">
+            <h3>HOD Status</h3>
+            <p>{{ leave.hod_status }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Rector Status</h3>
+            <p>{{ leave.rector_status }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Final Status</h3>
+            <p>{{ leave.final_status }}</p>
+        </div>
+
+    </div>
+    {% endfor %}
+
+</div>
+
+</body>
+</html>

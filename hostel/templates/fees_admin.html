@@ -1,0 +1,190 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fees Management</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial;
+            background: #f4f6f9;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        th {
+            background: #2c3e50;
+            color: white;
+            padding: 14px;
+            text-align: left;
+        }
+
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #f9f9f9;
+        }
+
+        /* STATUS BADGE */
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .paid {
+            background: #d4edda;
+            color: #27ae60;
+        }
+
+        .pending {
+            background: #fdecea;
+            color: #e74c3c;
+        }
+
+        /* BUTTONS */
+        .btn {
+            border: none;
+            padding: 8px 14px;
+            margin: 2px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .paid-btn {
+            background: #27ae60;
+            color: white;
+        }
+
+        .paid-btn:hover {
+            background: #1e8449;
+        }
+
+        .pending-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .pending-btn:hover {
+            background: #c0392b;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 20px;
+            color: gray;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            tr {
+                margin-bottom: 15px;
+                background: white;
+                border-radius: 10px;
+                padding: 10px;
+            }
+
+            td {
+                border: none;
+                position: relative;
+                padding-left: 50%;
+            }
+
+            td:before {
+                position: absolute;
+                left: 10px;
+                font-weight: bold;
+            }
+
+            td:nth-child(1):before { content: "Student"; }
+            td:nth-child(2):before { content: "Amount"; }
+            td:nth-child(3):before { content: "Status"; }
+            td:nth-child(4):before { content: "Action"; }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>💰 Fees Management</h2>
+
+    <table>
+        <tr>
+            <th>Student</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+
+        {% for fee in fees %}
+        <tr>
+            <td>👤 {{ fee.student.user.username }}</td>
+            <td>₹ {{ fee.amount }}</td>
+
+            <td>
+                {% if fee.status == "Paid" %}
+                    <span class="status paid">Paid</span>
+                {% else %}
+                    <span class="status pending">Pending</span>
+                {% endif %}
+            </td>
+
+            <td>
+                <form method="POST" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="fee_id" value="{{ fee.id }}">
+                    <input type="hidden" name="action" value="Paid">
+                    <button class="btn paid-btn">✔ Paid</button>
+                </form>
+
+                <form method="POST" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="fee_id" value="{{ fee.id }}">
+                    <input type="hidden" name="action" value="Pending">
+                    <button class="btn pending-btn">✖ Pending</button>
+                </form>
+            </td>
+        </tr>
+
+        {% empty %}
+        <tr>
+            <td colspan="4" class="empty">No fee records available</td>
+        </tr>
+        {% endfor %}
+
+    </table>
+
+</div>
+
+</body>
+</html>

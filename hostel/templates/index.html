@@ -1,0 +1,155 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Management System</title>
+
+    <link rel="stylesheet" href="{% static 'main.css' %}">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .main-container {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* GLASS OVERLAY */
+        .overlay {
+            text-align: center;
+            padding: 50px;
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            color: white;
+            width: 85%;
+            max-width: 900px;
+        }
+
+        .overlay h1 {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .overlay p {
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+
+        /* LOGIN CARDS */
+        .login-options {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 25px;
+            border-radius: 15px;
+            width: 250px;
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .login-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .login-card h2 {
+            margin-bottom: 10px;
+        }
+
+        .login-card p {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .admin-btn {
+            background: #3498db;
+            color: white;
+        }
+
+        .admin-btn:hover {
+            background: #2980b9;
+        }
+
+        .student-btn {
+            background: #27ae60;
+            color: white;
+        }
+
+        .student-btn:hover {
+            background: #1e8449;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .overlay h1 {
+                font-size: 28px;
+            }
+
+            .login-options {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="main-container">
+
+    <div class="overlay">
+        <h1>🏠 Hostel Management System</h1>
+        <p>Select Login Type</p>
+
+        <div class="login-options">
+
+            <div class="login-card">
+                <h2>Admin</h2>
+                <p>Manage hostel, students & rooms</p>
+
+                <a href="{% url 'admin_login' %}" class="btn admin-btn">
+                    Admin Login
+                </a>
+            </div>
+
+            <div class="login-card">
+                <h2>Student</h2>
+                <p>Check details & apply leave</p>
+
+                <a href="{% url 'student_login' %}" class="btn student-btn">
+                    Student Login
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

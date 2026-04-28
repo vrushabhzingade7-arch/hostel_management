@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Feedback Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .card {
+            background: #fff;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+        }
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .student {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .type {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: white;
+        }
+
+        .Mess {
+            background: #ff9800;
+        }
+
+        .Hostel {
+            background: #2196f3;
+        }
+
+        .message {
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        .date {
+            font-size: 12px;
+            color: gray;
+            text-align: right;
+        }
+
+        .empty {
+            text-align: center;
+            color: gray;
+        }
+    </style>
+
+</head>
+<body>
+
+<h2>📋 Feedback Dashboard</h2>
+
+<div class="container">
+
+    {% for fb in feedbacks %}
+    <div class="card">
+
+        <div class="top">
+            <div class="student">
+                👤 {{ fb.user.username }}
+            </div>
+
+            <div class="type {{ fb.type }}">
+                {{ fb.type }}
+            </div>
+        </div>
+
+        <div class="message">
+            💬 {{ fb.message }}
+        </div>
+
+        <div class="date">
+            {{ fb.created_at|date:"d M Y, h:i A" }}
+        </div>
+
+    </div>
+    {% empty %}
+        <p class="empty">No feedback submitted yet</p>
+    {% endfor %}
+
+</div>
+
+</body>
+</html>

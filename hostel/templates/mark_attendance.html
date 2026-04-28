@@ -1,0 +1,218 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mark Attendance</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f6f9;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            height: 100vh;
+            background: #1e293b;
+            color: white;
+            padding: 20px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin: 12px 0;
+        }
+
+        .sidebar ul li a {
+            text-decoration: none;
+            color: #cbd5f5;
+            padding: 10px;
+            display: block;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .sidebar ul li a:hover {
+            background: #334155;
+            color: white;
+        }
+
+        /* MAIN */
+        .main {
+            flex: 1;
+            padding: 30px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #1e293b;
+        }
+
+        /* CARD */
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            background: #3b82f6;
+            color: white;
+        }
+
+        th {
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        /* RADIO BUTTON STYLE */
+        .radio-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        input[type="radio"] {
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        .present {
+            color: green;
+            font-weight: bold;
+        }
+
+        .absent {
+            color: red;
+            font-weight: bold;
+        }
+
+        /* BUTTON */
+        .btn {
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: #22c55e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #16a34a;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>⚙ Admin Panel</h2>
+        <ul>
+             <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
+            <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
+            <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
+            <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
+            <li><a href="{% url 'leave_requests' %}">📄 Leave</a></li>
+            <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
+            <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
+        </ul>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <h2>📝 Mark Attendance</h2>
+
+        <div class="card">
+            <form method="POST">
+                {% csrf_token %}
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>👤 Student</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td>{{ student.user.username }}</td>
+
+                            <td>
+                                <div class="radio-group">
+                                    <label class="present">
+                                        <input type="radio" name="status_{{ student.id }}" value="Present" required>
+                                        Present
+                                    </label>
+
+                                    <label class="absent">
+                                        <input type="radio" name="status_{{ student.id }}" value="Absent">
+                                        Absent
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+
+                <button type="submit" class="btn">✔ Save Attendance</button>
+
+            </form>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

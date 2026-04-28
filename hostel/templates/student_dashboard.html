@@ -1,0 +1,160 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Dashboard</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 220px;
+            height: 100vh;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin:  0;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            display: block;
+            border-radius: 6px;
+            transition: 0.3s;
+        }
+
+        .sidebar ul li a:hover {
+            background: #34495e;
+        }
+
+        /* MAIN */
+        .main {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .welcome {
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        /* CARDS */
+        .cards {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            flex: 1;
+            min-width: 200px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .card p {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 700px) {
+            .sidebar {
+                display: none;
+            }
+
+            .cards {
+                flex-direction: column;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>🎓 Student Panel</h2>
+        <ul>
+            <li><a href="{% url 'student_dashboard' %}">📊 Dashboard</a></li>
+            <li><a href="{% url 'apply_leave' %}">📝 Apply Leave</a></li>
+            <li><a href="{% url 'fees_student' %}">💰 Fees</a></li>
+            <li><a href="{% url 'outing_student' %}">🚶 Outing</a></li>
+            <li><a href="{% url 'leave_status' %}">📄 Leave Status</a></li>
+            <li><a href="{% url 'student_room' %}">🏠 Room Info</a></li>
+            <li><a href="{% url 'feedback_submit' %}">💬 Feedback</a></li>
+        </ul>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+        <div class="welcome">
+            👋 Welcome, <b>{{ student.user.username }}</b>
+        </div>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>🏠 Room</h3>
+                <p>{{ student.room_no }}</p>
+            </div>
+
+            <div class="card">
+                <h3>🆔 Hostel ID</h3>
+                <p>{{ student.hostel_id }}</p>
+            </div>
+
+            <div class="card">
+                <h3>📱 Phone</h3>
+                <p>{{ student.student_phone }}</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

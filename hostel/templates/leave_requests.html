@@ -1,0 +1,247 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leave Requests</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f6f9;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 230px;
+            height: 100vh;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin: 10px 0;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            border-radius: 6px;
+            transition: 0.3s;
+        }
+
+        .sidebar ul li a:hover {
+            background: #34495e;
+        }
+
+        /* MAIN */
+        .main {
+            flex: 1;
+            padding: 30px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background: #3498db;
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background: #f1f1f1;
+        }
+
+        /* STATUS BADGES */
+        .badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: white;
+        }
+
+        .pending { background: orange; }
+        .approved { background: green; }
+        .rejected { background: red; }
+
+        /* BUTTONS */
+        .btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            margin: 2px;
+        }
+
+        .approve {
+            background: #27ae60;
+            color: white;
+        }
+
+        .approve:hover {
+            background: #1e8449;
+        }
+
+        .reject {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .reject:hover {
+            background: #c0392b;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            table {
+                font-size: 12px;
+            }
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>⚙ Admin Panel</h2>
+        <ul>
+            <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
+            <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
+            <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
+            <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
+            <li><a href="{% url 'leave_requests' %}">📄 Leave</a></li>
+            <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
+            <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
+        </ul>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <h2>📄 Leave Requests</h2>
+
+        <table>
+            <tr>
+                <th>Student</th>
+                <th>Dates</th>
+                <th>Reason</th>
+                <th>CC</th>
+                <th>HOD</th>
+                <th>Rector</th>
+                <th>Final</th>
+            </tr>
+
+            {% for leave in leaves %}
+            <tr>
+                <td>👤 {{ leave.student.user.username }}</td>
+                <td>{{ leave.from_date }} → {{ leave.to_date }}</td>
+                <td>{{ leave.reason }}</td>
+
+                <!-- CC -->
+                <td>
+                    <span class="badge {{ leave.cc_status|lower }}">{{ leave.cc_status }}</span><br>
+
+                    {% if leave.cc_status == "Pending" %}
+                    <form method="POST" action="{% url 'approve_leave' leave.id 'cc' 'Approved' %}">
+                        {% csrf_token %}
+                        <button class="btn approve">✔</button>
+                    </form>
+                    <form method="POST" action="{% url 'approve_leave' leave.id 'cc' 'Rejected' %}">
+                        {% csrf_token %}
+                        <button class="btn reject">✖</button>
+                    </form>
+                    {% endif %}
+                </td>
+
+                <!-- HOD -->
+                <td>
+                    <span class="badge {{ leave.hod_status|lower }}">{{ leave.hod_status }}</span><br>
+
+                    {% if leave.cc_status == "Approved" and leave.hod_status == "Pending" %}
+                    <form method="POST" action="{% url 'approve_leave' leave.id 'hod' 'Approved' %}">
+                        {% csrf_token %}
+                        <button class="btn approve">✔</button>
+                    </form>
+                    <form method="POST" action="{% url 'approve_leave' leave.id 'hod' 'Rejected' %}">
+                        {% csrf_token %}
+                        <button class="btn reject">✖</button>
+                    </form>
+                    {% endif %}
+                </td>
+
+                <!-- RECTOR -->
+                <td>
+                    <span class="badge {{ leave.rector_status|lower }}">{{ leave.rector_status }}</span><br>
+
+                    {% if leave.hod_status == "Approved" and leave.rector_status == "Pending" %}
+                    <form method="POST" action="{% url 'approve_leave' leave.id 'rector' 'Approved' %}">
+                        {% csrf_token %}
+                        <button class="btn approve">✔</button>
+                    </form>
+                    <form method="POST" action="{% url 'approve_leave' leave.id 'rector' 'Rejected' %}">
+                        {% csrf_token %}
+                        <button class="btn reject">✖</button>
+                    </form>
+                    {% endif %}
+                </td>
+
+                <!-- FINAL -->
+                <td>
+                    <span class="badge {{ leave.final_status|lower }}">
+                        {{ leave.final_status }}
+                    </span>
+                </td>
+
+            </tr>
+            {% endfor %}
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>

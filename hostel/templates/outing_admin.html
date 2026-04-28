@@ -1,0 +1,189 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Outing Admin</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f6f9;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 230px;
+            height: 100vh;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin: 12px 0;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            display: block;
+            border-radius: 6px;
+            transition: 0.3s;
+        }
+
+        .sidebar ul li a:hover {
+            background: #34495e;
+        }
+
+        /* MAIN */
+        .main {
+            flex: 1;
+            padding: 30px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        th {
+            background: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #f9f9f9;
+        }
+
+        /* STATUS BADGES */
+        .badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .returned {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .not-returned {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* EMPTY */
+        .empty {
+            text-align: center;
+            padding: 20px;
+            color: gray;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 700px) {
+            .sidebar {
+                display: none;
+            }
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>⚙ Admin Panel</h2>
+        <ul>
+            <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
+            <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
+            <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
+            <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
+            <li><a href="{% url 'leave_requests' %}">📄 Leave</a></li>
+            <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
+            <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
+        </ul>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <h2>🚶‍♂️ Outing Records</h2>
+
+        <table>
+            <tr>
+                <th>Student</th>
+                <th>Out Time</th>
+                <th>In Time</th>
+                <th>Status</th>
+            </tr>
+
+            {% for outing in outings %}
+            <tr>
+                <td>👤 {{ outing.student.user.username }}</td>
+                <td>{{ outing.out_time }}</td>
+                <td>
+                    {% if outing.in_time %}
+                        {{ outing.in_time }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if outing.in_time %}
+                        <span class="badge returned">Returned</span>
+                    {% else %}
+                        <span class="badge not-returned">Not Returned</span>
+                    {% endif %}
+                </td>
+            </tr>
+
+            {% empty %}
+            <tr>
+                <td colspan="4" class="empty">No outing records found</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>

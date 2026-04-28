@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rector Dashboard</title>
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
+</head>
+<body>
+
+<div class="container">
+
+<h2>Rector Dashboard - HOD Approved Leaves</h2>
+
+<table border="1">
+<tr>
+    <th>Student</th>
+    <th>Dates</th>
+    <th>Reason</th>
+    <th>Final Action</th>
+</tr>
+
+{% for leave in leaves %}
+<tr>
+    <td>{{ leave.student.user.username }}</td>
+    <td>{{ leave.from_date }} - {{ leave.to_date }}</td>
+    <td>{{ leave.reason }}</td>
+
+    <td>
+        <form method="POST" action="{% url 'approve_leave' leave.id 'rector' 'Approved' %}">
+            {% csrf_token %}
+            <button type="submit">Approve</button>
+        </form>
+
+        <form method="POST" action="{% url 'approve_leave' leave.id 'rector' 'Rejected' %}">
+            {% csrf_token %}
+            <button type="submit">Reject</button>
+        </form>
+    </td>
+</tr>
+{% endfor %}
+
+</table>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Submit Feedback</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            width: 400px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #4facfe;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #007bff;
+        }
+
+        .success {
+            text-align: center;
+            color: green;
+            margin-bottom: 10px;
+        }
+
+        .error {
+            text-align: center;
+            color: red;
+            margin-bottom: 10px;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="card">
+
+    <h2>📝 Submit Feedback</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="success">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Feedback Type</label>
+        <select name="type" required>
+            <option value="">-- Select Type --</option>
+            <option value="Mess">🍽️ Mess</option>
+            <option value="Hostel">🏠 Hostel</option>
+        </select>
+
+        <label>Your Message</label>
+        <textarea name="message" rows="5" placeholder="Write your feedback here..." required></textarea>
+
+        <button type="submit">🚀 Submit Feedback</button>
+    </form>
+
+</div>
+
+</body>
+</html>

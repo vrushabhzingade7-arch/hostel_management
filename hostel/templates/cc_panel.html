@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CC Dashboard</title>
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}">
+</head>
+<body>
+
+<div class="container">
+
+<h2>CC Dashboard - Pending Leaves</h2>
+
+<table border="1">
+<tr>
+    <th>Student</th>
+    <th>Dates</th>
+    <th>Reason</th>
+    <th>Action</th>
+</tr>
+
+{% for leave in leaves %}
+<tr>
+    <td>{{ leave.student.user.username }}</td>
+    <td>{{ leave.from_date }} - {{ leave.to_date }}</td>
+    <td>{{ leave.reason }}</td>
+
+    <td>
+        <form method="POST" action="{% url 'approve_leave' leave.id 'cc' 'Approved' %}">
+            {% csrf_token %}
+            <button type="submit">Approve</button>
+        </form>
+
+        <form method="POST" action="{% url 'approve_leave' leave.id 'cc' 'Rejected' %}">
+            {% csrf_token %}
+            <button type="submit">Reject</button>
+        </form>
+    </td>
+</tr>
+{% endfor %}
+
+</table>
+
+</div>
+
+</body>
+</html>
