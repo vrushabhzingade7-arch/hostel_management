@@ -6,7 +6,10 @@ python manage.py migrate
 
 python manage.py collectstatic --noinput
 
-# Create superuser automatically
-echo "from django.contrib.auth.models import User;
+# Create superuser safely
+echo "
+from django.contrib.auth import get_user_model
+User = get_user_model()
 if not User.objects.filter(username='admin').exists():
-    User.objects.create_superuser('admin','admin@gmail.com','admin123')" | python manage.py shell
+    User.objects.create_superuser('admin','admin@gmail.com','admin123')
+" | python manage.py shell
