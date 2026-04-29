@@ -152,7 +152,7 @@
             <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
             <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
             <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
-            <li><a href="{% url 'leave_requests' %}">📄 Leave</a></li>
+            <li><a href="{% url 'leave_requests' %}">📄 Leave Requests</a></li>
             <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
             <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
         </ul>
@@ -184,7 +184,7 @@
                 <td>
                     <span class="badge {{ leave.cc_status|lower }}">{{ leave.cc_status }}</span><br>
 
-                    {% if leave.cc_status == "Pending" %}
+                    {% if request.user.username == "cc_user" and leave.cc_status == "Pending" %}
                     <form method="POST" action="{% url 'approve_leave' leave.id 'cc' 'Approved' %}">
                         {% csrf_token %}
                         <button class="btn approve">✔</button>
@@ -199,8 +199,7 @@
                 <!-- HOD -->
                 <td>
                     <span class="badge {{ leave.hod_status|lower }}">{{ leave.hod_status }}</span><br>
-
-                    {% if leave.cc_status == "Approved" and leave.hod_status == "Pending" %}
+                    {% if request.user.username == "hod_user" and leave.cc_status == "Approved" and leave.hod_status == "Pending" %}
                     <form method="POST" action="{% url 'approve_leave' leave.id 'hod' 'Approved' %}">
                         {% csrf_token %}
                         <button class="btn approve">✔</button>
@@ -216,7 +215,7 @@
                 <td>
                     <span class="badge {{ leave.rector_status|lower }}">{{ leave.rector_status }}</span><br>
 
-                    {% if leave.hod_status == "Approved" and leave.rector_status == "Pending" %}
+                    {% if request.user.username == "rector_user" and leave.hod_status == "Approved" and leave.rector_status == "Pending" %}
                     <form method="POST" action="{% url 'approve_leave' leave.id 'rector' 'Approved' %}">
                         {% csrf_token %}
                         <button class="btn approve">✔</button>

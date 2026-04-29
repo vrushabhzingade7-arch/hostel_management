@@ -123,31 +123,50 @@ def leave_status(request):
 # ================= ADMIN LEAVE =================
 @login_required
 def leave_requests(request):
-    leaves = LeaveRequest.objects.all()
-    return render(request, 'leave_requests.html', {'leaves': leaves})
+    user = request.user.username
 
+    if user == "cc_user":
+        leaves = LeaveRequest.objects.all()
+
+    elif user == "hod_user":
+        leaves = LeaveRequest.objects.filter(cc_status="Approved")
+
+    elif user == "rector_user":
+        leaves = LeaveRequest.objects.filter(hod_status="Approved")
+
+    else:
+        leaves = LeaveRequest.objects.none()
+
+    return render(request, 'leave_requests.html', {'leaves': leaves})
 
 # ================= APPROVAL =================
 @login_required
 def approve_leave(request, leave_id, role, action):
     leave = get_object_or_404(LeaveRequest, id=leave_id)
+    user = request.user.username
 
-    if role == "cc":
-        leave.cc_status = action
+    # ================= CC =================
+    if user == "cc_user":
+        if role == "cc" and leave.cc_status == "Pending":
+            leave.cc_status = action
 
-    elif role == "hod" and leave.cc_status == "Approved":
-        leave.hod_status = action
+    # ================= HOD =================
+    elif user == "hod_user":
+        if role == "hod" and leave.cc_status == "Approved" and leave.hod_status == "Pending":
+            leave.hod_status = action
 
-    elif role == "rector" and leave.hod_status == "Approved":
-        leave.rector_status = action
+    # ================= RECTOR =================
+    elif user == "rector_user":
+        if role == "rector" and leave.hod_status == "Approved" and leave.rector_status == "Pending":
+            leave.rector_status = action
 
-        if action == "Approved":
-            leave.final_status = "Approved"
-        else:
-            leave.final_status = "Rejected"
+            if action == "Approved":
+                leave.final_status = "Approved"
+            else:
+                leave.final_status = "Rejected"
 
     leave.save()
-    return redirect(request.META.get('HTTP_REFERER', 'leave_requests'))
+    return redirect('leave_requests')
 
 
 # ================= ATTENDANCE =================
