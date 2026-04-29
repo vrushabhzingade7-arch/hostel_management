@@ -17,13 +17,17 @@ def user_login(request):
 @never_cache
 def admin_login(request):
     if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
         user = authenticate(
             request,
-            username=request.POST.get('username'),
-            password=request.POST.get('password')
+            username=username,
+            password=password
         )
 
-        if user and user.is_superuser:
+        # Allow admin + CC + HOD + Rector
+        if user is not None and user.is_staff:
             login(request, user)
             return redirect('admin_dashboard')
 
