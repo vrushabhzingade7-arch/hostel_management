@@ -92,6 +92,9 @@ class Outing(models.Model):
 
     date = models.DateField(auto_now_add=True)
 
+    # ✅ ADD THIS LINE
+    reason = models.TextField(blank=True, null=True)
+
     class Meta:
         ordering = ['-out_time']
 

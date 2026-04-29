@@ -145,41 +145,53 @@
 
         <h2>🚶‍♂️ Outing Records</h2>
 
-        <table>
-            <tr>
-                <th>Student</th>
-                <th>Out Time</th>
-                <th>In Time</th>
-                <th>Status</th>
-            </tr>
+       <table>
+    <tr>
+        <th>Student</th>
+        <th>Out Time</th>
+        <th>In Time</th>
+        <th>Reason</th> <!-- ✅ NEW COLUMN -->
+        <th>Status</th>
+    </tr>
 
-            {% for outing in outings %}
-            <tr>
-                <td>👤 {{ outing.student.user.username }}</td>
-                <td>{{ outing.out_time }}</td>
-                <td>
-                    {% if outing.in_time %}
-                        {{ outing.in_time }}
-                    {% else %}
-                        -
-                    {% endif %}
-                </td>
+    {% for outing in outings %}
+    <tr>
+        <td>👤 {{ outing.student.user.username }}</td>
 
-                <td>
-                    {% if outing.in_time %}
-                        <span class="badge returned">Returned</span>
-                    {% else %}
-                        <span class="badge not-returned">Not Returned</span>
-                    {% endif %}
-                </td>
-            </tr>
+        <td>{{ outing.out_time }}</td>
 
-            {% empty %}
-            <tr>
-                <td colspan="4" class="empty">No outing records found</td>
-            </tr>
-            {% endfor %}
-        </table>
+        <td>
+            {% if outing.in_time %}
+                {{ outing.in_time }}
+            {% else %}
+                -
+            {% endif %}
+        </td>
+
+        <!-- ✅ SHOW REASON -->
+        <td>
+            {% if outing.reason %}
+                {{ outing.reason }}
+            {% else %}
+                <span style="color:gray;">No reason</span>
+            {% endif %}
+        </td>
+
+        <td>
+            {% if outing.in_time %}
+                <span class="badge returned">Returned</span>
+            {% else %}
+                <span class="badge not-returned">Not Returned</span>
+            {% endif %}
+        </td>
+    </tr>
+
+    {% empty %}
+    <tr>
+        <td colspan="5" class="empty">No outing records found</td>
+    </tr>
+    {% endfor %}
+</table>
 
     </div>
 
