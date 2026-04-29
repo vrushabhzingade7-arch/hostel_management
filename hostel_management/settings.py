@@ -68,7 +68,9 @@ WSGI_APPLICATION = 'hostel_management.wsgi.application'
 # ================= DATABASE =================
 DATABASES = {
     'default': dj_database_url.config(
-        default='sqlite:///db.sqlite3'
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600,
+        ssl_require=True
     )
 }
 
