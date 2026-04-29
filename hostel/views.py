@@ -44,12 +44,18 @@ def student_login(request):
             password=request.POST.get('password')
         )
 
-        if user and not user.is_superuser:
+        if user:
             login(request, user)
-            return redirect('student_dashboard')
+
+            # ✅ If Student
+            if Student.objects.filter(user=user).exists():
+                return redirect('student_dashboard')
+
+            # ✅ If Staff (CC / HOD / Rector)
+            elif user.groups.exists():
+                return redirect('leave_requests')
 
     return render(request, 'student_login.html')
-
 
 # ================= LOGOUT =================
 @login_required
@@ -127,51 +133,67 @@ def leave_status(request):
 # ================= ADMIN LEAVE =================
 @login_required
 def leave_requests(request):
-    user = request.user.username
 
-    if user == "cc_user":
+    # ❌ Block students
+    if Student.objects.filter(user=request.user).exists():
+        return redirect('student_dashboard')
+
+    # ✅ SUPERUSER → can ONLY VIEW all leaves
+    if request.user.is_superuser:
+        leaves = LeaveRequest.objects.all()
+        return render(request, 'leave_requests.html', {
+            'leaves': leaves,
+            'readonly': True   # 🔥 IMPORTANT
+        })
+
+    # ✅ CC
+    if request.user.groups.filter(name='CC').exists():
         leaves = LeaveRequest.objects.all()
 
-    elif user == "hod_user":
+    # ✅ HOD
+    elif request.user.groups.filter(name='HOD').exists():
         leaves = LeaveRequest.objects.filter(cc_status="Approved")
 
-    elif user == "rector_user":
+    # ✅ RECTOR
+    elif request.user.groups.filter(name='RECTOR').exists():
         leaves = LeaveRequest.objects.filter(hod_status="Approved")
 
     else:
-        leaves = LeaveRequest.objects.none()
+        return redirect('home')
 
-    return render(request, 'leave_requests.html', {'leaves': leaves})
-
+    return render(request, 'leave_requests.html', {
+        'leaves': leaves,
+        'readonly': False   # 🔥 NORMAL USERS CAN ACT
+    })
 # ================= APPROVAL =================
 @login_required
 def approve_leave(request, leave_id, role, action):
+
+    # ❌ SUPERUSER CANNOT MODIFY
+    if request.user.is_superuser:
+        return redirect('leave_requests')
+
     leave = get_object_or_404(LeaveRequest, id=leave_id)
-    user = request.user.username
 
-    # ================= CC =================
-    if user == "cc_user":
-        if role == "cc" and leave.cc_status == "Pending":
-            leave.cc_status = action
+    # ❌ Block students
+    if Student.objects.filter(user=request.user).exists():
+        return redirect('student_dashboard')
 
-    # ================= HOD =================
-    elif user == "hod_user":
-        if role == "hod" and leave.cc_status == "Approved" and leave.hod_status == "Pending":
-            leave.hod_status = action
+    # ✅ CC
+    if request.user.groups.filter(name='CC').exists() and role == "cc":
+        leave.cc_status = action
 
-    # ================= RECTOR =================
-    elif user == "rector_user":
-        if role == "rector" and leave.hod_status == "Approved" and leave.rector_status == "Pending":
-            leave.rector_status = action
+    # ✅ HOD
+    elif request.user.groups.filter(name='HOD').exists() and role == "hod" and leave.cc_status == "Approved":
+        leave.hod_status = action
 
-            if action == "Approved":
-                leave.final_status = "Approved"
-            else:
-                leave.final_status = "Rejected"
+    # ✅ RECTOR
+    elif request.user.groups.filter(name='RECTOR').exists() and role == "rector" and leave.hod_status == "Approved":
+        leave.rector_status = action
+        leave.final_status = action
 
     leave.save()
     return redirect('leave_requests')
-
 
 # ================= ATTENDANCE =================
 @login_required

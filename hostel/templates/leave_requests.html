@@ -11,11 +11,8 @@
             background: #f4f6f9;
         }
 
-        .container {
-            display: flex;
-        }
+        .container { display: flex; }
 
-        /* SIDEBAR */
         .sidebar {
             width: 230px;
             height: 100vh;
@@ -29,14 +26,9 @@
             margin-bottom: 30px;
         }
 
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
+        .sidebar ul { list-style: none; padding: 0; }
 
-        .sidebar ul li {
-            margin: 10px 0;
-        }
+        .sidebar ul li { margin: 10px 0; }
 
         .sidebar ul li a {
             color: white;
@@ -44,24 +36,12 @@
             display: block;
             padding: 10px;
             border-radius: 6px;
-            transition: 0.3s;
         }
 
-        .sidebar ul li a:hover {
-            background: #34495e;
-        }
+        .sidebar ul li a:hover { background: #34495e; }
 
-        /* MAIN */
-        .main {
-            flex: 1;
-            padding: 30px;
-        }
+        .main { flex: 1; padding: 30px; }
 
-        h2 {
-            margin-bottom: 20px;
-        }
-
-        /* TABLE */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -83,11 +63,6 @@
             border-bottom: 1px solid #ddd;
         }
 
-        tr:hover {
-            background: #f1f1f1;
-        }
-
-        /* STATUS BADGES */
         .badge {
             padding: 5px 10px;
             border-radius: 20px;
@@ -99,7 +74,6 @@
         .approved { background: green; }
         .rejected { background: red; }
 
-        /* BUTTONS */
         .btn {
             padding: 5px 10px;
             border: none;
@@ -109,37 +83,17 @@
             margin: 2px;
         }
 
-        .approve {
-            background: #27ae60;
-            color: white;
-        }
+        .approve { background: #27ae60; color: white; }
+        .reject { background: #e74c3c; color: white; }
 
-        .approve:hover {
-            background: #1e8449;
-        }
-
-        .reject {
-            background: #e74c3c;
-            color: white;
-        }
-
-        .reject:hover {
-            background: #c0392b;
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .sidebar {
-                display: none;
-            }
-
-            table {
-                font-size: 12px;
-            }
+        .readonly-msg {
+            color: red;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
     </style>
-
 </head>
+
 <body>
 
 <div class="container">
@@ -163,6 +117,10 @@
 
         <h2>📄 Leave Requests</h2>
 
+        {% if readonly %}
+            <div class="readonly-msg">🔒 Admin View Only (No Actions Allowed)</div>
+        {% endif %}
+
         <table>
             <tr>
                 <th>Student</th>
@@ -184,30 +142,31 @@
                 <td>
                     <span class="badge {{ leave.cc_status|lower }}">{{ leave.cc_status }}</span><br>
 
-                    {% if request.user.username == "cc_user" and leave.cc_status == "Pending" %}
-                    <form method="POST" action="{% url 'approve_leave' leave.id 'cc' 'Approved' %}">
-                        {% csrf_token %}
-                        <button class="btn approve">✔</button>
-                    </form>
-                    <form method="POST" action="{% url 'approve_leave' leave.id 'cc' 'Rejected' %}">
-                        {% csrf_token %}
-                        <button class="btn reject">✖</button>
-                    </form>
+                    {% if "CC" in groups and leave.cc_status == "Pending" and not readonly %}
+                        <form method="POST" action="{% url 'approve_leave' leave.id 'cc' 'Approved' %}">
+                            {% csrf_token %}
+                            <button class="btn approve">✔</button>
+                        </form>
+                        <form method="POST" action="{% url 'approve_leave' leave.id 'cc' 'Rejected' %}">
+                            {% csrf_token %}
+                            <button class="btn reject">✖</button>
+                        </form>
                     {% endif %}
                 </td>
 
                 <!-- HOD -->
                 <td>
                     <span class="badge {{ leave.hod_status|lower }}">{{ leave.hod_status }}</span><br>
-                    {% if request.user.username == "hod_user" and leave.cc_status == "Approved" and leave.hod_status == "Pending" %}
-                    <form method="POST" action="{% url 'approve_leave' leave.id 'hod' 'Approved' %}">
-                        {% csrf_token %}
-                        <button class="btn approve">✔</button>
-                    </form>
-                    <form method="POST" action="{% url 'approve_leave' leave.id 'hod' 'Rejected' %}">
-                        {% csrf_token %}
-                        <button class="btn reject">✖</button>
-                    </form>
+
+                    {% if "HOD" in groups and leave.cc_status == "Approved" and leave.hod_status == "Pending" and not readonly %}
+                        <form method="POST" action="{% url 'approve_leave' leave.id 'hod' 'Approved' %}">
+                            {% csrf_token %}
+                            <button class="btn approve">✔</button>
+                        </form>
+                        <form method="POST" action="{% url 'approve_leave' leave.id 'hod' 'Rejected' %}">
+                            {% csrf_token %}
+                            <button class="btn reject">✖</button>
+                        </form>
                     {% endif %}
                 </td>
 
@@ -215,15 +174,15 @@
                 <td>
                     <span class="badge {{ leave.rector_status|lower }}">{{ leave.rector_status }}</span><br>
 
-                    {% if request.user.username == "rector_user" and leave.hod_status == "Approved" and leave.rector_status == "Pending" %}
-                    <form method="POST" action="{% url 'approve_leave' leave.id 'rector' 'Approved' %}">
-                        {% csrf_token %}
-                        <button class="btn approve">✔</button>
-                    </form>
-                    <form method="POST" action="{% url 'approve_leave' leave.id 'rector' 'Rejected' %}">
-                        {% csrf_token %}
-                        <button class="btn reject">✖</button>
-                    </form>
+                    {% if "RECTOR" in groups and leave.hod_status == "Approved" and leave.rector_status == "Pending" and not readonly %}
+                        <form method="POST" action="{% url 'approve_leave' leave.id 'rector' 'Approved' %}">
+                            {% csrf_token %}
+                            <button class="btn approve">✔</button>
+                        </form>
+                        <form method="POST" action="{% url 'approve_leave' leave.id 'rector' 'Rejected' %}">
+                            {% csrf_token %}
+                            <button class="btn reject">✖</button>
+                        </form>
                     {% endif %}
                 </td>
 
@@ -233,7 +192,6 @@
                         {{ leave.final_status }}
                     </span>
                 </td>
-
             </tr>
             {% endfor %}
         </table>
