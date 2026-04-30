@@ -135,14 +135,14 @@
         <div class="row">
             <div>
                 <span class="label">Out Time:</span><br>
-                <span class="value">{{ outing.out_time|date:"d M Y, h:i A" }}</span>
+                <span class="value">{{ outing.out_time|localtime|date:"d M Y, h:i A" }}</span>
             </div>
 
             <div>
                 <span class="label">In Time:</span><br>
                 <span class="value">
                     {% if outing.in_time %}
-                        {{ outing.in_time|date:"d M Y, h:i A" }}
+                        {{ outing.in_time|localtime|date:"d M Y, h:i A" }}
                     {% else %}
                         ---
                     {% endif %}
