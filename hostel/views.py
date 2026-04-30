@@ -47,12 +47,9 @@ def student_login(request):
         if user:
             login(request, user)
 
-            # ✅ STAFF FIRST (IMPORTANT)
-            if user.groups.exists():
-                return redirect('leave_requests')
 
-            # ✅ STUDENT
-            elif Student.objects.filter(user=user).exists():
+          # ✅ STUDENT
+            if Student.objects.filter(user=user).exists():
                 return redirect('student_dashboard')
 
     return render(request, 'student_login.html')
@@ -134,9 +131,7 @@ def leave_status(request):
 @login_required
 def leave_requests(request):
 
-    # ❌ Block students
-    if Student.objects.filter(user=request.user).exists():
-        return redirect('student_dashboard')
+
 
     # ✅ SUPERUSER → can ONLY VIEW all leaves
     if request.user.is_superuser:
