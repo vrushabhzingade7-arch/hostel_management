@@ -181,18 +181,31 @@ def approve_leave(request, leave_id, role, action):
     if Student.objects.filter(user=request.user).exists():
         return redirect('student_dashboard')
 
-    # ✅ CC
+    # ================= CC =================
     if request.user.groups.filter(name='CC').exists() and role == "cc":
         leave.cc_status = action
 
-    # ✅ HOD
+        # 🔴 IF CC REJECTS → FINAL REJECTED
+        if action == "Rejected":
+            leave.final_status = "Rejected"
+
+    # ================= HOD =================
     elif request.user.groups.filter(name='HOD').exists() and role == "hod" and leave.cc_status == "Approved":
         leave.hod_status = action
 
-    # ✅ RECTOR
+        # 🔴 IF HOD REJECTS → FINAL REJECTED
+        if action == "Rejected":
+            leave.final_status = "Rejected"
+
+    # ================= RECTOR =================
     elif request.user.groups.filter(name='RECTOR').exists() and role == "rector" and leave.hod_status == "Approved":
         leave.rector_status = action
-        leave.final_status = action
+
+        # ✅ FINAL DECISION BY RECTOR
+        if action == "Approved":
+            leave.final_status = "Approved"
+        else:
+            leave.final_status = "Rejected"
 
     leave.save()
     return redirect('leave_requests')
