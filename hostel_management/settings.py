@@ -111,3 +111,13 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # ================= SESSION =================
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# ================= EMAIL CONFIG =================
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = 'vrushabhzingade@gmail.com'
+EMAIL_HOST_PASSWORD = 'mzat dmab vmpl rwlp'  # ⚠️ NOT your normal Gmail password

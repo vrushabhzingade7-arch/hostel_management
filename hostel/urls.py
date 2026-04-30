@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
 
@@ -48,4 +49,33 @@ urlpatterns = [
     # ================= FEEDBACK =================
     path('feedback/', views.feedback_submit, name='feedback_submit'),
     path('feedback_admin/', views.feedback_admin, name='feedback_admin'),
+
+    # 🔐 REQUEST RESET LINK
+    path('password_reset/',
+         auth_views.PasswordResetView.as_view(
+             template_name='password_reset.html'
+         ),
+         name='password_reset'),
+
+    # 📩 EMAIL SENT PAGE
+    path('password_reset/done/',
+         auth_views.PasswordResetDoneView.as_view(
+             template_name='password_reset_done.html'
+         ),
+         name='password_reset_done'),
+
+    # 🔑 RESET LINK (FROM EMAIL)
+    path('reset/<uidb64>/<token>/',
+         auth_views.PasswordResetConfirmView.as_view(
+             template_name='password_reset_confirm.html'
+         ),
+         name='password_reset_confirm'),
+
+    # ✅ SUCCESS PAGE
+    path('reset/done/',
+         auth_views.PasswordResetCompleteView.as_view(
+             template_name='password_reset_complete.html'
+         ),
+         name='password_reset_complete'),
+    
 ]

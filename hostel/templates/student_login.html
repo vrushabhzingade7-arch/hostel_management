@@ -94,15 +94,27 @@
 <div class="login-box">
     <h2>🎓 Student Login</h2>
 
-    <form method="POST">
-        {% csrf_token %}
+   <form method="POST">
+    {% csrf_token %}
 
-        <input type="text" name="username" placeholder="Username" required>
+    {% if messages %}
+        {% for message in messages %}
+            <p style="color:yellow; font-size:14px;">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
 
-        <input type="password" name="password" placeholder="Password" required>
+    <input type="text" name="username" placeholder="Username" required>
 
-        <button type="submit">Login</button>
-    </form>
+    <input type="password" name="password" placeholder="Password" required>
+
+    <button type="submit">Login</button>
+
+    <p style="margin-top:10px;">
+        <a href="{% url 'password_reset' %}" style="color:#fff; font-size:13px; text-decoration:underline;">
+            Forgot Password?
+        </a>
+    </p>
+</form>
 
     <a href="{% url 'home' %}" class="back-link">← Back to Home</a>
 </div>
