@@ -87,9 +87,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # ================= INTERNATIONAL =================
 LANGUAGE_CODE = 'en-us'
+
+# ✅ Keep IST as display timezone
 TIME_ZONE = 'Asia/Kolkata'
+
 USE_I18N = True
-USE_TZ = False
+
+# ✅ KEEP THIS TRUE (IMPORTANT)
+USE_TZ = True
 
 
 # ================= STATIC FILES =================

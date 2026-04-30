@@ -156,11 +156,11 @@
     {% for outing in outings %}
     <tr>
         <td>👤 {{ outing.student.user.username }}</td>
-        <td>{{ outing.out_time|localtime }}</td>
+        <td>{{ outing.out_time}}</td>
 
         <td>
             {% if outing.in_time %}
-                {{ outing.in_time|localtime }}
+                {{ outing.in_time }}
             {% else %}
                 -
             {% endif %}
