@@ -142,7 +142,7 @@
                 <td>
                     <span class="badge {{ leave.cc_status|lower }}">{{ leave.cc_status }}</span><br>
 
-                    {% if "CC" in groups and leave.cc_status == "Pending" and not readonly %}
+                    {% if not readonly and "CC" in groups and leave.cc_status == "Pending" %}
                         <form method="POST" action="{% url 'approve_leave' leave.id 'cc' 'Approved' %}">
                             {% csrf_token %}
                             <button class="btn approve">✔</button>
@@ -158,7 +158,7 @@
                 <td>
                     <span class="badge {{ leave.hod_status|lower }}">{{ leave.hod_status }}</span><br>
 
-                    {% if "HOD" in groups and leave.cc_status == "Approved" and leave.hod_status == "Pending" and not readonly %}
+                    {% if not readonly and "HOD" in groups and leave.cc_status == "Approved" and leave.hod_status == "Pending" %}
                         <form method="POST" action="{% url 'approve_leave' leave.id 'hod' 'Approved' %}">
                             {% csrf_token %}
                             <button class="btn approve">✔</button>
@@ -174,7 +174,7 @@
                 <td>
                     <span class="badge {{ leave.rector_status|lower }}">{{ leave.rector_status }}</span><br>
 
-                    {% if "RECTOR" in groups and leave.hod_status == "Approved" and leave.rector_status == "Pending" and not readonly %}
+                    {% if not readonly and "RECTOR" in groups and leave.hod_status == "Approved" and leave.rector_status == "Pending" %}
                         <form method="POST" action="{% url 'approve_leave' leave.id 'rector' 'Approved' %}">
                             {% csrf_token %}
                             <button class="btn approve">✔</button>

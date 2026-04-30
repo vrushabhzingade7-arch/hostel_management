@@ -143,8 +143,9 @@ def leave_requests(request):
         leaves = LeaveRequest.objects.all()
         return render(request, 'leave_requests.html', {
             'leaves': leaves,
-            'readonly': True   # 🔥 IMPORTANT
-        })
+            'readonly': True,
+            'groups': []
+})
 
     # ✅ CC
     if request.user.groups.filter(name='CC').exists():
@@ -162,9 +163,10 @@ def leave_requests(request):
         return redirect('home')
 
     return render(request, 'leave_requests.html', {
-        'leaves': leaves,
-        'readonly': False   # 🔥 NORMAL USERS CAN ACT
-    })
+            'leaves': leaves,
+            'readonly': False,
+            'groups': request.user.groups.values_list('name', flat=True)
+})
 # ================= APPROVAL =================
 @login_required
 def approve_leave(request, leave_id, role, action):
