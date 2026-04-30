@@ -47,13 +47,13 @@ def student_login(request):
         if user:
             login(request, user)
 
-            # ✅ If Student
-            if Student.objects.filter(user=user).exists():
-                return redirect('student_dashboard')
-
-            # ✅ If Staff (CC / HOD / Rector)
-            elif user.groups.exists():
+            # ✅ STAFF FIRST (IMPORTANT)
+            if user.groups.exists():
                 return redirect('leave_requests')
+
+            # ✅ STUDENT
+            elif Student.objects.filter(user=user).exists():
+                return redirect('student_dashboard')
 
     return render(request, 'student_login.html')
 
