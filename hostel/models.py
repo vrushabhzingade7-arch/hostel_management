@@ -87,13 +87,16 @@ class Fee(models.Model):
 class Outing(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="outings")
 
-    reason = models.TextField(null=True, blank=True)  # ✅ REQUIRED
-
     out_time = models.DateTimeField()
     in_time = models.DateTimeField(null=True, blank=True)
 
     date = models.DateField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['-out_time']
+
+    def __str__(self):
+        return f"{self.student.user.username} | Out: {self.out_time}"
 
 # ================= ATTENDANCE =================
 class Attendance(models.Model):

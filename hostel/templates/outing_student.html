@@ -123,72 +123,58 @@
 
     <!-- OUT BUTTON -->
     <div class="top-bar">
-       <form method="POST" action="{% url 'mark_out' %}">
-    {% csrf_token %}
-    <input type="text" name="reason" placeholder="Enter reason" required style="padding:10px; width:250px;">
-    <button class="out-btn">🚪 Mark OUT</button>
-</form>
+        <a href="{% url 'mark_out' %}">
+            <button class="out-btn">🚪 Mark OUT</button>
+        </a>
     </div>
 
     <!-- OUTING CARDS -->
     {% for outing in outings %}
+    <div class="card">
 
-<div class="card">
+        <div class="row">
+            <div>
+                <span class="label">Out Time:</span><br>
+                <span class="value">{{ outing.out_time|date:"d M Y, h:i A" }}</span>
+            </div>
 
-    <div class="row">
-        <div>
-            <span class="label">Out Time:</span><br>
-            <span class="value">{{ outing.out_time|date:"d M Y, h:i A" }}</span>
+            <div>
+                <span class="label">In Time:</span><br>
+                <span class="value">
+                    {% if outing.in_time %}
+                        {{ outing.in_time|date:"d M Y, h:i A" }}
+                    {% else %}
+                        ---
+                    {% endif %}
+                </span>
+            </div>
         </div>
 
-        <div>
-            <span class="label">In Time:</span><br>
-            <span class="value">
+        <div class="row">
+            <div>
+                <span class="label">Status:</span>
                 {% if outing.in_time %}
-                    {{ outing.in_time|date:"d M Y, h:i A" }}
+                    <span class="status returned">Returned</span>
                 {% else %}
-                    ---
+                    <span class="status not-returned">Not Returned</span>
                 {% endif %}
-            </span>
+            </div>
         </div>
+
+        {% if not outing.in_time %}
+        <div class="center">
+            <a href="{% url 'mark_in' outing.id %}">
+                <button class="in-btn">⬅ Mark IN</button>
+            </a>
+        </div>
+        {% endif %}
+
     </div>
 
-    <!-- ✅ NEW: REASON -->
-    <div class="row">
-        <div>
-            <span class="label">Reason:</span><br>
-            <span class="value" style="max-width:300px; display:inline-block; word-wrap:break-word;">
-                {% if outing.reason %}
-                    {{ outing.reason|default:"-" }}
-                {% else %}
-                    <span style="color:gray;">Not provided</span>
-                {% endif %}
-            </span>
-        </div>
-    </div>
-
-    <div class="row">
-        <div>
-            <span class="label">Status:</span>
-            {% if outing.in_time %}
-                <span class="status returned">Returned</span>
-            {% else %}
-                <span class="status not-returned">Not Returned</span>
-            {% endif %}
-        </div>
-    </div>
-
-    {% if not outing.in_time %}
-    <div class="center">
-        <a href="{% url 'mark_in' outing.id %}">
-            <button class="in-btn">⬅ Mark IN</button>
-        </a>
-    </div>
-    {% endif %}
+    {% empty %}
+        <p class="empty">No outing records found</p>
+    {% endfor %}
 
 </div>
-{% empty %}
-    <p class="empty">No outing records found</p>
-{% endfor %}
 </body>
 </html>

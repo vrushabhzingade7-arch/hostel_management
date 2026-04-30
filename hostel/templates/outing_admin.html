@@ -145,19 +145,17 @@
 
         <h2>🚶‍♂️ Outing Records</h2>
 
-       <table>
+      <table>
     <tr>
         <th>Student</th>
         <th>Out Time</th>
         <th>In Time</th>
-        <th>Reason</th> <!-- ✅ NEW COLUMN -->
         <th>Status</th>
     </tr>
 
     {% for outing in outings %}
     <tr>
         <td>👤 {{ outing.student.user.username }}</td>
-
         <td>{{ outing.out_time }}</td>
 
         <td>
@@ -165,15 +163,6 @@
                 {{ outing.in_time }}
             {% else %}
                 -
-            {% endif %}
-        </td>
-
-        <!-- ✅ SHOW REASON -->
-        <td>
-            {% if outing.reason %}
-                {{ outing.reason|default:"-" }}
-            {% else %}
-                <span style="color:gray;">No reason</span>
             {% endif %}
         </td>
 
@@ -188,7 +177,7 @@
 
     {% empty %}
     <tr>
-        <td colspan="5" class="empty">No outing records found</td>
+        <td colspan="4" class="empty">No outing records found</td>
     </tr>
     {% endfor %}
 </table>

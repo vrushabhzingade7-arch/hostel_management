@@ -346,19 +346,10 @@ def outing_student(request):
 def mark_out(request):
     student = Student.objects.get(user=request.user)
 
-    if request.method == "POST":
-        reason = request.POST.get("reason")
+    if not Outing.objects.filter(student=student, in_time__isnull=True).exists():
+        Outing.objects.create(student=student, out_time=now())
 
-        if not Outing.objects.filter(student=student, in_time__isnull=True).exists():
-            Outing.objects.create(
-                student=student,
-                out_time=now(),
-                reason=reason
-            )
-
-        return redirect('outing_student')
-
-    return render(request, 'mark_out.html')
+    return redirect('outing_student')
 
 
 @login_required
