@@ -157,7 +157,7 @@
             <span class="label">Reason:</span><br>
             <span class="value" style="max-width:300px; display:inline-block; word-wrap:break-word;">
                 {% if outing.reason %}
-                    {{ outing.reason }}
+                    {{ outing.reason|default:"-" }}
                 {% else %}
                     <span style="color:gray;">Not provided</span>
                 {% endif %}
