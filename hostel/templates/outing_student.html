@@ -123,14 +123,16 @@
 
     <!-- OUT BUTTON -->
     <div class="top-bar">
-        <a href="{% url 'mark_out' %}">
-            <button class="out-btn">🚪 Mark OUT</button>
-        </a>
+       <form method="POST" action="{% url 'mark_out' %}">
+    {% csrf_token %}
+    <input type="text" name="reason" placeholder="Enter reason" required style="padding:10px; width:250px;">
+    <button class="out-btn">🚪 Mark OUT</button>
+</form>
     </div>
 
     <!-- OUTING CARDS -->
     {% for outing in outings %}
-    {% for outing in outings %}
+
 <div class="card">
 
     <div class="row">
