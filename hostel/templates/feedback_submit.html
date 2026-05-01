@@ -14,7 +14,7 @@
 
         body{
             font-family:'Segoe UI', sans-serif;
-            background:#f4f7fb;
+            background:#f1f5f9;
         }
 
         .container{
@@ -22,84 +22,69 @@
             min-height:100vh;
         }
 
-/* SIDEBAR */
-.sidebar{
-    width:250px;
-    height:100vh;
-    background:#2c3e50;
-    color:white;
-    padding:20px;
-    position:fixed;
-    top:0;
-    left:0;
-    overflow-y:auto;
-}
+        /* ================= SIDEBAR ================= */
 
-.sidebar h2{
-    text-align:center;
-    margin-bottom:35px;
-    font-size:28px;
-    line-height:1.4;
-    font-weight:700;
-}
+        .sidebar{
+            width:260px;
+            height:100vh;
+            background:#2c3e50;
+            color:white;
+            padding:22px;
+            position:fixed;
+            top:0;
+            left:0;
+            overflow-y:auto;
+            box-shadow:4px 0 20px rgba(0,0,0,0.12);
+        }
 
-.sidebar ul{
-    list-style:none;
-    padding:0;
-    margin:0;
-}
+        .sidebar h2{
+            text-align:center;
+            margin-bottom:35px;
+            font-size:24px;
+            font-weight:700;
+            letter-spacing:0.5px;
+            color:#ffffff;
+        }
 
-.sidebar ul li{
-    margin-bottom:8px;
-}
+        .sidebar ul{
+            list-style:none;
+            padding:0;
+            margin:0;
+        }
 
-.sidebar ul li a{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:12px 14px;
-    color:#ecf0f1;
-    text-decoration:none;
-    border-radius:10px;
-    transition:0.3s;
-    font-size:17px;
-    font-weight:500;
-}
+        .sidebar ul li{
+            margin-bottom:10px;
+        }
 
-.sidebar ul li a:hover{
-    background:#34495e;
-    transform:translateX(5px);
-}
-/* MAIN */
-.main{
-    margin-left:250px;
-    width:calc(100% - 250px);
-    padding:30px;
-}
+        .sidebar ul li a{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            padding:14px 16px;
+            color:#e2e8f0;
+            text-decoration:none;
+            border-radius:14px;
+            transition:0.3s;
+            font-size:15px;
+            font-weight:500;
+        }
 
-/* RESPONSIVE */
-@media(max-width:768px){
+        .sidebar ul li a:hover{
+            background:rgba(255,255,255,0.08);
+            transform:translateX(4px);
+        }
 
-    .sidebar{
-        display:none;
-    }
-
-    .main{
-        margin-left:0;
-        width:100%;
-        padding:20px;
-    }
-
-    .cards{
-        flex-direction:column;
-    }
-}
+        .sidebar ul li a.active{
+            background:#34495e;
+            color:white;
+            box-shadow:0 4px 14px rgba(37,99,235,0.35);
+        }
 
         /* ================= MAIN ================= */
 
         .main{
-            margin-left:240px;
-            width:100%;
+            margin-left:260px;
+            width:calc(100% - 260px);
             display:flex;
             justify-content:center;
             align-items:center;
@@ -111,47 +96,50 @@
         .card{
             background:white;
             width:100%;
-            max-width:500px;
-            padding:35px;
-            border-radius:18px;
-            box-shadow:0 8px 25px rgba(0,0,0,0.08);
+            max-width:550px;
+            padding:38px;
+            border-radius:24px;
+            box-shadow:0 10px 35px rgba(15,23,42,0.08);
+            border:1px solid #e2e8f0;
         }
 
         .card h2{
             text-align:center;
-            margin-bottom:25px;
-            color:#2c3e50;
+            margin-bottom:28px;
+            color:#0f172a;
+            font-size:28px;
         }
 
         .form-group{
-            margin-bottom:18px;
+            margin-bottom:22px;
         }
 
         label{
             display:block;
-            margin-bottom:8px;
+            margin-bottom:10px;
             font-size:14px;
             font-weight:600;
-            color:#444;
+            color:#334155;
         }
 
         select,
         textarea{
             width:100%;
-            padding:12px;
-            border:1px solid #dcdcdc;
-            border-radius:10px;
-            font-size:14px;
+            padding:14px;
+            border:1px solid #cbd5e1;
+            border-radius:14px;
+            font-size:15px;
             transition:0.3s;
-            background:#fafafa;
+            background:#f8fafc;
+            color:#0f172a;
         }
 
         select:focus,
         textarea:focus{
             outline:none;
-            border-color:#3498db;
+            border-color:#2563eb;
             background:white;
-            box-shadow:0 0 0 3px rgba(52,152,219,0.15);
+            box-shadow:0 0 0 4px rgba(37,99,235,0.12);
         }
 
         textarea{
@@ -162,45 +150,48 @@
 
         .btn{
             width:100%;
-            padding:13px;
+            padding:15px;
             border:none;
-            border-radius:10px;
-            background:#3498db;
+            border-radius:14px;
+            background:linear-gradient(to right,#2563eb,#3b82f6);
             color:white;
             font-size:16px;
             font-weight:600;
             cursor:pointer;
             transition:0.3s;
+            box-shadow:0 6px 18px rgba(37,99,235,0.25);
         }
 
         .btn:hover{
-            background:#2980b9;
             transform:translateY(-2px);
+            box-shadow:0 10px 22px rgba(37,99,235,0.35);
         }
 
         /* ================= MESSAGE ================= */
 
         .success{
-            background:#d4edda;
-            color:#155724;
-            padding:12px;
-            border-radius:10px;
-            margin-bottom:15px;
+            background:#dcfce7;
+            color:#166534;
+            padding:14px;
+            border-radius:12px;
+            margin-bottom:18px;
             text-align:center;
             font-size:14px;
+            border:1px solid #bbf7d0;
         }
 
         .error{
-            background:#f8d7da;
-            color:#721c24;
-            padding:12px;
-            border-radius:10px;
-            margin-bottom:15px;
+            background:#fee2e2;
+            color:#991b1b;
+            padding:14px;
+            border-radius:12px;
+            margin-bottom:18px;
             text-align:center;
             font-size:14px;
+            border:1px solid #fecaca;
         }
 
-        /* ================= RESPONSIVE ================= */
+        /* ================= MOBILE ================= */
 
         @media(max-width:768px){
 
@@ -210,11 +201,16 @@
 
             .main{
                 margin-left:0;
+                width:100%;
                 padding:20px;
             }
 
             .card{
-                padding:25px;
+                padding:28px 22px;
+            }
+
+            .card h2{
+                font-size:24px;
             }
         }
 
@@ -233,6 +229,7 @@
         <h2>🎓 Student Panel</h2>
 
         <ul>
+
             <li>
                 <a href="{% url 'student_dashboard' %}">
                     📊 Dashboard
@@ -274,6 +271,7 @@
                     💬 Feedback
                 </a>
             </li>
+
         </ul>
 
     </div>
@@ -284,7 +282,7 @@
 
         <div class="card">
 
-            <h2>📝 Submit Feedback</h2>
+            <h2>💬 Submit Feedback</h2>
 
             {% if messages %}
                 {% for message in messages %}
@@ -314,7 +312,7 @@
 
                     <label>Your Message</label>
 
-                    <textarea 
+                    <textarea
                         name="message"
                         rows="5"
                         placeholder="Write your feedback here..."

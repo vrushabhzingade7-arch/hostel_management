@@ -6,9 +6,14 @@
 
     <style>
 
-        body{
+        *{
             margin:0;
-            font-family:'Segoe UI',sans-serif;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:'Segoe UI', sans-serif;
             background:#f4f7fb;
         }
 
@@ -17,73 +22,82 @@
             min-height:100vh;
         }
 
-/* SIDEBAR */
-.sidebar{
-    width:250px;
-    height:100vh;
-    background:#2c3e50;
-    color:white;
-    padding:20px;
-    position:fixed;
-    top:0;
-    left:0;
-    overflow-y:auto;
-}
+        /* ================= SIDEBAR ================= */
 
-.sidebar h2{
-    text-align:center;
-    margin-bottom:35px;
-    font-size:28px;
-    line-height:1.4;
-    font-weight:700;
-}
+        .sidebar{
+            width:260px;
+            height:100vh;
+            background:#2c3e50;
+            color:white;
+            padding:24px 18px;
+            position:fixed;
+            top:0;
+            left:0;
+            overflow-y:auto;
+        }
 
-.sidebar ul{
-    list-style:none;
-    padding:0;
-    margin:0;
-}
+        .sidebar h2{
+            text-align:center;
+            margin-bottom:35px;
+            font-size:28px;
+            line-height:1.4;
+            font-weight:700;
+            color:#ffffff;
+        }
 
-.sidebar ul li{
-    margin-bottom:8px;
-}
+        .sidebar ul{
+            list-style:none;
+            padding:0;
+            margin:0;
+        }
 
-.sidebar ul li a{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:12px 14px;
-    color:#ecf0f1;
-    text-decoration:none;
-    border-radius:10px;
-    transition:0.3s;
-    font-size:17px;
-    font-weight:500;
-}
+        .sidebar ul li{
+            margin-bottom:12px;
+        }
 
-.sidebar ul li a:hover{
-    background:#34495e;
-    transform:translateX(5px);
-}
+        .sidebar ul li a{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            padding:14px 16px;
+            color:#e5e7eb;
+            text-decoration:none;
+            border-radius:12px;
+            transition:0.3s;
+            font-size:16px;
+            font-weight:500;
+        }
 
-        /* MAIN */
+        .sidebar ul li a:hover{
+            background:#374151;
+            transform:translateX(4px);
+        }
+
+        .sidebar ul li a.active{
+            background:#34495e;
+            color:white;
+            box-shadow:0 4px 12px rgba(59,130,246,0.35);
+        }
+
+        /* ================= MAIN ================= */
 
         .main{
-            flex:1;
+            margin-left:260px;
+            width:calc(100% - 260px);
             display:flex;
             justify-content:center;
             align-items:center;
-            padding:30px;
+            padding:35px;
         }
 
-        /* CARD */
+        /* ================= CARD ================= */
 
         .card{
             width:420px;
             background:white;
-            border-radius:20px;
+            border-radius:22px;
             padding:35px;
-            box-shadow:0 5px 20px rgba(0,0,0,0.12);
+            box-shadow:0 5px 20px rgba(0,0,0,0.10);
             text-align:center;
             transition:0.3s;
         }
@@ -92,35 +106,41 @@
             transform:translateY(-5px);
         }
 
+        /* ================= AVATAR ================= */
+
         .avatar{
-            width:90px;
-            height:90px;
+            width:95px;
+            height:95px;
             border-radius:50%;
-            background:#3498db;
+            background:#3b82f6;
             color:white;
             display:flex;
             align-items:center;
             justify-content:center;
-            font-size:34px;
+            font-size:36px;
             font-weight:bold;
-            margin:0 auto 20px;
-            box-shadow:0 4px 12px rgba(52,152,219,0.4);
+            margin:0 auto 22px;
+            box-shadow:0 4px 12px rgba(59,130,246,0.35);
         }
 
-        h2{
+        .card h2{
             margin-bottom:25px;
-            color:#2c3e50;
+            color:#1f2937;
+            font-size:28px;
+            font-weight:700;
         }
+
+        /* ================= INFO ================= */
 
         .info{
             margin-top:20px;
         }
 
         .row{
-            background:#f8f9fc;
-            padding:15px;
-            border-radius:12px;
-            margin-bottom:15px;
+            background:#f8fafc;
+            padding:16px 18px;
+            border-radius:14px;
+            margin-bottom:16px;
             display:flex;
             justify-content:space-between;
             align-items:center;
@@ -129,34 +149,38 @@
 
         .label{
             font-weight:600;
-            color:#555;
+            color:#6b7280;
+            font-size:15px;
         }
 
         .value{
-            font-weight:bold;
-            color:#2c3e50;
+            font-weight:700;
+            color:#1f2937;
+            font-size:15px;
         }
 
-        /* BUTTON */
+        /* ================= BUTTON ================= */
 
         .btn{
             margin-top:20px;
             width:100%;
-            padding:12px;
+            padding:13px;
             border:none;
-            border-radius:10px;
-            background:#3498db;
+            border-radius:12px;
+            background:#3b82f6;
             color:white;
             font-size:15px;
+            font-weight:600;
             cursor:pointer;
             transition:0.3s;
         }
 
         .btn:hover{
-            background:#2980b9;
+            background:#2563eb;
+            transform:translateY(-2px);
         }
 
-        /* MOBILE */
+        /* ================= RESPONSIVE ================= */
 
         @media(max-width:768px){
 
@@ -165,6 +189,8 @@
             }
 
             .main{
+                margin-left:0;
+                width:100%;
                 padding:20px;
             }
 
@@ -181,31 +207,69 @@
 
 <div class="container">
 
-    <!-- SIDEBAR -->
+    <!-- ================= SIDEBAR ================= -->
 
     <div class="sidebar">
 
-        <h2>🎓 Student Panel</h2>
+        <h2>
+            🎓Student Panel
+        </h2>
 
         <ul>
-            <li><a href="{% url 'student_dashboard' %}">📊 Dashboard</a></li>
-            <li><a href="{% url 'apply_leave' %}">📝 Apply Leave</a></li>
-            <li><a href="{% url 'fees_student' %}">💰 Fees</a></li>
-            <li><a href="{% url 'outing_student' %}">🚶 Outing</a></li>
-            <li><a href="{% url 'leave_status' %}">📄 Leave Status</a></li>
-            <li><a href="{% url 'student_room' %}">🏠 Room Info</a></li>
-            <li><a href="{% url 'feedback_submit' %}">💬 Feedback</a></li>
+
+            <li>
+                <a href="{% url 'student_dashboard' %}">
+                    📊 Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'apply_leave' %}">
+                    📝 Apply Leave
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'fees_student' %}">
+                    💰 Fees
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'outing_student' %}">
+                    🚶 Outing
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'leave_status' %}">
+                    📄 Leave Status
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'student_room' %}" class="active">
+                    🏠 Room Info
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'feedback_submit' %}">
+                    💬 Feedback
+                </a>
+            </li>
+
         </ul>
 
     </div>
 
-    <!-- MAIN -->
+    <!-- ================= MAIN ================= -->
 
     <div class="main">
 
         <div class="card">
 
-            <!-- AVATAR -->
+            <!-- ================= AVATAR ================= -->
 
             <div class="avatar">
                 {{ student.user.username|first|upper }}
@@ -232,7 +296,9 @@
 
             </div>
 
-            <button class="btn">👨 Student Profile</button>
+            <button class="btn">
+                👨 Student Profile
+            </button>
 
         </div>
 
