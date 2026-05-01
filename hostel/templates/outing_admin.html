@@ -19,7 +19,7 @@
         .sidebar {
             width: 240px;
             height: 100vh;
-            background: #2c3e50;
+            background: #1e293b;
             color: white;
             padding: 20px;
         }
@@ -39,8 +39,8 @@
         }
 
         .sidebar ul li a {
-            color: white;
             text-decoration: none;
+            color: #cbd5f5;
             padding: 10px;
             display: block;
             border-radius: 8px;
@@ -48,7 +48,8 @@
         }
 
         .sidebar ul li a:hover {
-            background: #34495e;
+            background: #334155;
+            color: white;
         }
 
         /* MAIN */
@@ -133,11 +134,10 @@
             <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
             <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
             <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
-            <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
             <li><a href="{% url 'leave_requests' %}">📄 Leave Requests</a></li>
+            <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
             <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
             <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
-        </ul>
     </div>
 
     <!-- MAIN -->
