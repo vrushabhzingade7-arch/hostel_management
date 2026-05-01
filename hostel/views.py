@@ -173,7 +173,7 @@ def leave_requests(request):
         'leaves': leaves,
         'dept': dept,
         'cls': cls,
-        'groups': request.user.groups.values_list('name', flat=True),
+        'groups': list(request.user.groups.values_list('name', flat=True)),
         'readonly': request.user.is_superuser  # ✅ FIX
     })
 # ================= APPROVAL =================
