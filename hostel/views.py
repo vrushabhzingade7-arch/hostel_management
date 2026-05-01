@@ -99,7 +99,7 @@ def student_dashboard(request):
 
 # ================= APPLY LEAVE =================
 @login_required
-@login_required
+
 def apply_leave(request):
     student = Student.objects.filter(user=request.user).first()
 
