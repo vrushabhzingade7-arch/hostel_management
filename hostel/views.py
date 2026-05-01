@@ -146,7 +146,7 @@ def leave_requests(request):
 
         # ================= STEP 1 =================
         if not dept:
-            departments = Student.objects.values_list('department', flat=True).distinct()
+            departments = [choice[0] for choice in Student.DEPARTMENT_CHOICES]
             return render(request, 'leave_departments.html', {
                 'departments': departments
             })

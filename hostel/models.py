@@ -19,9 +19,12 @@ class Student(models.Model):
     ]
 
     DEPARTMENT_CHOICES = [
-        ('CSE', 'CSE'),
-        ('ENTC', 'ENTC'),
-        ('MECH', 'MECH'),
+    ('CSE', 'CSE'),
+    ('ENTC', 'ENTC'),
+    ('MECH', 'MECH'),
+    ('CIVIL', 'CIVIL'),
+    ('ECE', 'ECE'),
+
     ]
 
     CLASS_CHOICES = [
