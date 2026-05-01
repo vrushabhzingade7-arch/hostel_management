@@ -272,9 +272,23 @@ def mark_attendance(request):
 # ================= ROOM INFO =================
 @login_required
 def room_info(request):
-    students = Student.objects.all()
 
-    rooms = Student.objects.values('room_no').annotate(total=Count('id'))
+    gender = request.GET.get('gender')
+
+    # ================= SELECT GENDER PAGE =================
+    if not gender:
+        return render(request, 'room_gender_select.html')
+
+    # ================= FILTER STUDENTS =================
+    students = Student.objects.filter(gender=gender)
+
+    # ================= ROOM COUNT =================
+    rooms = (
+        Student.objects
+        .filter(gender=gender)
+        .values('room_no')
+        .annotate(total=Count('id'))
+    )
 
     total_rooms = rooms.count()
     filled_rooms = sum(1 for r in rooms if r['total'] >= 3)
@@ -286,6 +300,7 @@ def room_info(request):
         'total_rooms': total_rooms,
         'filled_rooms': filled_rooms,
         'vacant_rooms': vacant_rooms,
+        'gender': gender,
     })
 
 
