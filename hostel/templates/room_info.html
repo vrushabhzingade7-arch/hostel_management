@@ -5,7 +5,6 @@
     <title>Room Info</title>
 
     <style>
-
         *{
             margin:0;
             padding:0;
@@ -14,63 +13,53 @@
 
         body {
             font-family: 'Segoe UI', sans-serif;
-            background: #f1f5f9;
+            background: #f4f7fb;
         }
 
-        .container{
-            display:flex;
+        /* SIDEBAR (CONSISTENT) */
+        .sidebar {
+            width: 240px;
+            height: 100vh;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
 
-/* SIDEBAR */
-.sidebar {
-    width: 240px;
-    height: 100vh;
-    background: #1e293b;
-    color: white;
-    padding: 20px;
-    position: fixed;
-    top: 0;
-    left: 0;
-}
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
 
-.sidebar h2 {
-    text-align: center;
-    margin-bottom: 35px;
-    font-size: 30px;
-    font-weight: bold;
-}
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
 
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-}
+        .sidebar ul li a {
+            display: block;
+            padding: 12px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
 
-.sidebar ul li {
-    margin: 12px 0;
-}
+        .sidebar ul li a:hover,
+        .sidebar ul li a.active {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(5px);
+        }
 
-.sidebar ul li a {
-    text-decoration: none;
-    color: #cbd5f5;
-    padding: 12px 14px;
-    display: block;
-    border-radius: 10px;
-    transition: 0.3s;
-    font-size: 16px;
-    font-weight: 500;
-}
-
-.sidebar ul li a:hover {
-    background: #334155;
-    color: white;
-    transform: translateX(5px);
-}
-
-        /* MAIN */
+        /* MAIN (FIXED PROPERLY) */
         .main{
             margin-left:240px;
-            width:100%;
+            width:calc(100% - 240px);
             padding:30px;
+            min-height:100vh;
         }
 
         /* TOP BAR */
@@ -84,9 +73,9 @@
         }
 
         .dashboard-title{
-            font-size:30px;
+            font-size:28px;
             font-weight:bold;
-            color:#1e293b;
+            color:#2c3e50;
         }
 
         .back-btn{
@@ -128,13 +117,13 @@
         .stat-card h3{
             color:#64748b;
             margin-bottom:12px;
-            font-size:17px;
+            font-size:16px;
         }
 
         .stat-card p{
-            font-size:32px;
+            font-size:28px;
             font-weight:bold;
-            color:#0f172a;
+            color:#2c3e50;
         }
 
         .filled{
@@ -156,12 +145,13 @@
             border-radius:16px;
             box-shadow:0 5px 15px rgba(0,0,0,0.08);
             margin-bottom:30px;
+            overflow-x:auto;
         }
 
         .table-title{
-            font-size:24px;
+            font-size:22px;
             margin-bottom:20px;
-            color:#1e293b;
+            color:#2c3e50;
             font-weight:600;
         }
 
@@ -169,6 +159,7 @@
         table{
             width:100%;
             border-collapse:collapse;
+            min-width:600px;
         }
 
         thead{
@@ -176,20 +167,17 @@
             color:white;
         }
 
-        th{
+        th, td{
             padding:14px;
             text-align:left;
-            font-size:15px;
         }
 
         td{
-            padding:14px;
-            border-bottom:1px solid #e2e8f0;
-            color:#334155;
+            border-bottom:1px solid #eee;
         }
 
         tr:hover{
-            background:#f8fafc;
+            background:#f9fafb;
         }
 
         /* STATUS */
@@ -226,13 +214,13 @@
 
         /* RESPONSIVE */
         @media(max-width:768px){
-
             .sidebar{
                 display:none;
             }
 
             .main{
                 margin-left:0;
+                width:100%;
                 padding:20px;
             }
 
@@ -244,10 +232,6 @@
                 flex-direction:column;
                 align-items:flex-start;
             }
-
-            table{
-                font-size:14px;
-            }
         }
 
     </style>
@@ -255,167 +239,125 @@
 
 <body>
 
-<div class="container">
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>⚙ Admin Panel</h2>
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
+    <ul>
+        <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
+        <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
+        <li><a href="{% url 'room_info' %}" class="active">🏠 Room Info</a></li>
+        <li><a href="{% url 'leave_requests' %}">📄 Leave Requests</a></li>
+        <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
+        <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
+        <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
+    </ul>
+</div>
 
-        <h2>⚙ Admin Panel</h2>
+<!-- MAIN -->
+<div class="main">
 
-        <ul>
-            <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
-            <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
-            <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
-            <li><a href="{% url 'leave_requests' %}">📄 Leave Requests</a></li>
-            <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
-            <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
-            <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
+    <div class="top-bar">
+        <div class="dashboard-title">
+            {% if gender == "BOYS" %}
+                👦 Boys Hostel Dashboard
+            {% else %}
+                👧 Girls Hostel Dashboard
+            {% endif %}
+        </div>
 
+        <a href="{% url 'room_info' %}" class="back-btn">
+            ← Change Hostel
+        </a>
     </div>
 
-    <!-- MAIN -->
-    <div class="main">
-
-        <!-- TOP -->
-        <div class="top-bar">
-
-            <div class="dashboard-title">
-
-                {% if gender == "BOYS" %}
-                    👦 Boys Hostel Dashboard
-                {% else %}
-                    👧 Girls Hostel Dashboard
-                {% endif %}
-
-            </div>
-
-            <a href="{% url 'room_info' %}" class="back-btn">
-                ← Change Hostel
-            </a>
-
+    <!-- STATS -->
+    <div class="stats">
+        <div class="stat-card total">
+            <h3>Total Rooms</h3>
+            <p>{{ total_rooms }}</p>
         </div>
 
-        <!-- STATS -->
-        <div class="stats">
-
-            <div class="stat-card total">
-                <h3>Total Rooms</h3>
-                <p>{{ total_rooms }}</p>
-            </div>
-
-            <div class="stat-card filled">
-                <h3>Filled Rooms</h3>
-                <p>{{ filled_rooms }}</p>
-            </div>
-
-            <div class="stat-card vacant">
-                <h3>Vacant Rooms</h3>
-                <p>{{ vacant_rooms }}</p>
-            </div>
-
+        <div class="stat-card filled">
+            <h3>Filled Rooms</h3>
+            <p>{{ filled_rooms }}</p>
         </div>
 
-        <!-- ROOM OCCUPANCY -->
-        <div class="table-card">
-
-            <div class="table-title">📊 Room Occupancy</div>
-
-            <table>
-
-                <thead>
-                    <tr>
-                        <th>Room No</th>
-                        <th>Students</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                {% for room in rooms %}
-                <tr>
-
-                    <td>🏢 {{ room.room_no }}</td>
-
-                    <td>{{ room.total }} / 3</td>
-
-                    <td>
-                        {% if room.total >= 3 %}
-                            <span class="filled-text">Filled</span>
-                        {% else %}
-                            <span class="vacant-text">Vacant</span>
-                        {% endif %}
-                    </td>
-
-                </tr>
-
-                {% empty %}
-
-                <tr>
-                    <td colspan="3" class="empty">
-                        No room data available
-                    </td>
-                </tr>
-
-                {% endfor %}
-
-                </tbody>
-
-            </table>
-
+        <div class="stat-card vacant">
+            <h3>Vacant Rooms</h3>
+            <p>{{ vacant_rooms }}</p>
         </div>
+    </div>
 
-        <!-- STUDENT LIST -->
-        <div class="table-card">
+    <!-- ROOM OCCUPANCY -->
+    <div class="table-card">
+        <div class="table-title">📊 Room Occupancy</div>
 
-            <div class="table-title">👨‍🎓 Student Room List</div>
-
-            <table>
-
-                <thead>
-                    <tr>
-                        <th>Student</th>
-                        <th>Room No</th>
-                        <th>Hostel ID</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                {% for student in students %}
+        <table>
+            <thead>
                 <tr>
-
-                    <td>👤 {{ student.user.username }}</td>
-
-                    <td>🏢 {{ student.room_no }}</td>
-
-                    <td>🆔 {{ student.hostel_id }}</td>
-
-                    <td>
-                        <a href="{% url 'update_room' student.id %}" class="edit-btn">
-                            ✏ Edit
-                        </a>
-                    </td>
-
+                    <th>Room No</th>
+                    <th>Students</th>
+                    <th>Status</th>
                 </tr>
+            </thead>
 
-                {% empty %}
+            <tbody>
+            {% for room in rooms %}
+            <tr>
+                <td>🏢 {{ room.room_no }}</td>
+                <td>{{ room.total }} / 3</td>
 
+                <td>
+                    {% if room.total >= 3 %}
+                        <span class="filled-text">Filled</span>
+                    {% else %}
+                        <span class="vacant-text">Vacant</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" class="empty">No room data available</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- STUDENTS -->
+    <div class="table-card">
+        <div class="table-title">👨‍🎓 Student Room List</div>
+
+        <table>
+            <thead>
                 <tr>
-                    <td colspan="4" class="empty">
-                        No students found
-                    </td>
+                    <th>Student</th>
+                    <th>Room No</th>
+                    <th>Hostel ID</th>
+                    <th>Action</th>
                 </tr>
+            </thead>
 
-                {% endfor %}
-
-                </tbody>
-
-            </table>
-
-        </div>
-
+            <tbody>
+            {% for student in students %}
+            <tr>
+                <td>👤 {{ student.user.username }}</td>
+                <td>🏢 {{ student.room_no }}</td>
+                <td>🆔 {{ student.hostel_id }}</td>
+                <td>
+                    <a href="{% url 'update_room' student.id %}" class="edit-btn">
+                        ✏ Edit
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="empty">No students found</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 
 </div>

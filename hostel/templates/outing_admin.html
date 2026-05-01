@@ -5,6 +5,10 @@
     <title>Outing Admin</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -15,14 +19,17 @@
             display: flex;
         }
 
-        /* SIDEBAR */
+        /* SIDEBAR (STANDARD) */
         .sidebar {
             width: 240px;
             height: 100vh;
-            background:  #2c3e50;
+            background: #2c3e50;
             color: white;
             padding: 20px;
             position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
 
         .sidebar h2 {
@@ -35,10 +42,6 @@
             padding: 0;
         }
 
-        .sidebar ul li {
-            margin-bottom: 0px;
-        }
-
         .sidebar ul li a {
             display: block;
             padding: 12px;
@@ -48,20 +51,23 @@
             transition: 0.3s;
         }
 
-        .sidebar ul li a:hover {
+        .sidebar ul li a:hover,
+        .sidebar ul li a.active {
             background: rgba(255,255,255,0.2);
             transform: translateX(5px);
         }
 
-
-        /* MAIN */
+        /* MAIN (FIXED) */
         .main {
-            flex: 1;
+            margin-left: 240px;
+            width: calc(100% - 240px);
             padding: 30px;
+            min-height: 100vh;
         }
 
         h2 {
             margin-bottom: 20px;
+            color: #2c3e50;
         }
 
         /* TABLE */
@@ -116,9 +122,14 @@
         }
 
         /* RESPONSIVE */
-        @media (max-width: 700px) {
+        @media (max-width: 768px) {
             .sidebar {
                 display: none;
+            }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
             }
         }
 
@@ -132,14 +143,16 @@
     <!-- SIDEBAR -->
     <div class="sidebar">
         <h2>⚙ Admin Panel</h2>
+
         <ul>
             <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
             <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
             <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
             <li><a href="{% url 'leave_requests' %}">📄 Leave Requests</a></li>
             <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
-            <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
+            <li><a href="{% url 'outing_admin' %}" class="active">🚪 Outing</a></li>
             <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
+        </ul>
     </div>
 
     <!-- MAIN -->
@@ -147,42 +160,42 @@
 
         <h2>🚶‍♂️ Outing Records</h2>
 
-      <table>
-    <tr>
-        <th>Student</th>
-        <th>Out Time</th>
-        <th>In Time</th>
-        <th>Status</th>
-    </tr>
+        <table>
+            <tr>
+                <th>Student</th>
+                <th>Out Time</th>
+                <th>In Time</th>
+                <th>Status</th>
+            </tr>
 
-    {% for outing in outings %}
-    <tr>
-        <td>👤 {{ outing.student.user.username }}</td>
-        <td>{{ outing.out_time}}</td>
+            {% for outing in outings %}
+            <tr>
+                <td>👤 {{ outing.student.user.username }}</td>
+                <td>{{ outing.out_time }}</td>
 
-        <td>
-            {% if outing.in_time %}
-                {{ outing.in_time }}
-            {% else %}
-                -
-            {% endif %}
-        </td>
+                <td>
+                    {% if outing.in_time %}
+                        {{ outing.in_time }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
 
-        <td>
-            {% if outing.in_time %}
-                <span class="badge returned">Returned</span>
-            {% else %}
-                <span class="badge not-returned">Not Returned</span>
-            {% endif %}
-        </td>
-    </tr>
+                <td>
+                    {% if outing.in_time %}
+                        <span class="badge returned">Returned</span>
+                    {% else %}
+                        <span class="badge not-returned">Not Returned</span>
+                    {% endif %}
+                </td>
+            </tr>
 
-    {% empty %}
-    <tr>
-        <td colspan="4" class="empty">No outing records found</td>
-    </tr>
-    {% endfor %}
-</table>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="empty">No outing records found</td>
+            </tr>
+            {% endfor %}
+        </table>
 
     </div>
 

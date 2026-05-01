@@ -5,23 +5,27 @@
     <title>Mark Attendance</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             font-family: 'Segoe UI', sans-serif;
-            background: #f4f6f9;
-        }
-
-        .container {
-            display: flex;
+            background: #f4f7fb;
         }
 
         /* SIDEBAR */
         .sidebar {
             width: 240px;
             height: 100vh;
-            background: #1e293b;
+            background: #2c3e50;
             color: white;
             padding: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000; /* ensures visibility */
         }
 
         .sidebar h2 {
@@ -34,33 +38,32 @@
             padding: 0;
         }
 
-        .sidebar ul li {
-            margin: 12px 0;
-        }
-
         .sidebar ul li a {
-            text-decoration: none;
-            color: #cbd5f5;
-            padding: 10px;
             display: block;
+            padding: 12px;
+            color: white;
+            text-decoration: none;
             border-radius: 8px;
             transition: 0.3s;
         }
 
-        .sidebar ul li a:hover {
-            background: #334155;
-            color: white;
+        .sidebar ul li a:hover,
+        .sidebar ul li a.active {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(5px);
         }
 
         /* MAIN */
         .main {
-            flex: 1;
+            margin-left: 240px;
             padding: 30px;
+            width: calc(100% - 240px);
+            min-height: 100vh;
         }
 
         h2 {
             margin-bottom: 20px;
-            color: #1e293b;
+            color: #2c3e50;
         }
 
         /* CARD */
@@ -69,12 +72,14 @@
             padding: 20px;
             border-radius: 12px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow-x: auto;
         }
 
         /* TABLE */
         table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 500px;
         }
 
         thead {
@@ -84,13 +89,12 @@
             color: white;
         }
 
-        th {
+        th, td {
             padding: 12px;
             text-align: left;
         }
 
         td {
-            padding: 12px;
             border-bottom: 1px solid #eee;
         }
 
@@ -98,7 +102,7 @@
             background: #f9fafb;
         }
 
-        /* RADIO BUTTON STYLE */
+        /* RADIO */
         .radio-group {
             display: flex;
             gap: 15px;
@@ -141,6 +145,11 @@
             .sidebar {
                 display: none;
             }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+            }
         }
 
     </style>
@@ -148,68 +157,64 @@
 
 <body>
 
-<div class="container">
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>⚙ Admin Panel</h2>
+    <ul>
+        <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
+        <li><a href="{% url 'mark_attendance' %}" class="active">📝 Attendance</a></li>
+        <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
+        <li><a href="{% url 'leave_requests' %}">📄 Leave Requests</a></li>
+        <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
+        <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
+        <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
+    </ul>
+</div>
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-        <h2>⚙ Admin Panel</h2>
-        <ul>
-            <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
-            <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
-            <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
-            <li><a href="{% url 'leave_requests' %}">📄 Leave Requests</a></li>
-            <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
-            <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
-            <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
-        </ul>
-    </div>
+<!-- MAIN -->
+<div class="main">
 
-    <!-- MAIN -->
-    <div class="main">
+    <h2>📝 Mark Attendance - {{ gender }}</h2>
 
-        <h2>📝 Mark Attendance - {{ gender }}</h2>
+    <div class="card">
+        <form method="POST">
+            {% csrf_token %}
 
-        <div class="card">
-            <form method="POST">
-                {% csrf_token %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>👤 Student</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
 
-                <table>
-                    <thead>
-                        <tr>
-                            <th>👤 Student</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{ student.user.username }}</td>
 
-                    <tbody>
-                        {% for student in students %}
-                        <tr>
-                            <td>{{ student.user.username }}</td>
+                        <td>
+                            <div class="radio-group">
+                                <label class="present">
+                                    <input type="radio" name="status_{{ student.id }}" value="Present" required>
+                                    Present
+                                </label>
 
-                            <td>
-                                <div class="radio-group">
-                                    <label class="present">
-                                        <input type="radio" name="status_{{ student.id }}" value="Present" required>
-                                        Present
-                                    </label>
+                                <label class="absent">
+                                    <input type="radio" name="status_{{ student.id }}" value="Absent">
+                                    Absent
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
 
-                                    <label class="absent">
-                                        <input type="radio" name="status_{{ student.id }}" value="Absent">
-                                        Absent
-                                    </label>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
+            </table>
 
-                </table>
+            <button type="submit" class="btn">✔ Save Attendance</button>
 
-                <button type="submit" class="btn">✔ Save Attendance</button>
-
-            </form>
-        </div>
-
+        </form>
     </div>
 
 </div>

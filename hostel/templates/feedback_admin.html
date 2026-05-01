@@ -5,6 +5,9 @@
     <title>Feedback Dashboard</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             margin: 0;
@@ -12,18 +15,17 @@
             background: #f4f7fb;
         }
 
-        .container {
-            display: flex;
-        }
-
-        /* SIDEBAR */
+        /* SIDEBAR (STANDARD) */
         .sidebar {
             width: 240px;
             height: 100vh;
-            background:  #2c3e50;
+            background: #2c3e50;
             color: white;
             padding: 20px;
             position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
 
         .sidebar h2 {
@@ -36,10 +38,6 @@
             padding: 0;
         }
 
-        .sidebar ul li {
-            margin-bottom: 0px;
-        }
-
         .sidebar ul li a {
             display: block;
             padding: 12px;
@@ -49,16 +47,18 @@
             transition: 0.3s;
         }
 
-        .sidebar ul li a:hover {
+        .sidebar ul li a:hover,
+        .sidebar ul li a.active {
             background: rgba(255,255,255,0.2);
             transform: translateX(5px);
         }
 
-        /* MAIN */
+        /* MAIN (FIXED) */
         .main {
-            margin-left: 260px;
-            width: 100%;
+            margin-left: 240px;
+            width: calc(100% - 240px);
             padding: 30px;
+            min-height: 100vh;
         }
 
         .page-title {
@@ -134,13 +134,13 @@
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
-
             .sidebar {
                 display: none;
             }
 
             .main {
                 margin-left: 0;
+                width: 100%;
             }
 
             .top {
@@ -148,7 +148,6 @@
                 align-items: flex-start;
                 gap: 10px;
             }
-
         }
 
     </style>
@@ -157,67 +156,61 @@
 
 <body>
 
-<div class="container">
+<!-- SIDEBAR -->
+<div class="sidebar">
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
+    <h2>⚙ Admin Panel</h2>
 
-        <h2>⚙ Admin Panel</h2>
+    <ul>
+        <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
+        <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
+        <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
+        <li><a href="{% url 'leave_requests' %}">📄 Leave Requests</a></li>
+        <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
+        <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
+        <li><a href="{% url 'feedback_admin' %}" class="active">💬 Feedback</a></li>
+    </ul>
 
-        <ul>
-            <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
-            <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
-            <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
-            <li><a href="{% url 'leave_requests' %}">📄 Leave Requests</a></li>
-            <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
-            <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
-            <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
-        </ul>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+    <div class="page-title">
+        📋 Feedback Dashboard
+    </div>
+
+    {% for fb in feedbacks %}
+
+    <div class="card">
+
+        <div class="top">
+            <div class="student">
+                👤 {{ fb.user.username }}
+            </div>
+
+            <div class="type {{ fb.type }}">
+                {{ fb.type }}
+            </div>
+        </div>
+
+        <div class="message">
+            💬 {{ fb.message }}
+        </div>
+
+        <div class="date">
+            {{ fb.created_at|date:"d M Y, h:i A" }}
+        </div>
 
     </div>
 
-    <!-- MAIN -->
-    <div class="main">
+    {% empty %}
 
-        <div class="page-title">
-            📋 Feedback Dashboard
-        </div>
-
-        {% for fb in feedbacks %}
-
-        <div class="card">
-
-            <div class="top">
-
-                <div class="student">
-                    👤 {{ fb.user.username }}
-                </div>
-
-                <div class="type {{ fb.type }}">
-                    {{ fb.type }}
-                </div>
-
-            </div>
-
-            <div class="message">
-                💬 {{ fb.message }}
-            </div>
-
-            <div class="date">
-                {{ fb.created_at|date:"d M Y, h:i A" }}
-            </div>
-
-        </div>
-
-        {% empty %}
-
-        <div class="empty">
-            No feedback submitted yet
-        </div>
-
-        {% endfor %}
-
+    <div class="empty">
+        No feedback submitted yet
     </div>
+
+    {% endfor %}
 
 </div>
 

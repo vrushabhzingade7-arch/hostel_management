@@ -5,17 +5,17 @@
     <title>Fees - Select Class</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             font-family: 'Segoe UI', sans-serif;
             background: #f4f7fb;
         }
 
-        .container {
-            display: flex;
-        }
-
-        /* SIDEBAR */
+        /* SIDEBAR (STANDARD) */
         .sidebar {
             width: 240px;
             height: 100vh;
@@ -23,6 +23,9 @@
             color: white;
             padding: 20px;
             position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
 
         .sidebar h2 {
@@ -44,20 +47,23 @@
             transition: 0.3s;
         }
 
-        .sidebar ul li a:hover {
+        .sidebar ul li a:hover,
+        .sidebar ul li a.active {
             background: rgba(255,255,255,0.2);
             transform: translateX(5px);
         }
 
         /* MAIN */
         .main {
-            margin-left: 260px;
+            margin-left: 240px;
             padding: 30px;
-            width: 100%;
+            width: calc(100% - 240px);
+            min-height: 100vh;
         }
 
         .main h2 {
             margin-bottom: 25px;
+            color: #2c3e50;
         }
 
         /* CARDS */
@@ -82,10 +88,11 @@
 
         .card:hover {
             transform: translateY(-5px);
-            background: #3498db;
+            background: #22c55e;
             color: white;
         }
 
+        /* BACK BUTTON */
         .back-btn {
             display: inline-block;
             margin-top: 30px;
@@ -94,10 +101,27 @@
             background: #2c3e50;
             color: white;
             text-decoration: none;
+            transition: 0.3s;
         }
 
         .back-btn:hover {
             background: #1a252f;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .cards {
+                flex-direction: column;
+            }
         }
 
     </style>
@@ -105,41 +129,37 @@
 
 <body>
 
-<div class="container">
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>⚙ Admin Panel</h2>
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-        <h2>⚙ Admin Panel</h2>
+    <ul>
+        <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
+        <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
+        <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
+        <li><a href="{% url 'leave_requests' %}">📄 Leave Requests</a></li>
+        <li><a href="{% url 'fees_admin' %}" class="active">💰 Fees</a></li>
+        <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
+        <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
+    </ul>
+</div>
 
-        <ul>
-            <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
-            <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
-            <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
-            <li><a href="{% url 'leave_requests' %}">📄 Leave Requests</a></li>
-            <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
-            <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
-            <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
-        </ul>
+<!-- MAIN -->
+<div class="main">
+
+    <h2>💰 {{ dept }} - Select Class</h2>
+
+    <div class="cards">
+        {% for c in classes %}
+            <a href="{% url 'fees_admin' %}?dept={{ dept }}&cls={{ c }}" class="card">
+                {{ c }}
+            </a>
+        {% empty %}
+            <p>No classes found.</p>
+        {% endfor %}
     </div>
 
-    <!-- MAIN -->
-    <div class="main">
-
-        <h2>💰 {{ dept }} - Select Class</h2>
-
-        <div class="cards">
-            {% for c in classes %}
-                <a href="{% url 'fees_admin' %}?dept={{ dept }}&cls={{ c }}" class="card">
-                    {{ c }}
-                </a>
-            {% empty %}
-                <p>No classes found.</p>
-            {% endfor %}
-        </div>
-
-        <a href="{% url 'fees_admin' %}" class="back-btn">← Back to Departments</a>
-
-    </div>
+    <a href="{% url 'fees_admin' %}" class="back-btn">← Back to Departments</a>
 
 </div>
 

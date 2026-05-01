@@ -5,7 +5,6 @@
     <title>Select Hostel</title>
 
     <style>
-
         *{
             margin:0;
             padding:0;
@@ -14,21 +13,20 @@
 
         body{
             font-family:'Segoe UI', sans-serif;
-            background:#f1f5f9;
+            background:#f4f7fb;
         }
 
-        .container{
-            display:flex;
-        }
-
-        /* SIDEBAR */
+        /* SIDEBAR (STANDARD) */
         .sidebar {
             width: 240px;
             height: 100vh;
-            background:  #2c3e50;
+            background: #2c3e50;
             color: white;
             padding: 20px;
             position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
 
         .sidebar h2 {
@@ -39,10 +37,6 @@
         .sidebar ul {
             list-style: none;
             padding: 0;
-        }
-
-        .sidebar ul li {
-            margin-bottom: 0px;
         }
 
         .sidebar ul li a {
@@ -58,7 +52,6 @@
             background: rgba(255,255,255,0.2);
             transform: translateX(5px);
         }
-
 
         /* MAIN */
         .main{
@@ -79,19 +72,19 @@
         /* TITLE */
         .title{
             text-align:center;
-            font-size:55px;
+            font-size:48px;
             font-weight:700;
-            color:#000;
-            margin-bottom:50px;
+            color:#2c3e50;
+            margin-bottom:20px;
         }
 
         .subtitle{
-             text-align:center;
-             color:#64748b;
-             font-size:18px;
-             margin-top:-20px;
-             margin-bottom:50px;
+            text-align:center;
+            color:#64748b;
+            font-size:18px;
+            margin-bottom:50px;
         }
+
         /* CARDS */
         .cards{
             display:flex;
@@ -109,8 +102,8 @@
             justify-content:center;
             align-items:center;
             text-decoration:none;
-            color:#1e293b;
-            font-size:26px;
+            color:#2c3e50;
+            font-size:24px;
             font-weight:700;
             gap:14px;
             box-shadow:0 8px 20px rgba(0,0,0,0.08);
@@ -120,10 +113,12 @@
         .hostel-card:hover{
             transform:translateY(-6px);
             box-shadow:0 12px 24px rgba(0,0,0,0.12);
+            background:#3498db;
+            color:white;
         }
 
         .emoji{
-            font-size:34px;
+            font-size:30px;
         }
 
         /* RESPONSIVE */
@@ -140,7 +135,7 @@
             }
 
             .title{
-                font-size:38px;
+                font-size:36px;
             }
 
             .cards{
@@ -160,57 +155,47 @@
 
 <body>
 
-<div class="container">
+<!-- SIDEBAR -->
+<div class="sidebar">
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
+    <h2>⚙ Admin Panel</h2>
 
-        <h2>⚙ Admin Panel</h2>
+    <ul>
+        <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
+        <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
+        <li><a href="{% url 'room_info' %}" class="active">🏠 Room Info</a></li>
+        <li><a href="{% url 'leave_requests' %}">📄 Leave Requests</a></li>
+        <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
+        <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
+        <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
+    </ul>
 
-        <ul>
-            <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
-            <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
-            <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
-            <li><a href="{% url 'leave_requests' %}">📄 Leave Requests</a></li>
-            <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
-            <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
-            <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
-        </ul>
+</div>
 
-    </div>
+<!-- MAIN -->
+<div class="main">
 
-    <!-- MAIN -->
-    <div class="main">
+    <div class="content">
 
-        <div class="content">
+        <div class="title">
+            🏠 Select Hostel
+        </div>
 
-    <div class="title">
-    🏠 Select Hostel
-    </div>
+        <div class="subtitle">
+            Choose which hostel room information you want to manage
+        </div>
 
-    <div class="subtitle">
-       Choose which hostel room information you want to manage
-    </div>
+        <div class="cards">
 
-            <div class="cards">
+            <a href="{% url 'room_info' %}?gender=BOYS" class="hostel-card">
+                <span class="emoji">👦</span>
+                Boys
+            </a>
 
-                <a href="{% url 'room_info' %}?gender=BOYS"
-                   class="hostel-card">
-
-                    <span class="emoji">👦</span>
-                    Boys
-
-                </a>
-
-                <a href="{% url 'room_info' %}?gender=GIRLS"
-                   class="hostel-card">
-
-                    <span class="emoji">👧</span>
-                    Girls
-
-                </a>
-
-            </div>
+            <a href="{% url 'room_info' %}?gender=GIRLS" class="hostel-card">
+                <span class="emoji">👧</span>
+                Girls
+            </a>
 
         </div>
 

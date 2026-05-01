@@ -5,17 +5,17 @@
     <title>Fees Management</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             font-family: 'Segoe UI', sans-serif;
             background: #f4f7fb;
         }
 
-        .container {
-            display: flex;
-        }
-
-        /* SIDEBAR */
+        /* SIDEBAR (STANDARD) */
         .sidebar {
             width: 240px;
             height: 100vh;
@@ -23,6 +23,9 @@
             color: white;
             padding: 20px;
             position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
 
         .sidebar h2 {
@@ -44,39 +47,47 @@
             transition: 0.3s;
         }
 
-        .sidebar ul li a:hover {
+        .sidebar ul li a:hover,
+        .sidebar ul li a.active {
             background: rgba(255,255,255,0.2);
             transform: translateX(5px);
         }
 
         /* MAIN */
         .main {
-            margin-left: 260px;
+            margin-left: 240px;
             padding: 30px;
-            width: 100%;
+            width: calc(100% - 240px);
+            min-height: 100vh;
         }
 
         h2 {
             margin-bottom: 20px;
+            color: #2c3e50;
         }
 
         .info {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             font-weight: bold;
+            color: #444;
         }
 
-        /* TABLE */
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        /* TABLE CONTAINER */
+        .table-container {
+            overflow-x: auto;
             background: white;
             border-radius: 12px;
-            overflow: hidden;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
         th {
-            background: #2c3e50;
+            background: #3b82f6;
             color: white;
             padding: 14px;
             text-align: left;
@@ -88,7 +99,7 @@
         }
 
         tr:hover {
-            background: #f9f9f9;
+            background: #f9fafb;
         }
 
         /* STATUS */
@@ -100,13 +111,13 @@
         }
 
         .paid {
-            background: #d4edda;
-            color: #27ae60;
+            background: #dcfce7;
+            color: #16a34a;
         }
 
         .pending {
-            background: #fdecea;
-            color: #e74c3c;
+            background: #fee2e2;
+            color: #dc2626;
         }
 
         /* BUTTONS */
@@ -120,12 +131,12 @@
         }
 
         .paid-btn {
-            background: #27ae60;
+            background: #22c55e;
             color: white;
         }
 
         .pending-btn {
-            background: #e74c3c;
+            background: #ef4444;
             color: white;
         }
 
@@ -135,41 +146,52 @@
             color: gray;
         }
 
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+
     </style>
 </head>
 
 <body>
 
-<div class="container">
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>⚙ Admin Panel</h2>
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-        <h2>⚙ Admin Panel</h2>
+    <ul>
+        <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
+        <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
+        <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
+        <li><a href="{% url 'leave_requests' %}">📄 Leave Requests</a></li>
+        <li><a href="{% url 'fees_admin' %}" class="active">💰 Fees</a></li>
+        <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
+        <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
+    </ul>
+</div>
 
-        <ul>
-            <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
-            <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
-            <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
-            <li><a href="{% url 'leave_requests' %}">📄 Leave Requests</a></li>
-            <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
-            <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
-            <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
-        </ul>
-    </div>
+<!-- MAIN -->
+<div class="main">
 
-    <!-- MAIN -->
-    <div class="main">
+    <h2>💰 Fees Management</h2>
 
-        <h2>💰 Fees Management</h2>
+    {% if dept %}
+        <div class="info">Department: {{ dept }}</div>
+    {% endif %}
 
-        {% if dept %}
-            <div class="info">Department: {{ dept }}</div>
-        {% endif %}
+    {% if cls %}
+        <div class="info">Class: {{ cls }}</div>
+    {% endif %}
 
-        {% if cls %}
-            <div class="info">Class: {{ cls }}</div>
-        {% endif %}
-
+    <div class="table-container">
         <table>
             <tr>
                 <th>Student</th>
@@ -180,14 +202,7 @@
 
             {% for fee in fees %}
             <tr>
-                <td>
-                    👤 
-                    {% if fee.student.user %}
-                        {{ fee.student.user.username }}
-                    {% else %}
-                        N/A
-                    {% endif %}
-                </td>
+                <td>👤 {{ fee.student.user.username|default:"N/A" }}</td>
 
                 <td>₹ {{ fee.amount }}</td>
 
@@ -226,7 +241,6 @@
             </tr>
             {% endfor %}
         </table>
-
     </div>
 
 </div>

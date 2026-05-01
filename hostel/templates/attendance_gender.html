@@ -5,14 +5,14 @@
     <title>Select Attendance Category</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             font-family: 'Segoe UI', sans-serif;
             background: #f4f7fb;
-        }
-
-        .container {
-            display: flex;
         }
 
         /* SIDEBAR */
@@ -23,6 +23,9 @@
             color: white;
             padding: 20px;
             position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
 
         .sidebar h2 {
@@ -44,28 +47,36 @@
             transition: 0.3s;
         }
 
-        .sidebar ul li a:hover {
+        .sidebar ul li a:hover,
+        .sidebar ul li a.active {
             background: rgba(255,255,255,0.2);
             transform: translateX(5px);
         }
 
         /* MAIN */
         .main {
-            margin-left: 260px;
+            margin-left: 240px;
             padding: 30px;
-            width: 100%;
-            text-align: center;
+            width: calc(100% - 240px);
+            min-height: 100vh;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         h1 {
             margin-bottom: 40px;
+            color: #2c3e50;
         }
 
         /* CARDS */
         .cards {
             display: flex;
-            justify-content: center;
             gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .card {
@@ -86,44 +97,52 @@
             color: white;
         }
 
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+
     </style>
 </head>
 
 <body>
 
-<div class="container">
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>⚙ Admin Panel</h2>
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-        <h2>⚙ Admin Panel</h2>
+    <ul>
+        <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
+        <li><a href="{% url 'mark_attendance' %}" class="active">📝 Attendance</a></li>
+        <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
+        <li><a href="{% url 'leave_requests' %}">📄 Leave Requests</a></li>
+        <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
+        <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
+        <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
+    </ul>
+</div>
 
-        <ul>
-            <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
-            <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
-            <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
-            <li><a href="{% url 'leave_requests' %}">📄 Leave Requests</a></li>
-            <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
-            <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
-            <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
-        </ul>
-    </div>
+<!-- MAIN -->
+<div class="main">
 
-    <!-- MAIN -->
-    <div class="main">
+    <h1>📝 Select Attendance Category</h1>
 
-        <h1>📝 Select Attendance Category</h1>
+    <div class="cards">
 
-        <div class="cards">
+        <a href="{% url 'mark_attendance' %}?gender=BOYS" class="card">
+            👦 Boys
+        </a>
 
-            <a href="{% url 'mark_attendance' %}?gender=BOYS" class="card">
-                👦 Boys
-            </a>
-
-            <a href="{% url 'mark_attendance' %}?gender=GIRLS" class="card">
-                👧 Girls
-            </a>
-
-        </div>
+        <a href="{% url 'mark_attendance' %}?gender=GIRLS" class="card">
+            👧 Girls
+        </a>
 
     </div>
 

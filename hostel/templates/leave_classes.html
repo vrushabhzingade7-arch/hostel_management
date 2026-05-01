@@ -5,17 +5,17 @@
     <title>Select Class</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             font-family: 'Segoe UI', sans-serif;
             background: #f4f7fb;
         }
 
-        .container {
-            display: flex;
-        }
-
-        /* SIDEBAR */
+        /* SIDEBAR (STANDARD) */
         .sidebar {
             width: 240px;
             height: 100vh;
@@ -23,6 +23,9 @@
             color: white;
             padding: 20px;
             position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
 
         .sidebar h2 {
@@ -44,16 +47,18 @@
             transition: 0.3s;
         }
 
-        .sidebar ul li a:hover {
+        .sidebar ul li a:hover,
+        .sidebar ul li a.active {
             background: rgba(255,255,255,0.2);
             transform: translateX(5px);
         }
 
-        /* MAIN */
+        /* MAIN (FIXED) */
         .main {
-            margin-left: 260px;
+            margin-left: 240px;
             padding: 40px;
-            width: 100%;
+            width: calc(100% - 240px);
+            min-height: 100vh;
         }
 
         h2 {
@@ -84,7 +89,7 @@
 
         .card:hover {
             transform: translateY(-5px);
-            background: #27ae60;
+            background: #22c55e;
             color: white;
         }
 
@@ -92,7 +97,7 @@
             display: inline-block;
             margin-top: 30px;
             padding: 10px 20px;
-            border-radius: 20px;
+            border-radius: 8px;
             background: #2c3e50;
             color: white;
             text-decoration: none;
@@ -103,7 +108,7 @@
             background: #1a252f;
         }
 
-        /* MOBILE */
+        /* RESPONSIVE */
         @media (max-width: 768px) {
             .sidebar {
                 display: none;
@@ -111,6 +116,7 @@
 
             .main {
                 margin-left: 0;
+                width: 100%;
             }
 
             .card-container {
@@ -123,41 +129,37 @@
 
 <body>
 
-<div class="container">
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>⚙ Admin Panel</h2>
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-        <h2>⚙ Admin Panel</h2>
+    <ul>
+        <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
+        <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
+        <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
+        <li><a href="{% url 'leave_requests' %}" class="active">📄 Leave Requests</a></li>
+        <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
+        <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
+        <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
+    </ul>
+</div>
 
-        <ul>
-            <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
-            <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
-            <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
-            <li><a href="{% url 'leave_requests' %}">📄 Leave Requests</a></li>
-            <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
-            <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
-            <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
-        </ul>
+<!-- MAIN -->
+<div class="main">
+
+    <h2>📚 {{ dept }} - Select Class</h2>
+
+    <div class="card-container">
+        {% for c in classes %}
+            <a href="{% url 'leave_requests' %}?dept={{ dept }}&cls={{ c }}" class="card">
+                {{ c }}
+            </a>
+        {% empty %}
+            <p>No classes found</p>
+        {% endfor %}
     </div>
 
-    <!-- MAIN -->
-    <div class="main">
-
-        <h2>📚 {{ dept }} - Select Class</h2>
-
-        <div class="card-container">
-            {% for c in classes %}
-                <a href="{% url 'leave_requests' %}?dept={{ dept }}&cls={{ c }}" class="card">
-                    {{ c }}
-                </a>
-            {% empty %}
-                <p>No classes found</p>
-            {% endfor %}
-        </div>
-
-        <a href="{% url 'leave_requests' %}" class="back-btn">← Back</a>
-
-    </div>
+    <a href="{% url 'leave_requests' %}" class="back-btn">← Back</a>
 
 </div>
 
