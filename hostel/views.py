@@ -231,7 +231,7 @@ def approve_leave(request, leave_id, role, action):
     dept = request.POST.get('dept')
     cls = request.POST.get('cls')
 
-    leave.save()
+    
 
 # ✅ stay on same page
     return redirect(f'/leave_requests/?dept={dept}&cls={cls}')

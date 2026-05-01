@@ -204,30 +204,82 @@
 
             {% for leave in leaves %}
             <tr>
-                <td>👤 {{ leave.student.user.username|default:"N/A" }}</td>
+                <td>👤 {{ leave.student.user.username }}</td>
                 <td>{{ leave.from_date }} → {{ leave.to_date }}</td>
                 <td>{{ leave.reason }}</td>
 
+                <!-- CC -->
                 <td>
-                    <span class="badge {{ leave.cc_status|lower }}">{{ leave.cc_status }}</span>
+                    <span class="badge {{ leave.cc_status|lower }}">{{ leave.cc_status }}</span><br>
+
+                    {% if request.user.groups.filter(name='CC').exists and leave.cc_status == "Pending" %}
+                    <form method="POST" action="{% url 'approve_leave' leave.id 'cc' 'Approved' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="dept" value="{{ dept }}">
+                        <input type="hidden" name="cls" value="{{ cls }}">
+                        <button class="btn approve">✔</button>
+                    </form>
+                    <form method="POST" action="{% url 'approve_leave' leave.id 'cc' 'Rejected' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="dept" value="{{ dept }}">
+                        <input type="hidden" name="cls" value="{{ cls }}">
+                        <button class="btn reject">✖</button>
+                    </form>
+                    {% endif %}
                 </td>
 
+                <!-- HOD -->
                 <td>
-                    <span class="badge {{ leave.hod_status|lower }}">{{ leave.hod_status }}</span>
+                    <span class="badge {{ leave.hod_status|lower }}">{{ leave.hod_status }}</span><br>
+
+                   {% if request.user.groups.filter(name='HOD').exists and leave.cc_status == "Approved" and leave.hod_status == "Pending" %}
+                    <form method="POST" action="{% url 'approve_leave' leave.id 'hod' 'Approved' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="dept" value="{{ dept }}">
+                        <input type="hidden" name="cls" value="{{ cls }}">
+                        <button class="btn approve">✔</button>
+                    </form>
+                    <form method="POST" action="{% url 'approve_leave' leave.id 'hod' 'Rejected' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="dept" value="{{ dept }}">
+                        <input type="hidden" name="cls" value="{{ cls }}">
+                        <button class="btn reject">✖</button>
+                    </form>
+                    {% endif %}
                 </td>
 
+                <!-- RECTOR -->
                 <td>
-                    <span class="badge {{ leave.rector_status|lower }}">{{ leave.rector_status }}</span>
+                    <span class="badge {{ leave.rector_status|lower }}">{{ leave.rector_status }}</span><br>
+
+                    {% if request.user.groups.filter(name='RECTOR').exists and leave.hod_status == "Approved" and leave.rector_status == "Pending" %}
+                    <form method="POST" action="{% url 'approve_leave' leave.id 'rector' 'Approved' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="dept" value="{{ dept }}">
+                        <input type="hidden" name="cls" value="{{ cls }}">
+                        <button class="btn approve">✔</button>
+                    </form>
+                    <form method="POST" action="{% url 'approve_leave' leave.id 'rector' 'Rejected' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="dept" value="{{ dept }}">
+                        <input type="hidden" name="cls" value="{{ cls }}">
+                        <button class="btn reject">✖</button>
+                    </form>
+                    {% endif %}
                 </td>
 
+                <!-- FINAL -->
                 <td>
                     <span class="badge {{ leave.final_status|lower }}">
                         {{ leave.final_status }}
                     </span>
                 </td>
+
             </tr>
             {% endfor %}
         </table>
+
+
     </div>
 
 </div>
