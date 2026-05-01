@@ -5,136 +5,301 @@
     <title>My Fees</title>
 
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f6f9;
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
         }
 
-        .container {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 20px;
+        body{
+            font-family:'Segoe UI', sans-serif;
+            background:#f4f7fb;
         }
 
-        h2 {
-            text-align: center;
-            margin-bottom: 25px;
+        .container{
+            display:flex;
+            min-height:100vh;
         }
 
-        /* CARD */
-        .card {
-            background: white;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 12px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: 0.2s;
+        /* ================= SIDEBAR ================= */
+
+        .sidebar{
+            width:240px;
+            background:#2c3e50;
+            color:white;
+            padding:20px;
+            position:fixed;
+            height:100vh;
         }
 
-        .card:hover {
-            transform: scale(1.02);
+        .sidebar h2{
+            text-align:center;
+            margin-bottom:30px;
+            font-size:24px;
         }
 
-        .amount {
-            font-size: 18px;
-            font-weight: bold;
+        .sidebar ul{
+            list-style:none;
+            padding:0;
         }
 
-        .status {
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-size: 13px;
-            color: white;
+        .sidebar ul li{
+            margin-bottom:5px;
         }
 
-        .Paid {
-            background: #2ecc71;
+        .sidebar ul li a{
+            display:block;
+            color:white;
+            text-decoration:none;
+            padding:12px 14px;
+            border-radius:10px;
+            transition:0.3s;
+            font-size:15px;
         }
 
-        .Pending {
-            background: #e74c3c;
+        .sidebar ul li a:hover{
+            background:rgba(255,255,255,0.15);
+            transform:translateX(5px);
         }
 
-        .empty {
-            text-align: center;
-            color: gray;
-            margin-top: 20px;
+        .active{
+            background:#3498db;
         }
 
-        /* SUMMARY BOX */
-        .summary {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
+        /* ================= MAIN ================= */
+
+        .main{
+            margin-left:240px;
+            width:100%;
+            padding:35px;
         }
 
-        .box {
-            background: white;
-            flex: 1;
-            margin: 5px;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        .main h2{
+            margin-bottom:25px;
+            color:#2c3e50;
         }
 
-        .box h3 {
-            margin: 0;
-            font-size: 18px;
+        /* ================= SUMMARY ================= */
+
+        .summary{
+            display:flex;
+            gap:20px;
+            margin-bottom:30px;
+            flex-wrap:wrap;
         }
 
-        .box p {
-            margin: 5px 0 0;
-            font-size: 16px;
-            font-weight: bold;
+        .box{
+            flex:1;
+            min-width:220px;
+            background:white;
+            padding:25px;
+            border-radius:16px;
+            box-shadow:0 5px 18px rgba(0,0,0,0.08);
+            transition:0.3s;
+        }
+
+        .box:hover{
+            transform:translateY(-5px);
+        }
+
+        .box h3{
+            color:#666;
+            margin-bottom:10px;
+            font-size:18px;
+        }
+
+        .box p{
+            font-size:28px;
+            font-weight:bold;
+            color:#2c3e50;
+        }
+
+        /* ================= FEES CARD ================= */
+
+        .card{
+            background:white;
+            padding:22px;
+            border-radius:16px;
+            margin-bottom:18px;
+            box-shadow:0 5px 18px rgba(0,0,0,0.08);
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            transition:0.3s;
+        }
+
+        .card:hover{
+            transform:translateY(-3px);
+        }
+
+        .amount{
+            font-size:20px;
+            font-weight:600;
+            color:#2c3e50;
+        }
+
+        .status{
+            padding:8px 18px;
+            border-radius:30px;
+            color:white;
+            font-size:13px;
+            font-weight:600;
+        }
+
+        .Paid{
+            background:#27ae60;
+        }
+
+        .Pending{
+            background:#e74c3c;
+        }
+
+        .empty{
+            text-align:center;
+            color:gray;
+            margin-top:30px;
+            font-size:16px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media(max-width:768px){
+
+            .sidebar{
+                display:none;
+            }
+
+            .main{
+                margin-left:0;
+                padding:20px;
+            }
+
+            .summary{
+                flex-direction:column;
+            }
+
+            .card{
+                flex-direction:column;
+                gap:15px;
+                align-items:flex-start;
+            }
         }
 
     </style>
+
 </head>
+
 <body>
 
 <div class="container">
 
-    <h2>💰 My Fees</h2>
+    <!-- ================= SIDEBAR ================= -->
 
-    <!-- SUMMARY -->
-    <!-- SUMMARY -->
-<div class="summary">
-    <div class="box">
-        <h3>Total Fees</h3>
-        <p>₹{{ total }}</p>
+    <div class="sidebar">
+
+        <h2>🎓 Student Panel</h2>
+
+        <ul>
+
+            <li>
+                <a href="{% url 'student_dashboard' %}">
+                    📊 Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'apply_leave' %}">
+                    📝 Apply Leave
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'fees_student' %}" class="active">
+                    💰 Fees
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'outing_student' %}">
+                    🚶 Outing
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'leave_status' %}">
+                    📄 Leave Status
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'student_room' %}">
+                    🏠 Room Info
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'feedback_submit' %}">
+                    💬 Feedback
+                </a>
+            </li>
+
+        </ul>
+
     </div>
 
-    <div class="box">
-        <h3>Paid</h3>
-        <p>₹{{ paid }}</p>
-    </div>
+    <!-- ================= MAIN ================= -->
 
-    <div class="box">
-        <h3>Pending</h3>
-        <p>₹{{ pending }}</p>
-    </div>
-</div>
-    </div>
+    <div class="main">
 
-    <!-- FEES LIST -->
-    {% for fee in fees %}
-    <div class="card">
-        <div class="amount">
-            💵 ₹{{ fee.amount }}
+        <h2>💰 My Fees</h2>
+
+        <!-- SUMMARY -->
+
+        <div class="summary">
+
+            <div class="box">
+                <h3>Total Fees</h3>
+                <p>₹{{ total }}</p>
+            </div>
+
+            <div class="box">
+                <h3>Paid</h3>
+                <p>₹{{ paid }}</p>
+            </div>
+
+            <div class="box">
+                <h3>Pending</h3>
+                <p>₹{{ pending }}</p>
+            </div>
+
         </div>
 
-        <div class="status {{ fee.status }}">
-            {{ fee.status }}
+        <!-- FEES LIST -->
+
+        {% for fee in fees %}
+
+        <div class="card">
+
+            <div class="amount">
+                💵 ₹{{ fee.amount }}
+            </div>
+
+            <div class="status {{ fee.status }}">
+                {{ fee.status }}
+            </div>
+
         </div>
+
+        {% empty %}
+
+        <p class="empty">
+            No fee records found
+        </p>
+
+        {% endfor %}
+
     </div>
-    {% empty %}
-        <p class="empty">No fee records found</p>
-    {% endfor %}
 
 </div>
 

@@ -5,105 +5,305 @@
     <title>Submit Feedback</title>
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #4facfe, #00f2fe);
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
         }
 
-        .card {
-            background: white;
-            padding: 30px;
-            width: 400px;
-            border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        body{
+            font-family:'Segoe UI', sans-serif;
+            background:#f4f7fb;
         }
 
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
+        .container{
+            display:flex;
+            min-height:100vh;
         }
 
-        label {
-            font-weight: bold;
-            font-size: 14px;
+        /* ================= SIDEBAR ================= */
+
+        .sidebar{
+            width:240px;
+            background:#2c3e50;
+            color:white;
+            padding:20px;
+            position:fixed;
+            height:100vh;
         }
 
-        select, textarea {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 14px;
+        .sidebar h2{
+            text-align:center;
+            margin-bottom:30px;
+            font-size:24px;
         }
 
-        textarea {
-            resize: none;
+        .sidebar ul{
+            list-style:none;
+            padding:0;
         }
 
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #4facfe;
-            border: none;
-            color: white;
-            font-size: 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
+        .sidebar ul li{
+            margin-bottom:5px;
         }
 
-        button:hover {
-            background: #007bff;
+        .sidebar ul li a{
+            display:block;
+            color:white;
+            text-decoration:none;
+            padding:12px 14px;
+            border-radius:10px;
+            transition:0.3s;
+            font-size:15px;
         }
 
-        .success {
-            text-align: center;
-            color: green;
-            margin-bottom: 10px;
+        .sidebar ul li a:hover{
+            background:rgba(255,255,255,0.15);
+            transform:translateX(5px);
         }
 
-        .error {
-            text-align: center;
-            color: red;
-            margin-bottom: 10px;
+        .active{
+            background:#3498db;
         }
+
+        /* ================= MAIN ================= */
+
+        .main{
+            margin-left:240px;
+            width:100%;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding:40px;
+        }
+
+        /* ================= CARD ================= */
+
+        .card{
+            background:white;
+            width:100%;
+            max-width:500px;
+            padding:35px;
+            border-radius:18px;
+            box-shadow:0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        .card h2{
+            text-align:center;
+            margin-bottom:25px;
+            color:#2c3e50;
+        }
+
+        .form-group{
+            margin-bottom:18px;
+        }
+
+        label{
+            display:block;
+            margin-bottom:8px;
+            font-size:14px;
+            font-weight:600;
+            color:#444;
+        }
+
+        select,
+        textarea{
+            width:100%;
+            padding:12px;
+            border:1px solid #dcdcdc;
+            border-radius:10px;
+            font-size:14px;
+            transition:0.3s;
+            background:#fafafa;
+        }
+
+        select:focus,
+        textarea:focus{
+            outline:none;
+            border-color:#3498db;
+            background:white;
+            box-shadow:0 0 0 3px rgba(52,152,219,0.15);
+        }
+
+        textarea{
+            resize:none;
+        }
+
+        /* ================= BUTTON ================= */
+
+        .btn{
+            width:100%;
+            padding:13px;
+            border:none;
+            border-radius:10px;
+            background:#3498db;
+            color:white;
+            font-size:16px;
+            font-weight:600;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        .btn:hover{
+            background:#2980b9;
+            transform:translateY(-2px);
+        }
+
+        /* ================= MESSAGE ================= */
+
+        .success{
+            background:#d4edda;
+            color:#155724;
+            padding:12px;
+            border-radius:10px;
+            margin-bottom:15px;
+            text-align:center;
+            font-size:14px;
+        }
+
+        .error{
+            background:#f8d7da;
+            color:#721c24;
+            padding:12px;
+            border-radius:10px;
+            margin-bottom:15px;
+            text-align:center;
+            font-size:14px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media(max-width:768px){
+
+            .sidebar{
+                display:none;
+            }
+
+            .main{
+                margin-left:0;
+                padding:20px;
+            }
+
+            .card{
+                padding:25px;
+            }
+        }
+
     </style>
 
 </head>
+
 <body>
 
-<div class="card">
+<div class="container">
 
-    <h2>📝 Submit Feedback</h2>
+    <!-- ================= SIDEBAR ================= -->
 
-    {% if messages %}
-        {% for message in messages %}
-            <div class="success">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
+    <div class="sidebar">
 
-    <form method="POST">
-        {% csrf_token %}
+        <h2>🎓 Student Panel</h2>
 
-        <label>Feedback Type</label>
-        <select name="type" required>
-            <option value="">-- Select Type --</option>
-            <option value="Mess">🍽️ Mess</option>
-            <option value="Hostel">🏠 Hostel</option>
-        </select>
+        <ul>
+            <li>
+                <a href="{% url 'student_dashboard' %}">
+                    📊 Dashboard
+                </a>
+            </li>
 
-        <label>Your Message</label>
-        <textarea name="message" rows="5" placeholder="Write your feedback here..." required></textarea>
+            <li>
+                <a href="{% url 'apply_leave' %}">
+                    📝 Apply Leave
+                </a>
+            </li>
 
-        <button type="submit">🚀 Submit Feedback</button>
-    </form>
+            <li>
+                <a href="{% url 'fees_student' %}">
+                    💰 Fees
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'outing_student' %}">
+                    🚶 Outing
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'leave_status' %}">
+                    📄 Leave Status
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'student_room' %}">
+                    🏠 Room Info
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'feedback_submit' %}" class="active">
+                    💬 Feedback
+                </a>
+            </li>
+        </ul>
+
+    </div>
+
+    <!-- ================= MAIN ================= -->
+
+    <div class="main">
+
+        <div class="card">
+
+            <h2>📝 Submit Feedback</h2>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="success">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="form-group">
+
+                    <label>Feedback Type</label>
+
+                    <select name="type" required>
+                        <option value="">-- Select Type --</option>
+                        <option value="Mess">🍽️ Mess</option>
+                        <option value="Hostel">🏠 Hostel</option>
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Your Message</label>
+
+                    <textarea 
+                        name="message"
+                        rows="5"
+                        placeholder="Write your feedback here..."
+                        required
+                    ></textarea>
+
+                </div>
+
+                <button type="submit" class="btn">
+                    🚀 Submit Feedback
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
 
 </div>
 
