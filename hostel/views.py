@@ -47,8 +47,13 @@ def student_login(request):
         if user:
             login(request, user)
 
+            # ✅ SAFE CHECK
             if Student.objects.filter(user=user).exists():
                 return redirect('student_dashboard')
+            else:
+                return render(request, 'error.html', {
+                    'message': 'Student profile not found'
+                })
 
     return render(request, 'student_login.html')
 
@@ -86,7 +91,7 @@ def student_dashboard(request):
 
     if not student:
         return render(request, 'error.html', {
-            'message': 'Student profile not created. Contact admin.'
+            'message': 'Student profile not created'
         })
 
     return render(request, 'student_dashboard.html', {'student': student})
@@ -137,14 +142,12 @@ def leave_requests(request):
     dept = request.GET.get('dept')
     cls = request.GET.get('class')
 
-    # ================= STEP 1 → DEPARTMENTS =================
     if not dept:
         departments = Student.objects.values_list('department', flat=True).distinct()
         return render(request, 'leave_departments.html', {
             'departments': departments
         })
 
-    # ================= STEP 2 → CLASSES =================
     if dept and not cls:
         classes = Student.objects.filter(
             department=dept
@@ -155,13 +158,11 @@ def leave_requests(request):
             'dept': dept
         })
 
-    # ================= STEP 3 → LEAVES =================
     leaves = LeaveRequest.objects.filter(
         student__department=dept,
         student__student_class=cls
     )
 
-    # ================= ROLE FILTER =================
     if request.user.groups.filter(name='HOD').exists():
         leaves = leaves.filter(cc_status="Approved")
 
@@ -172,7 +173,8 @@ def leave_requests(request):
         'leaves': leaves,
         'dept': dept,
         'cls': cls,
-        'groups': request.user.groups.values_list('name', flat=True)
+        'groups': request.user.groups.values_list('name', flat=True),
+        'readonly': request.user.is_superuser  # ✅ FIX
     })
 # ================= APPROVAL =================
 @login_required
@@ -223,11 +225,12 @@ def mark_attendance(request):
 
     gender = request.GET.get('gender')
 
-    # STEP 1 → SELECT BOYS/GIRLS
     if not gender:
         return render(request, 'attendance_gender.html')
 
-    # STEP 2 → FILTER STUDENTS
+    # ✅ FIX CASE
+    gender = gender.upper()
+
     students = Student.objects.filter(gender=gender)
     today = now().date()
 
@@ -235,11 +238,12 @@ def mark_attendance(request):
         for student in students:
             status = request.POST.get(f"status_{student.id}")
 
-            Attendance.objects.update_or_create(
-                student=student,
-                date=today,
-                defaults={'status': status}
-            )
+            if status:
+                Attendance.objects.update_or_create(
+                    student=student,
+                    date=today,
+                    defaults={'status': status}
+                )
 
         return redirect('admin_dashboard')
 
@@ -253,11 +257,7 @@ def mark_attendance(request):
 def room_info(request):
     students = Student.objects.all()
 
-    rooms = (
-        Student.objects
-        .values('room_no')
-        .annotate(total=Count('id'))
-    )
+    rooms = Student.objects.values('room_no').annotate(total=Count('id'))
 
     total_rooms = rooms.count()
     filled_rooms = sum(1 for r in rooms if r['total'] >= 3)
@@ -351,17 +351,24 @@ def fees_admin(request):
     })
 
 
-# ================= OUTING =================
+## ================= OUTING =================
 @login_required
 def outing_student(request):
-    student = Student.objects.get(user=request.user)
+    student = Student.objects.filter(user=request.user).first()
+
+    if not student:
+        return redirect('student_dashboard')
+
     outings = Outing.objects.filter(student=student).order_by('-out_time')
     return render(request, 'outing_student.html', {'outings': outings})
 
 
 @login_required
 def mark_out(request):
-    student = Student.objects.get(user=request.user)
+    student = Student.objects.filter(user=request.user).first()
+
+    if not student:
+        return redirect('student_dashboard')
 
     if not Outing.objects.filter(student=student, in_time__isnull=True).exists():
         Outing.objects.create(student=student, out_time=now())
@@ -382,7 +389,7 @@ def mark_in(request, outing_id):
 
 @login_required
 def outing_admin(request):
-    outings = Outing.objects.all().order_by('-out_time')
+    outings = Outing.objects.select_related('student', 'student__user').all().order_by('-out_time')
     return render(request, 'outing_admin.html', {'outings': outings})
 
 
