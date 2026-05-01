@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select Hostel</title>
+
+    <style>
+
+        body{
+            margin:0;
+            font-family:'Segoe UI', sans-serif;
+            background:linear-gradient(135deg,#dfe9f3,#ffffff);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+        }
+
+        .box{
+            background:white;
+            padding:50px;
+            border-radius:18px;
+            text-align:center;
+            box-shadow:0 10px 30px rgba(0,0,0,0.1);
+            width:350px;
+        }
+
+        h2{
+            margin-bottom:30px;
+            color:#2c3e50;
+        }
+
+        .btn{
+            display:block;
+            text-decoration:none;
+            margin:15px 0;
+            padding:16px;
+            border-radius:12px;
+            color:white;
+            font-size:18px;
+            font-weight:bold;
+            transition:0.3s;
+        }
+
+        .boys{
+            background:#3498db;
+        }
+
+        .boys:hover{
+            background:#2980b9;
+            transform:translateY(-3px);
+        }
+
+        .girls{
+            background:#e84393;
+        }
+
+        .girls:hover{
+            background:#d63078;
+            transform:translateY(-3px);
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="box">
+
+    <h2>🏠 Select Hostel</h2>
+
+    <a href="{% url 'room_info' %}?gender=BOYS" class="btn boys">
+        👦 Boys Hostel
+    </a>
+
+    <a href="{% url 'room_info' %}?gender=GIRLS" class="btn girls">
+        👧 Girls Hostel
+    </a>
+
+</div>
+
+</body>
+</html>
