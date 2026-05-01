@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,73 +9,189 @@
         body{
             margin:0;
             font-family:'Segoe UI', sans-serif;
-            background:linear-gradient(135deg,#dfe9f3,#ffffff);
+            background:#f4f7fb;
+        }
+
+        .container{
             display:flex;
-            justify-content:center;
-            align-items:center;
+        }
+
+        /* SIDEBAR */
+        .sidebar{
+            width:240px;
             height:100vh;
-        }
-
-        .box{
-            background:white;
-            padding:50px;
-            border-radius:18px;
-            text-align:center;
-            box-shadow:0 10px 30px rgba(0,0,0,0.1);
-            width:350px;
-        }
-
-        h2{
-            margin-bottom:30px;
-            color:#2c3e50;
-        }
-
-        .btn{
-            display:block;
-            text-decoration:none;
-            margin:15px 0;
-            padding:16px;
-            border-radius:12px;
+            background:#2c3e50;
             color:white;
-            font-size:18px;
-            font-weight:bold;
+            padding:20px;
+            position:fixed;
+        }
+
+        .sidebar h2{
+            text-align:center;
+            margin-bottom:30px;
+        }
+
+        .sidebar ul{
+            list-style:none;
+            padding:0;
+            margin:0;
+        }
+
+        .sidebar ul li{
+            margin-bottom:5px;
+        }
+
+        .sidebar ul li a{
+            display:block;
+            padding:10px;
+            color:white;
+            text-decoration:none;
+            border-radius:8px;
             transition:0.3s;
         }
 
-        .boys{
-            background:#3498db;
+        .sidebar ul li a:hover{
+            background:rgba(255,255,255,0.15);
+            transform:translateX(5px);
         }
 
-        .boys:hover{
-            background:#2980b9;
-            transform:translateY(-3px);
+        /* MAIN */
+        .main{
+            margin-left:260px;
+            width:100%;
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding:30px;
+        }
+
+        /* CARD */
+        .selection-card{
+            background:white;
+            width:420px;
+            padding:45px;
+            border-radius:20px;
+            text-align:center;
+            box-shadow:0 6px 20px rgba(0,0,0,0.08);
+        }
+
+        .selection-card h1{
+            margin-bottom:10px;
+            color:#2c3e50;
+            font-size:30px;
+        }
+
+        .selection-card p{
+            color:#7f8c8d;
+            margin-bottom:35px;
+        }
+
+        /* BUTTONS */
+        .hostel-btn{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:12px;
+            padding:18px;
+            margin-bottom:18px;
+            border-radius:14px;
+            text-decoration:none;
+            color:white;
+            font-size:18px;
+            font-weight:600;
+            transition:0.3s;
+        }
+
+        .hostel-btn:hover{
+            transform:translateY(-4px);
+        }
+
+        .boys{
+            background:linear-gradient(135deg,#3498db,#2980b9);
         }
 
         .girls{
-            background:#e84393;
+            background:linear-gradient(135deg,#e84393,#d63078);
+        }
+
+        .boys:hover{
+            box-shadow:0 8px 18px rgba(52,152,219,0.3);
         }
 
         .girls:hover{
-            background:#d63078;
-            transform:translateY(-3px);
+            box-shadow:0 8px 18px rgba(232,67,147,0.3);
+        }
+
+        /* RESPONSIVE */
+        @media(max-width:768px){
+
+            .sidebar{
+                display:none;
+            }
+
+            .main{
+                margin-left:0;
+            }
+
+            .selection-card{
+                width:100%;
+            }
         }
 
     </style>
 
 </head>
+
 <body>
 
-<div class="box">
+<div class="container">
 
-    <h2>🏠 Select Hostel</h2>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
 
-    <a href="{% url 'room_info' %}?gender=BOYS" class="btn boys">
-        👦 Boys Hostel
-    </a>
+        <h2>⚙ Admin Panel</h2>
 
-    <a href="{% url 'room_info' %}?gender=GIRLS" class="btn girls">
-        👧 Girls Hostel
-    </a>
+        <ul>
+            <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
+            <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
+            <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
+            <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
+            <li><a href="{% url 'leave_requests' %}">📄 Leave Requests</a></li>
+            <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
+            <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
+        </ul>
+
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <div class="selection-card">
+
+            <h1>🏠 Select Hostel</h1>
+
+            <p>
+                Choose which hostel room information you want to manage
+            </p>
+
+            <a href="{% url 'room_info' %}?gender=BOYS"
+               class="hostel-btn boys">
+
+                👦 Boys Hostel
+
+            </a>
+
+            <a href="{% url 'room_info' %}?gender=GIRLS"
+               class="hostel-btn girls">
+
+                👧 Girls Hostel
+
+            </a>
+
+        </div>
+
+    </div>
 
 </div>
 
