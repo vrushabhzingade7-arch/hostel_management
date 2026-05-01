@@ -136,49 +136,58 @@ def leave_status(request):
 
 
 # ================= ADMIN LEAVE =================
+from django.http import HttpResponse
+
 @login_required
 def leave_requests(request):
+    try:
+        dept = request.GET.get('dept')
+        cls = request.GET.get('cls')
 
-    dept = request.GET.get('dept')
-    cls = request.GET.get('cls')
+        # ================= STEP 1 =================
+        if not dept:
+            departments = Student.objects.values_list('department', flat=True).distinct()
+            return render(request, 'leave_departments.html', {
+                'departments': departments
+            })
 
-    if not dept:
-        departments = Student.objects.values_list('department', flat=True).distinct()
-        return render(request, 'leave_departments.html', {
-            'departments': departments
+        # ================= STEP 2 =================
+        if dept and not cls:
+            classes = Student.objects.filter(
+                department=dept
+            ).values_list('student_class', flat=True).distinct()
+
+            return render(request, 'leave_classes.html', {
+                'classes': classes,
+                'dept': dept
+            })
+
+        # ================= STEP 3 =================
+        leaves = LeaveRequest.objects.filter(
+            student__department=dept,
+            student__student_class=cls
+        )
+
+        # ================= ROLE FILTER =================
+        if request.user.groups.filter(name='HOD').exists():
+            leaves = leaves.filter(cc_status="Approved")
+
+        elif request.user.groups.filter(name='RECTOR').exists():
+            leaves = leaves.filter(hod_status="Approved")
+
+        # ================= SAFE GROUPS =================
+        groups = list(request.user.groups.values_list('name', flat=True)) if request.user.is_authenticated else []
+
+        return render(request, 'leave_requests.html', {
+            'leaves': leaves,
+            'dept': dept,
+            'cls': cls,
+            'groups': groups,
+            'readonly': request.user.is_superuser
         })
 
-    if dept and not cls:
-        classes = Student.objects.filter(
-            department=dept
-        ).values_list('student_class', flat=True).distinct()
-
-        return render(request, 'leave_classes.html', {
-            'classes': classes,
-            'dept': dept
-        })
-
-    leaves = LeaveRequest.objects.filter(
-        student__department=dept,
-        student__student_class=cls
-    )
-
-    if request.user.groups.filter(name='HOD').exists():
-        leaves = leaves.filter(cc_status="Approved")
-
-    elif request.user.groups.filter(name='RECTOR').exists():
-        leaves = leaves.filter(hod_status="Approved")
-
-   
-    groups = list(request.user.groups.values_list('name', flat=True)) if request.user.is_authenticated else []
-
-    return render(request, 'leave_requests.html', {
-    'leaves': leaves,
-    'dept': dept,
-    'cls': cls,
-    'groups': groups,
-    'readonly': request.user.is_superuser
-})
+    except Exception as e:
+        return HttpResponse(f"<h1>ERROR:</h1><pre>{e}</pre>")
 # ================= APPROVAL =================
 @login_required
 def approve_leave(request, leave_id, role, action):
