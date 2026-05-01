@@ -155,10 +155,14 @@
                     {% if not readonly and groups and "CC" in groups and leave.cc_status == "Pending" %}
                         <form method="POST" action="{% url 'approve_leave' leave.id 'cc' 'Approved' %}">
                             {% csrf_token %}
+                            <input type="hidden" name="dept" value="{{ dept }}">
+                            <input type="hidden" name="cls" value="{{ cls }}">
                             <button class="btn approve">✔</button>
                         </form>
                         <form method="POST" action="{% url 'approve_leave' leave.id 'cc' 'Rejected' %}">
                             {% csrf_token %}
+                            <input type="hidden" name="dept" value="{{ dept }}">
+                            <input type="hidden" name="cls" value="{{ cls }}">
                             <button class="btn reject">✖</button>
                         </form>
                     {% endif %}
@@ -171,10 +175,14 @@
                     {% if not readonly and groups and "HOD" in groups and leave.cc_status == "Approved" and leave.hod_status == "Pending" %}
                         <form method="POST" action="{% url 'approve_leave' leave.id 'hod' 'Approved' %}">
                             {% csrf_token %}
+                            <input type="hidden" name="dept" value="{{ dept }}">
+                            <input type="hidden" name="cls" value="{{ cls }}">
                             <button class="btn approve">✔</button>
                         </form>
                         <form method="POST" action="{% url 'approve_leave' leave.id 'hod' 'Rejected' %}">
                             {% csrf_token %}
+                            <input type="hidden" name="dept" value="{{ dept }}">
+                            <input type="hidden" name="cls" value="{{ cls }}">
                             <button class="btn reject">✖</button>
                         </form>
                     {% endif %}
@@ -187,10 +195,14 @@
                     {% if not readonly and groups and "RECTOR" in groups and leave.hod_status == "Approved" and leave.rector_status == "Pending" %}
                         <form method="POST" action="{% url 'approve_leave' leave.id 'rector' 'Approved' %}">
                             {% csrf_token %}
+                            <input type="hidden" name="dept" value="{{ dept }}">
+                            <input type="hidden" name="cls" value="{{ cls }}">
                             <button class="btn approve">✔</button>
                         </form>
                         <form method="POST" action="{% url 'approve_leave' leave.id 'rector' 'Rejected' %}">
                             {% csrf_token %}
+                            <input type="hidden" name="dept" value="{{ dept }}">
+                            <input type="hidden" name="cls" value="{{ cls }}">
                             <button class="btn reject">✖</button>
                         </form>
                     {% endif %}

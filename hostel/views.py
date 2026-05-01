@@ -153,15 +153,12 @@ def leave_requests(request):
 
         # ================= STEP 2 =================
         if dept and not cls:
-            classes = Student.objects.filter(
-                department=dept
-            ).values_list('student_class', flat=True).distinct()
+            classes = [choice[0] for choice in Student.CLASS_CHOICES]
 
-            return render(request, 'leave_classes.html', {
-                'classes': classes,
-                'dept': dept
-            })
-
+        return render(request, 'leave_classes.html', {
+        'classes': classes,
+        'dept': dept
+    })
         # ================= STEP 3 =================
         leaves = LeaveRequest.objects.filter(
             student__department=dept,
@@ -229,8 +226,15 @@ def approve_leave(request, leave_id, role, action):
             leave.final_status = "Rejected"
 
     leave.save()
-    return redirect('leave_requests')
+    # get dept & class from POST
+    dept = request.POST.get('dept')
+    cls = request.POST.get('cls')
 
+    leave.save()
+
+# ✅ stay on same page
+    return redirect(f'/leave_requests/?dept={dept}&cls={cls}')
+    
 # ================= ATTENDANCE =================
 @login_required
 def mark_attendance(request):
