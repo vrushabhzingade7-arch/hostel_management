@@ -12,10 +12,30 @@ class Student(models.Model):
     student_phone = models.CharField(max_length=15)
     parent_phone = models.CharField(max_length=15)
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    # ✅ NEW FIELDS
+    GENDER_CHOICES = [
+        ('BOYS', 'Boys'),
+        ('GIRLS', 'Girls'),
+    ]
 
-    def __str__(self):
-        return f"{self.user.username} ({self.hostel_id})"
+    DEPARTMENT_CHOICES = [
+        ('CSE', 'CSE'),
+        ('ENTC', 'ENTC'),
+        ('MECH', 'MECH'),
+    ]
+
+    CLASS_CHOICES = [
+        ('FY', 'FY'),
+        ('SY', 'SY'),
+        ('TY', 'TY'),
+        ('BE', 'BE'),
+    ]
+
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default='BOYS')
+    department = models.CharField(max_length=10, choices=DEPARTMENT_CHOICES, default='CSE')
+    student_class = models.CharField(max_length=5, choices=CLASS_CHOICES, default='FY')
+
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 # ================= LEAVE REQUEST =================

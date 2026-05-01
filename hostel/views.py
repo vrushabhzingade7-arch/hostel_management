@@ -103,14 +103,19 @@ def apply_leave(request):
         return redirect('student_dashboard')
 
     if request.method == "POST":
-        LeaveRequest.objects.create(
-            student=student,
-            from_date=request.POST.get('from_date'),
-            to_date=request.POST.get('to_date'),
-            reason=request.POST.get('reason'),
-            place=request.POST.get('place')
-        )
-        return redirect('leave_status')
+         LeaveRequest.objects.create(
+        student=student,
+        from_date=request.POST.get('from_date'),
+        to_date=request.POST.get('to_date'),
+        reason=request.POST.get('reason'),
+        place=request.POST.get('place'),
+
+        # ✅ auto fill
+        room_no=student.room_no,
+        student_phone=student.student_phone,
+        parent_phone=student.parent_phone,
+    )
+    return redirect('leave_status')
 
     return render(request, 'apply_leave.html')
 
@@ -131,37 +136,46 @@ def leave_status(request):
 @login_required
 def leave_requests(request):
 
+    dept = request.GET.get('dept')
+    cls = request.GET.get('class')
 
+    # ================= STEP 1 → DEPARTMENTS =================
+    if not dept:
+        departments = Student.objects.values_list('department', flat=True).distinct()
+        return render(request, 'leave_departments.html', {
+            'departments': departments
+        })
 
-    # ✅ SUPERUSER → can ONLY VIEW all leaves
-    if request.user.is_superuser:
-        leaves = LeaveRequest.objects.all()
-        return render(request, 'leave_requests.html', {
-            'leaves': leaves,
-            'readonly': True,
-            'groups': []
-})
+    # ================= STEP 2 → CLASSES =================
+    if dept and not cls:
+        classes = Student.objects.filter(
+            department=dept
+        ).values_list('student_class', flat=True).distinct()
 
-    # ✅ CC
-    if request.user.groups.filter(name='CC').exists():
-        leaves = LeaveRequest.objects.all()
+        return render(request, 'leave_classes.html', {
+            'classes': classes,
+            'dept': dept
+        })
 
-    # ✅ HOD
-    elif request.user.groups.filter(name='HOD').exists():
-        leaves = LeaveRequest.objects.filter(cc_status="Approved")
+    # ================= STEP 3 → LEAVES =================
+    leaves = LeaveRequest.objects.filter(
+        student__department=dept,
+        student__student_class=cls
+    )
 
-    # ✅ RECTOR
+    # ================= ROLE FILTER =================
+    if request.user.groups.filter(name='HOD').exists():
+        leaves = leaves.filter(cc_status="Approved")
+
     elif request.user.groups.filter(name='RECTOR').exists():
-        leaves = LeaveRequest.objects.filter(hod_status="Approved")
-
-    else:
-        return redirect('home')
+        leaves = leaves.filter(hod_status="Approved")
 
     return render(request, 'leave_requests.html', {
-            'leaves': leaves,
-            'readonly': False,
-            'groups': request.user.groups.values_list('name', flat=True)
-})
+        'leaves': leaves,
+        'dept': dept,
+        'cls': cls,
+        'groups': request.user.groups.values_list('name', flat=True)
+    })
 # ================= APPROVAL =================
 @login_required
 def approve_leave(request, leave_id, role, action):
@@ -208,7 +222,15 @@ def approve_leave(request, leave_id, role, action):
 # ================= ATTENDANCE =================
 @login_required
 def mark_attendance(request):
-    students = Student.objects.all()
+
+    gender = request.GET.get('gender')
+
+    # STEP 1 → SELECT BOYS/GIRLS
+    if not gender:
+        return render(request, 'attendance_gender.html')
+
+    # STEP 2 → FILTER STUDENTS
+    students = Student.objects.filter(gender=gender)
     today = now().date()
 
     if request.method == "POST":
@@ -223,8 +245,10 @@ def mark_attendance(request):
 
         return redirect('admin_dashboard')
 
-    return render(request, 'mark_attendance.html', {'students': students})
-
+    return render(request, 'mark_attendance.html', {
+        'students': students,
+        'gender': gender
+    })
 
 # ================= ROOM INFO =================
 @login_required

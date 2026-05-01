@@ -115,30 +115,21 @@
             <h2>📄 Apply Leave</h2>
 
             <form method="POST">
-                {% csrf_token %}
+    {% csrf_token %}
 
-                <label>From Date</label>
-                <input type="date" name="from_date" required>
+    <label>From Date</label>
+    <input type="date" name="from_date" required>
 
-                <label>To Date</label>
-                <input type="date" name="to_date" required>
+    <label>To Date</label>
+    <input type="date" name="to_date" required>
 
-                <label>Room Number</label>
-                <input type="text" name="room_no" placeholder="Enter room number" required>
+    <label>Reason</label>
+    <textarea name="reason" rows="4" required></textarea>
 
-                <label>Student Contact Number</label>
-                <input type="text" name="student_phone" placeholder="Enter your phone number" required>
+    <label>Place</label>
+    <input type="text" name="place" required>
 
-                <label>Parent Contact Number</label>
-                <input type="text" name="parent_phone" placeholder="Enter parent phone number" required>
-
-                <label>Reason</label>
-                <textarea name="reason" rows="4" placeholder="Write your reason..." required></textarea>
-
-                <label>Place</label>
-                <input type="text" name="place" placeholder="Where are you going?" required>
-
-                <button type="submit">🚀 Apply Leave</button>
+    <button type="submit">🚀 Apply Leave</button>
             </form>
         </div>
 

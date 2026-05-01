@@ -5,8 +5,7 @@ from .models import Student, LeaveRequest, Fee, Attendance, Outing, Feedback
 # ================= STUDENT =================
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ('user', 'hostel_id', 'room_no', 'student_phone')
-
+    list_display = ('user', 'hostel_id', 'department', 'student_class', 'room_no')
 
 # ================= LEAVE =================
 @admin.register(LeaveRequest)

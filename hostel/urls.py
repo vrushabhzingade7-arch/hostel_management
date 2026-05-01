@@ -30,6 +30,7 @@ urlpatterns = [
 
     # ================= ATTENDANCE =================
     path('mark_attendance/', views.mark_attendance, name='mark_attendance'),
+    path('mark_attendance/<str:gender>/', views.mark_attendance, name='mark_attendance_gender'),
 
     # ================= ROOM MANAGEMENT =================
     path('room_info/', views.room_info, name='room_info'),

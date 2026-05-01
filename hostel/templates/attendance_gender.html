@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select Category</title>
+
+    <style>
+        body {
+            font-family: sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        .btn {
+            padding: 20px 40px;
+            margin: 20px;
+            font-size: 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: white;
+        }
+
+        .btn:hover {
+            background: #ddd;
+        }
+    </style>
+</head>
+<body>
+
+<h1 style="color:white;">Select Attendance Category</h1>
+
+<a href="{% url 'mark_attendance' %}?gender=Boys">
+    <button class="btn">👦 Boys</button>
+</a>
+
+<a href="{% url 'mark_attendance' %}?gender=Girls">
+    <button class="btn">👧 Girls</button>
+</a>
+
+</body>
+</html>

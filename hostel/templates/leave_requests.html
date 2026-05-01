@@ -120,7 +120,13 @@
         {% if readonly %}
             <div class="readonly-msg">🔒 Admin View Only (No Actions Allowed)</div>
         {% endif %}
+        {% if dept %}
+            <p><b>Department:</b> {{ dept }}</p>
+        {% endif %}
 
+        {% if cls %}
+            p><b>Class:</b> {{ cls }}</p>
+        {% endif %}
         <table>
             <tr>
                 <th>Student</th>
