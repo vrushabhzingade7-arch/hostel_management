@@ -155,10 +155,11 @@ def leave_requests(request):
         if dept and not cls:
             classes = [choice[0] for choice in Student.CLASS_CHOICES]
 
-        return render(request, 'leave_classes.html', {
-        'classes': classes,
-        'dept': dept
-    })
+            return render(request, 'leave_classes.html', {
+                'classes': classes,
+                'dept': dept
+            })
+
         # ================= STEP 3 =================
         leaves = LeaveRequest.objects.filter(
             student__department=dept,
