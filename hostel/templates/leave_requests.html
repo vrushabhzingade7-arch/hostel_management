@@ -232,7 +232,7 @@
                 <td>
                     <span class="badge {{ leave.hod_status|lower }}">{{ leave.hod_status }}</span><br>
 
-                   {% if request.user.groups.filter(name='HOD').exists and leave.cc_status == "Approved" and leave.hod_status == "Pending" %}
+                   {% if is_hod and leave.cc_status == "Approved" and leave.hod_status == "Pending" %}
                     <form method="POST" action="{% url 'approve_leave' leave.id 'hod' 'Approved' %}">
                         {% csrf_token %}
                         <input type="hidden" name="dept" value="{{ dept }}">
