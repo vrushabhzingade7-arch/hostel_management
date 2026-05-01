@@ -47,8 +47,6 @@ def student_login(request):
         if user:
             login(request, user)
 
-
-          # ✅ STUDENT
             if Student.objects.filter(user=user).exists():
                 return redirect('student_dashboard')
 
@@ -96,6 +94,7 @@ def student_dashboard(request):
 
 # ================= APPLY LEAVE =================
 @login_required
+@login_required
 def apply_leave(request):
     student = Student.objects.filter(user=request.user).first()
 
@@ -103,19 +102,18 @@ def apply_leave(request):
         return redirect('student_dashboard')
 
     if request.method == "POST":
-         LeaveRequest.objects.create(
-        student=student,
-        from_date=request.POST.get('from_date'),
-        to_date=request.POST.get('to_date'),
-        reason=request.POST.get('reason'),
-        place=request.POST.get('place'),
+        LeaveRequest.objects.create(
+            student=student,
+            from_date=request.POST.get('from_date'),
+            to_date=request.POST.get('to_date'),
+            reason=request.POST.get('reason'),
+            place=request.POST.get('place'),
 
-        # ✅ auto fill
-        room_no=student.room_no,
-        student_phone=student.student_phone,
-        parent_phone=student.parent_phone,
-    )
-    return redirect('leave_status')
+            room_no=student.room_no,
+            student_phone=student.student_phone,
+            parent_phone=student.parent_phone,
+        )
+        return redirect('leave_status')  # ✅ INSIDE IF
 
     return render(request, 'apply_leave.html')
 
