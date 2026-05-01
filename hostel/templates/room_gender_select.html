@@ -6,10 +6,15 @@
 
     <style>
 
-        body{
+        *{
             margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
             font-family:'Segoe UI', sans-serif;
-            background:#f4f7fb;
+            background:#f1f5f9;
         }
 
         .container{
@@ -20,107 +25,103 @@
         .sidebar{
             width:240px;
             height:100vh;
-            background:#2c3e50;
+            background:#1e293b;
             color:white;
             padding:20px;
             position:fixed;
+            left:0;
+            top:0;
         }
 
         .sidebar h2{
             text-align:center;
-            margin-bottom:30px;
+            margin-bottom:35px;
+            font-size:30px;
+            font-weight:bold;
         }
 
         .sidebar ul{
             list-style:none;
             padding:0;
-            margin:0;
         }
 
         .sidebar ul li{
-            margin-bottom:5px;
+            margin:12px 0;
         }
 
         .sidebar ul li a{
-            display:block;
-            padding:10px;
-            color:white;
             text-decoration:none;
-            border-radius:8px;
+            color:#cbd5f5;
+            padding:12px 14px;
+            display:block;
+            border-radius:10px;
             transition:0.3s;
+            font-size:16px;
         }
 
         .sidebar ul li a:hover{
-            background:rgba(255,255,255,0.15);
+            background:#334155;
+            color:white;
             transform:translateX(5px);
         }
 
         /* MAIN */
         .main{
-            margin-left:260px;
-            width:100%;
+            margin-left:240px;
+            width:calc(100% - 240px);
             min-height:100vh;
             display:flex;
             justify-content:center;
-            align-items:center;
-            padding:30px;
+            align-items:flex-start;
+            padding-top:70px;
         }
 
-        /* CARD */
-        .selection-card{
-            background:white;
-            width:420px;
-            padding:45px;
-            border-radius:20px;
+        .content{
+            width:100%;
+            max-width:700px;
+        }
+
+        /* TITLE */
+        .title{
             text-align:center;
-            box-shadow:0 6px 20px rgba(0,0,0,0.08);
+            font-size:55px;
+            font-weight:700;
+            color:#000;
+            margin-bottom:50px;
         }
 
-        .selection-card h1{
-            margin-bottom:10px;
-            color:#2c3e50;
-            font-size:30px;
-        }
-
-        .selection-card p{
-            color:#7f8c8d;
-            margin-bottom:35px;
-        }
-
-        /* BUTTONS */
-        .hostel-btn{
+        /* CARDS */
+        .cards{
             display:flex;
-            align-items:center;
             justify-content:center;
-            gap:12px;
-            padding:18px;
-            margin-bottom:18px;
-            border-radius:14px;
+            gap:40px;
+            flex-wrap:wrap;
+        }
+
+        .hostel-card{
+            width:250px;
+            height:140px;
+            background:white;
+            border-radius:18px;
+            display:flex;
+            justify-content:center;
+            align-items:center;
             text-decoration:none;
-            color:white;
-            font-size:18px;
-            font-weight:600;
+            color:#1e293b;
+            font-size:26px;
+            font-weight:700;
+            gap:14px;
+            box-shadow:0 8px 20px rgba(0,0,0,0.08);
             transition:0.3s;
         }
 
-        .hostel-btn:hover{
-            transform:translateY(-4px);
+        .hostel-card:hover{
+            transform:translateY(-6px);
+            box-shadow:0 12px 24px rgba(0,0,0,0.12);
         }
 
-        .boys{
-            background:linear-gradient(135deg,#3498db,#2980b9);
-        }
-
-        .girls{
-            background:linear-gradient(135deg,#e84393,#d63078);
-        }
-
-        .boys:hover{
-            box-shadow:0 8px 18px rgba(52,152,219,0.3);
-        }
-
-        .girls:hover{
-            box-shadow:0 8px 18px rgba(232,67,147,0.3);
+        .emoji{
+            font-size:34px;
         }
 
         /* RESPONSIVE */
@@ -132,10 +133,22 @@
 
             .main{
                 margin-left:0;
+                width:100%;
+                padding:40px 20px;
             }
 
-            .selection-card{
+            .title{
+                font-size:38px;
+            }
+
+            .cards{
+                flex-direction:column;
+                align-items:center;
+            }
+
+            .hostel-card{
                 width:100%;
+                max-width:320px;
             }
         }
 
@@ -167,27 +180,31 @@
     <!-- MAIN -->
     <div class="main">
 
-        <div class="selection-card">
+        <div class="content">
 
-            <h1>🏠 Select Hostel</h1>
+            <div class="title">
+                📝 Select Attendance Category
+            </div>
 
-            <p>
-                Choose which hostel room information you want to manage
-            </p>
+            <div class="cards">
 
-            <a href="{% url 'room_info' %}?gender=BOYS"
-               class="hostel-btn boys">
+                <a href="{% url 'room_info' %}?gender=BOYS"
+                   class="hostel-card">
 
-                👦 Boys Hostel
+                    <span class="emoji">👦</span>
+                    Boys
 
-            </a>
+                </a>
 
-            <a href="{% url 'room_info' %}?gender=GIRLS"
-               class="hostel-btn girls">
+                <a href="{% url 'room_info' %}?gender=GIRLS"
+                   class="hostel-card">
 
-                👧 Girls Hostel
+                    <span class="emoji">👧</span>
+                    Girls
 
-            </a>
+                </a>
+
+            </div>
 
         </div>
 
