@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Select Class</title>
+    <title>Fees - Select Class</title>
 
     <style>
         body {
@@ -52,39 +52,37 @@
         /* MAIN */
         .main {
             margin-left: 260px;
-            padding: 40px;
+            padding: 30px;
             width: 100%;
         }
 
-        h2 {
-            margin-bottom: 30px;
-            color: #2c3e50;
+        .main h2 {
+            margin-bottom: 25px;
         }
 
         /* CARDS */
-        .card-container {
+        .cards {
             display: flex;
-            flex-wrap: wrap;
             gap: 20px;
+            flex-wrap: wrap;
         }
 
         .card {
-            width: 180px;
-            padding: 25px;
-            border-radius: 12px;
             background: white;
+            padding: 25px;
+            min-width: 180px;
             text-align: center;
-            font-weight: bold;
-            font-size: 18px;
-            color: #2c3e50;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+            transition: 0.2s;
             text-decoration: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transition: 0.3s;
+            color: #2c3e50;
+            font-weight: bold;
         }
 
         .card:hover {
             transform: translateY(-5px);
-            background: #27ae60;
+            background: #3498db;
             color: white;
         }
 
@@ -92,30 +90,14 @@
             display: inline-block;
             margin-top: 30px;
             padding: 10px 20px;
-            border-radius: 20px;
+            border-radius: 8px;
             background: #2c3e50;
             color: white;
             text-decoration: none;
-            transition: 0.3s;
         }
 
         .back-btn:hover {
             background: #1a252f;
-        }
-
-        /* MOBILE */
-        @media (max-width: 768px) {
-            .sidebar {
-                display: none;
-            }
-
-            .main {
-                margin-left: 0;
-            }
-
-            .card-container {
-                justify-content: center;
-            }
         }
 
     </style>
@@ -143,19 +125,19 @@
     <!-- MAIN -->
     <div class="main">
 
-        <h2>📚 {{ dept }} - Select Class</h2>
+        <h2>💰 {{ dept }} - Select Class</h2>
 
-        <div class="card-container">
+        <div class="cards">
             {% for c in classes %}
-                <a href="{% url 'leave_requests' %}?dept={{ dept }}&cls={{ c }}" class="card">
+                <a href="{% url 'fees_admin' %}?dept={{ dept }}&cls={{ c }}" class="card">
                     {{ c }}
                 </a>
             {% empty %}
-                <p>No classes found</p>
+                <p>No classes found.</p>
             {% endfor %}
         </div>
 
-        <a href="{% url 'leave_requests' %}" class="back-btn">← Back</a>
+        <a href="{% url 'fees_admin' %}" class="back-btn">← Back to Departments</a>
 
     </div>
 

@@ -338,14 +338,42 @@ def fees_student(request):
 
 
 # ================= FEES (ADMIN) =================
+from django.utils.timezone import now
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+
 @login_required
 def fees_admin(request):
-    fees = Fee.objects.select_related('student', 'student__user').all()
+    dept = request.GET.get('dept')
+    cls = request.GET.get('cls')
 
+    # ================= STEP 1: DEPARTMENTS =================
+    if not dept:
+        departments = [choice[0] for choice in Student.DEPARTMENT_CHOICES]
+        return render(request, 'fees_departments.html', {
+            'departments': departments
+        })
+
+    # ================= STEP 2: CLASSES =================
+    if dept and not cls:
+        classes = [choice[0] for choice in Student.CLASS_CHOICES]
+        return render(request, 'fees_classes.html', {
+            'classes': classes,
+            'dept': dept
+        })
+
+    # ================= STEP 3: FEES TABLE =================
+    fees = Fee.objects.select_related('student', 'student__user').filter(
+        student__department=dept,
+        student__student_class=cls
+    )
+
+    # ================= CALCULATIONS =================
     total_amount = sum(f.amount for f in fees)
     paid_amount = sum(f.amount for f in fees if f.status == "Paid")
     pending_amount = sum(f.amount for f in fees if f.status == "Pending")
 
+    # ================= UPDATE STATUS =================
     if request.method == "POST":
         fee = get_object_or_404(Fee, id=request.POST.get("fee_id"))
         action = request.POST.get("action")
@@ -358,15 +386,18 @@ def fees_admin(request):
             fee.paid_on = None
 
         fee.save()
-        return redirect('fees_admin')
+
+        # ✅ stay on same page
+        return redirect(f'/fees_admin/?dept={dept}&cls={cls}')
 
     return render(request, 'fees_admin.html', {
         'fees': fees,
+        'dept': dept,
+        'cls': cls,
         'total_amount': total_amount,
         'paid_amount': paid_amount,
         'pending_amount': pending_amount,
     })
-
 
 ## ================= OUTING =================
 @login_required

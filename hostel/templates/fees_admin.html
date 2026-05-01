@@ -7,23 +7,69 @@
     <style>
         body {
             margin: 0;
-            font-family: "Segoe UI", Arial;
-            background: #f4f6f9;
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f7fb;
         }
 
         .container {
+            display: flex;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            height: 100vh;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            position: fixed;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li a {
+            display: block;
+            padding: 12px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .sidebar ul li a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(5px);
+        }
+
+        /* MAIN */
+        .main {
+            margin-left: 260px;
             padding: 30px;
+            width: 100%;
         }
 
         h2 {
             margin-bottom: 20px;
         }
 
+        .info {
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
         /* TABLE */
         table {
             width: 100%;
             border-collapse: collapse;
-            background: #fff;
+            background: white;
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
@@ -45,7 +91,7 @@
             background: #f9f9f9;
         }
 
-        /* STATUS BADGE */
+        /* STATUS */
         .status {
             padding: 6px 12px;
             border-radius: 20px;
@@ -71,7 +117,6 @@
             border-radius: 6px;
             font-size: 13px;
             cursor: pointer;
-            transition: 0.3s;
         }
 
         .paid-btn {
@@ -79,54 +124,15 @@
             color: white;
         }
 
-        .paid-btn:hover {
-            background: #1e8449;
-        }
-
         .pending-btn {
             background: #e74c3c;
             color: white;
-        }
-
-        .pending-btn:hover {
-            background: #c0392b;
         }
 
         .empty {
             text-align: center;
             padding: 20px;
             color: gray;
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            table, thead, tbody, th, td, tr {
-                display: block;
-            }
-
-            tr {
-                margin-bottom: 15px;
-                background: white;
-                border-radius: 10px;
-                padding: 10px;
-            }
-
-            td {
-                border: none;
-                position: relative;
-                padding-left: 50%;
-            }
-
-            td:before {
-                position: absolute;
-                left: 10px;
-                font-weight: bold;
-            }
-
-            td:nth-child(1):before { content: "Student"; }
-            td:nth-child(2):before { content: "Amount"; }
-            td:nth-child(3):before { content: "Status"; }
-            td:nth-child(4):before { content: "Action"; }
         }
 
     </style>
@@ -136,53 +142,92 @@
 
 <div class="container">
 
-    <h2>💰 Fees Management</h2>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>⚙ Admin Panel</h2>
 
-    <table>
-        <tr>
-            <th>Student</th>
-            <th>Amount</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
+        <ul>
+            <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
+            <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
+            <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
+            <li><a href="{% url 'leave_requests' %}">📄 Leave Requests</a></li>
+            <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
+            <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
+            <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
+        </ul>
+    </div>
 
-        {% for fee in fees %}
-        <tr>
-            <td>👤 {{ fee.student.user.username }}</td>
-            <td>₹ {{ fee.amount }}</td>
+    <!-- MAIN -->
+    <div class="main">
 
-            <td>
-                {% if fee.status == "Paid" %}
-                    <span class="status paid">Paid</span>
-                {% else %}
-                    <span class="status pending">Pending</span>
-                {% endif %}
-            </td>
+        <h2>💰 Fees Management</h2>
 
-            <td>
-                <form method="POST" style="display:inline;">
-                    {% csrf_token %}
-                    <input type="hidden" name="fee_id" value="{{ fee.id }}">
-                    <input type="hidden" name="action" value="Paid">
-                    <button class="btn paid-btn">✔ Paid</button>
-                </form>
+        {% if dept %}
+            <div class="info">Department: {{ dept }}</div>
+        {% endif %}
 
-                <form method="POST" style="display:inline;">
-                    {% csrf_token %}
-                    <input type="hidden" name="fee_id" value="{{ fee.id }}">
-                    <input type="hidden" name="action" value="Pending">
-                    <button class="btn pending-btn">✖ Pending</button>
-                </form>
-            </td>
-        </tr>
+        {% if cls %}
+            <div class="info">Class: {{ cls }}</div>
+        {% endif %}
 
-        {% empty %}
-        <tr>
-            <td colspan="4" class="empty">No fee records available</td>
-        </tr>
-        {% endfor %}
+        <table>
+            <tr>
+                <th>Student</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
 
-    </table>
+            {% for fee in fees %}
+            <tr>
+                <td>
+                    👤 
+                    {% if fee.student.user %}
+                        {{ fee.student.user.username }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+
+                <td>₹ {{ fee.amount }}</td>
+
+                <td>
+                    {% if fee.status == "Paid" %}
+                        <span class="status paid">Paid</span>
+                    {% else %}
+                        <span class="status pending">Pending</span>
+                    {% endif %}
+                </td>
+
+                <td>
+                    <form method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="fee_id" value="{{ fee.id }}">
+                        <input type="hidden" name="action" value="Paid">
+                        <input type="hidden" name="dept" value="{{ dept }}">
+                        <input type="hidden" name="cls" value="{{ cls }}">
+                        <button class="btn paid-btn">✔ Paid</button>
+                    </form>
+
+                    <form method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="fee_id" value="{{ fee.id }}">
+                        <input type="hidden" name="action" value="Pending">
+                        <input type="hidden" name="dept" value="{{ dept }}">
+                        <input type="hidden" name="cls" value="{{ cls }}">
+                        <button class="btn pending-btn">✖ Pending</button>
+                    </form>
+                </td>
+            </tr>
+
+            {% empty %}
+            <tr>
+                <td colspan="4" class="empty">No fee records available</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </div>
 
 </div>
 

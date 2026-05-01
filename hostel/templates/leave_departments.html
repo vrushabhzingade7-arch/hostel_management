@@ -1,33 +1,70 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
     <title>Select Department</title>
 
     <style>
         body {
-            font-family: "Segoe UI", sans-serif;
-            background: linear-gradient(135deg, #7a7f93, #b39bcc);
             margin: 0;
-            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f7fb;
         }
 
         .container {
-            width: 80%;
-            margin: 60px auto;
-            text-align: center;
+            display: flex;
         }
 
-        h2 {
+        /* SIDEBAR */
+        .sidebar {
+            width: 240px;
+            height: 100vh;
+            background: #2c3e50;
             color: white;
+            padding: 20px;
+            position: fixed;
+        }
+
+        .sidebar h2 {
+            text-align: center;
             margin-bottom: 30px;
         }
 
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li a {
+            display: block;
+            padding: 12px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .sidebar ul li a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(5px);
+        }
+
+        /* MAIN */
+        .main {
+            margin-left: 260px;
+            padding: 40px;
+            width: 100%;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+
+        /* CARDS */
         .card-container {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
             gap: 20px;
         }
 
@@ -36,11 +73,12 @@
             padding: 25px;
             border-radius: 12px;
             background: white;
-            color: #333;
-            text-decoration: none;
+            text-align: center;
             font-weight: bold;
             font-size: 18px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+            color: #2c3e50;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             transition: 0.3s;
         }
 
@@ -51,38 +89,76 @@
         }
 
         .back-btn {
-            margin-top: 40px;
             display: inline-block;
+            margin-top: 30px;
             padding: 10px 20px;
             border-radius: 20px;
-            background: white;
-            color: #333;
+            background: #2c3e50;
+            color: white;
             text-decoration: none;
-            font-weight: bold;
+            transition: 0.3s;
         }
 
         .back-btn:hover {
-            background: #ddd;
+            background: #1a252f;
         }
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .card-container {
+                justify-content: center;
+            }
+        }
+
     </style>
 </head>
 
 <body>
 
 <div class="container">
-    <h2>📂 Select Department</h2>
 
-    <div class="card-container">
-        {% for dept in departments %}
-            <a href="{% url 'leave_requests' %}?dept={{ dept }}" class="card">
-                {{ dept }}
-            </a>
-        {% empty %}
-            <p style="color:white;">No departments found.</p>
-        {% endfor %}
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>⚙ Admin Panel</h2>
+
+        <ul>
+            <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
+            <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
+            <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
+            <li><a href="{% url 'leave_requests' %}">📄 Leave Requests</a></li>
+            <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
+            <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
+            <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
+        </ul>
     </div>
 
-    <a href="{% url 'admin_dashboard' %}" class="back-btn">← Back</a>
+    <!-- MAIN -->
+    <div class="main">
+
+        <h2>📂 Select Department</h2>
+
+        <div class="card-container">
+            {% for dept in departments %}
+                <a href="{% url 'leave_requests' %}?dept={{ dept }}" class="card">
+                    {{ dept }}
+                </a>
+            {% empty %}
+                <p>No departments found.</p>
+            {% endfor %}
+        </div>
+
+        <a href="{% url 'admin_dashboard' %}" class="back-btn">← Back</a>
+
+    </div>
+
 </div>
 
 </body>
