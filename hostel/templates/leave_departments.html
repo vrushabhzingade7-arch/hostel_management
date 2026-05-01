@@ -15,7 +15,7 @@
             background: #f4f7fb;
         }
 
-        /* SIDEBAR (STANDARD) */
+        /* SIDEBAR */
         .sidebar {
             width: 240px;
             height: 100vh;
@@ -25,12 +25,26 @@
             position: fixed;
             top: 0;
             left: 0;
-            z-index: 1000;
         }
 
-        .sidebar h2 {
-            text-align: center;
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: bold;
             margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 15px;
+        }
+
+        .sidebar-header .icon {
+            font-size: 26px;
+        }
+
+        .sidebar-header .title {
+            letter-spacing: 1px;
         }
 
         .sidebar ul {
@@ -53,12 +67,10 @@
             transform: translateX(5px);
         }
 
-        /* MAIN (FIXED) */
+        /* MAIN */
         .main {
             margin-left: 240px;
             padding: 40px;
-            width: calc(100% - 240px);
-            min-height: 100vh;
         }
 
         h2 {
@@ -101,11 +113,6 @@
             background: #2c3e50;
             color: white;
             text-decoration: none;
-            transition: 0.3s;
-        }
-
-        .back-btn:hover {
-            background: #1a252f;
         }
 
         /* RESPONSIVE */
@@ -116,32 +123,8 @@
 
             .main {
                 margin-left: 0;
-                width: 100%;
-            }
-
-            .card-container {
-                justify-content: center;
             }
         }
-
-        .sidebar-header {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 10px;
-                font-size: 22px;
-                font-weight: bold;
-                margin-bottom: 30px;
-        }
-
-        .sidebar-header .icon {
-                font-size: 26px;
-        }
-
-        .sidebar-header .title {
-                letter-spacing: 1px;
-        }
-
     </style>
 </head>
 
@@ -149,9 +132,11 @@
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-    <span class="icon">⚙</span>
-    <span class="title">Admin Panel</span>
-</div>
+
+    <div class="sidebar-header">
+        <span class="icon">⚙</span>
+        <span class="title">Admin Panel</span>
+    </div>
 
     <ul>
         <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
@@ -162,6 +147,7 @@
         <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
         <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
     </ul>
+
 </div>
 
 <!-- MAIN -->

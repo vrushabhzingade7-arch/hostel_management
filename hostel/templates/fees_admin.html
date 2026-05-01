@@ -5,9 +5,7 @@
     <title>Fees Management</title>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
@@ -15,7 +13,7 @@
             background: #f4f7fb;
         }
 
-        /* SIDEBAR (STANDARD) */
+        /* SIDEBAR */
         .sidebar {
             width: 240px;
             height: 100vh;
@@ -25,12 +23,20 @@
             position: fixed;
             top: 0;
             left: 0;
-            z-index: 1000;
         }
 
-        .sidebar h2 {
-            text-align: center;
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: bold;
             margin-bottom: 30px;
+        }
+
+        .sidebar-header .icon {
+            font-size: 24px;
         }
 
         .sidebar ul {
@@ -58,7 +64,6 @@
             margin-left: 240px;
             padding: 30px;
             width: calc(100% - 240px);
-            min-height: 100vh;
         }
 
         h2 {
@@ -72,7 +77,7 @@
             color: #444;
         }
 
-        /* TABLE CONTAINER */
+        /* TABLE */
         .table-container {
             overflow-x: auto;
             background: white;
@@ -148,44 +153,25 @@
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
-            .sidebar {
-                display: none;
-            }
-
+            .sidebar { display: none; }
             .main {
                 margin-left: 0;
                 width: 100%;
             }
         }
 
-             .sidebar-header {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 10px;
-                font-size: 20px;
-                font-weight: bold;
-                margin-bottom: 30px;
-        }
-
-            .sidebar-header .icon {
-                font-size: 24px;
-        }
-
-            .sidebar-header .title {
-                letter-spacing: 1px;
-        }       
-
     </style>
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
-<div class="sidebar-header">
-    <span class="icon">⚙</span>
-    <span class="title">Admin Panel</span>
-</div>
+<!-- ✅ FIXED SIDEBAR -->
+<div class="sidebar">
+
+    <div class="sidebar-header">
+        <span class="icon">⚙</span>
+        <span>Admin Panel</span>
+    </div>
 
     <ul>
         <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
@@ -196,6 +182,7 @@
         <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
         <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
     </ul>
+
 </div>
 
 <!-- MAIN -->
@@ -223,7 +210,6 @@
             {% for fee in fees %}
             <tr>
                 <td>👤 {{ fee.student.user.username|default:"N/A" }}</td>
-
                 <td>₹ {{ fee.amount }}</td>
 
                 <td>

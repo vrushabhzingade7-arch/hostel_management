@@ -5,9 +5,7 @@
     <title>Leave Requests</title>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
@@ -15,7 +13,7 @@
             background: #f4f7fb;
         }
 
-        /* SIDEBAR (STANDARD) */
+        /* SIDEBAR */
         .sidebar {
             width: 240px;
             height: 100vh;
@@ -25,12 +23,20 @@
             position: fixed;
             top: 0;
             left: 0;
-            z-index: 1000;
         }
 
-        .sidebar h2 {
-            text-align: center;
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: bold;
             margin-bottom: 30px;
+        }
+
+        .sidebar-header .icon {
+            font-size: 24px;
         }
 
         .sidebar ul {
@@ -58,7 +64,6 @@
             margin-left: 240px;
             padding: 30px;
             width: calc(100% - 240px);
-            min-height: 100vh;
         }
 
         h2 {
@@ -66,7 +71,6 @@
             color: #2c3e50;
         }
 
-        /* INFO TEXT */
         .readonly-msg {
             color: red;
             font-weight: bold;
@@ -137,45 +141,26 @@
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
-            .sidebar {
-                display: none;
-            }
-
+            .sidebar { display: none; }
             .main {
                 margin-left: 0;
                 width: 100%;
             }
         }
 
-                .sidebar-header {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 10px;
-                font-size: 22px;
-                font-weight: bold;
-                margin-bottom: 30px;
-        }
-
-        .sidebar-header .icon {
-                font-size: 26px;
-        }
-
-        .sidebar-header .title {
-                letter-spacing: 1px;
-        }
-
-
     </style>
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
-<div class="sidebar-header">
-    <span class="icon">⚙</span>
-    <span class="title">Admin Panel</span>
-</div>
+<!-- ✅ FIXED SIDEBAR -->
+<div class="sidebar">
+
+    <div class="sidebar-header">
+        <span class="icon">⚙</span>
+        <span>Admin Panel</span>
+    </div>
+
     <ul>
         <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
         <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
@@ -185,6 +170,7 @@
         <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
         <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
     </ul>
+
 </div>
 
 <!-- MAIN -->
@@ -223,40 +209,15 @@
                 <td>{{ leave.reason }}</td>
 
                 <td>
-                    <span class="badge {{ leave.cc_status|lower }}">{{ leave.cc_status }}</span><br>
-
-                    {% if not readonly and groups and "CC" in groups and leave.cc_status == "Pending" %}
-                        <form method="POST" action="{% url 'approve_leave' leave.id 'cc' 'Approved' %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="dept" value="{{ dept }}">
-                            <input type="hidden" name="cls" value="{{ cls }}">
-                            <button class="btn approve">✔</button>
-                        </form>
-                        <form method="POST" action="{% url 'approve_leave' leave.id 'cc' 'Rejected' %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="dept" value="{{ dept }}">
-                            <input type="hidden" name="cls" value="{{ cls }}">
-                            <button class="btn reject">✖</button>
-                        </form>
-                    {% endif %}
+                    <span class="badge {{ leave.cc_status|lower }}">{{ leave.cc_status }}</span>
                 </td>
 
                 <td>
-                    <span class="badge {{ leave.hod_status|lower }}">{{ leave.hod_status }}</span><br>
-
-                    {% if not readonly and groups and "HOD" in groups and leave.cc_status == "Approved" and leave.hod_status == "Pending" %}
-                        <button class="btn approve">✔</button>
-                        <button class="btn reject">✖</button>
-                    {% endif %}
+                    <span class="badge {{ leave.hod_status|lower }}">{{ leave.hod_status }}</span>
                 </td>
 
                 <td>
-                    <span class="badge {{ leave.rector_status|lower }}">{{ leave.rector_status }}</span><br>
-
-                    {% if not readonly and groups and "RECTOR" in groups and leave.hod_status == "Approved" and leave.rector_status == "Pending" %}
-                        <button class="btn approve">✔</button>
-                        <button class="btn reject">✖</button>
-                    {% endif %}
+                    <span class="badge {{ leave.rector_status|lower }}">{{ leave.rector_status }}</span>
                 </td>
 
                 <td>
