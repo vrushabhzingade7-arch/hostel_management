@@ -140,7 +140,7 @@ def leave_status(request):
 def leave_requests(request):
 
     dept = request.GET.get('dept')
-    cls = request.GET.get('class')
+    cls = request.GET.get('cls')
 
     if not dept:
         departments = Student.objects.values_list('department', flat=True).distinct()
@@ -169,13 +169,16 @@ def leave_requests(request):
     elif request.user.groups.filter(name='RECTOR').exists():
         leaves = leaves.filter(hod_status="Approved")
 
+   
+    groups = list(request.user.groups.values_list('name', flat=True)) if request.user.is_authenticated else []
+
     return render(request, 'leave_requests.html', {
-        'leaves': leaves,
-        'dept': dept,
-        'cls': cls,
-        'groups': list(request.user.groups.values_list('name', flat=True)),
-        'readonly': request.user.is_superuser  # ✅ FIX
-    })
+    'leaves': leaves,
+    'dept': dept,
+    'cls': cls,
+    'groups': groups,
+    'readonly': request.user.is_superuser
+})
 # ================= APPROVAL =================
 @login_required
 def approve_leave(request, leave_id, role, action):

@@ -74,7 +74,7 @@
 
     <div class="card-container">
         {% for c in classes %}
-            <a href="{% url 'leave_requests' %}?dept={{ dept }}&class={{ c }}" class="card">
+            <a href="{% url 'leave_requests' %}?dept={{ dept }}&cls={{ c }}" class="card">
                 {{ c }}
             </a>
         {% empty %}
