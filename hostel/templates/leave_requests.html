@@ -212,7 +212,7 @@
                 <td>
                     <span class="badge {{ leave.cc_status|lower }}">{{ leave.cc_status }}</span><br>
 
-                    {% if request.user.groups.filter(name='CC').exists and leave.cc_status == "Pending" %}
+                   {% if is_cc and leave.cc_status == "Pending" %}
                     <form method="POST" action="{% url 'approve_leave' leave.id 'cc' 'Approved' %}">
                         {% csrf_token %}
                         <input type="hidden" name="dept" value="{{ dept }}">
@@ -252,7 +252,7 @@
                 <td>
                     <span class="badge {{ leave.rector_status|lower }}">{{ leave.rector_status }}</span><br>
 
-                    {% if request.user.groups.filter(name='RECTOR').exists and leave.hod_status == "Approved" and leave.rector_status == "Pending" %}
+                    {% if is_rector and leave.hod_status == "Approved" and leave.rector_status == "Pending" %}
                     <form method="POST" action="{% url 'approve_leave' leave.id 'rector' 'Approved' %}">
                         {% csrf_token %}
                         <input type="hidden" name="dept" value="{{ dept }}">

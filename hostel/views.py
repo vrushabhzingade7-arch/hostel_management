@@ -173,16 +173,26 @@ def leave_requests(request):
         elif request.user.groups.filter(name='RECTOR').exists():
             leaves = leaves.filter(hod_status="Approved")
 
-        # ================= SAFE GROUPS =================
+       # ================= SAFE GROUPS =================
         groups = list(request.user.groups.values_list('name', flat=True)) if request.user.is_authenticated else []
+
+       # ✅ ADD THESE
+        is_cc = 'CC' in groups
+        is_hod = 'HOD' in groups
+        is_rector = 'RECTOR' in groups
 
         return render(request, 'leave_requests.html', {
             'leaves': leaves,
             'dept': dept,
             'cls': cls,
             'groups': groups,
-            'readonly': request.user.is_superuser
-        })
+            'readonly': request.user.is_superuser,
+
+            # ✅ NEW FLAGS
+            'is_cc': is_cc,
+            'is_hod': is_hod,
+            'is_rector': is_rector,
+    })
 
     except Exception as e:
         return HttpResponse(f"<h1>ERROR:</h1><pre>{e}</pre>")
