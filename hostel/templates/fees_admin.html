@@ -313,24 +313,28 @@
             {% endfor %}
         {% endif %}
 
-        <form method="POST"
-              enctype="multipart/form-data"
-              class="upload-form">
+    <form method="POST"
+      enctype="multipart/form-data"
+      class="upload-form">
 
-            {% csrf_token %}
+    {% csrf_token %}
 
-            <input type="file"
-                   name="csv_file"
-                   required>
+    <input type="hidden"
+           name="upload_csv"
+           value="1">
 
-            <button type="submit"
-                    class="upload-btn">
+    <input type="file"
+           name="csv_file"
+           required>
 
-                Upload CSV
+    <button type="submit"
+            class="upload-btn">
 
-            </button>
+        Upload CSV
 
-        </form>
+    </button>
+
+</form>
 
     </div>
 
@@ -399,20 +403,24 @@
                         {% csrf_token %}
 
                         <input type="hidden"
-                               name="fee_id"
-                               value="{{ fee.id }}">
+                            name="add_payment"
+                            value="1">
+
+                        <input type="hidden"
+                            name="fee_id"
+                            value="{{ fee.id }}">
 
                         <input type="number"
-                               name="add_amount"
-                               class="payment-input"
-                               placeholder="Enter Amount"
-                               required>
+                            name="add_amount"
+                            class="payment-input"
+                            placeholder="Enter Amount"
+                            required>
 
                         <button class="btn paid-btn">
                             Add
                         </button>
 
-                    </form>
+</form>
 
                 </td>
 

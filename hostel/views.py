@@ -374,7 +374,7 @@ def fees_student(request):
         'paid': paid,
         'pending': pending
     })
-# ================= FEES (ADMIN) =================
+# ================= FEES ADMIN =================
 
 @login_required
 def fees_admin(request):
@@ -383,51 +383,76 @@ def fees_admin(request):
     cls = request.GET.get('cls')
 
     # ================= CSV UPLOAD =================
-    if request.method == "POST" and request.FILES.get('csv_file'):
+    if request.method == "POST" and request.POST.get("upload_csv"):
 
-        csv_file = request.FILES['csv_file']
+        try:
 
-        file_data = TextIOWrapper(csv_file.file, encoding='utf-8')
+            csv_file = request.FILES['csv_file']
 
-        reader = csv.DictReader(file_data)
+            # READ CSV
+            file_data = TextIOWrapper(
+                csv_file.file,
+                encoding='utf-8'
+            )
 
-        updated = 0
+            reader = csv.DictReader(file_data)
 
-        for row in reader:
+            updated = 0
 
-            username = row['username']
+            for row in reader:
 
-            total_amount = int(row['total_amount'])
-            paid_amount = int(row['paid_amount'])
+                try:
 
-            try:
+                    username = row.get('username')
+                    total_amount = int(row.get('total_amount', 0))
+                    paid_amount = int(row.get('paid_amount', 0))
 
-                student = Student.objects.get(
-                    user__username=username
-                )
+                    # FIND STUDENT
+                    student = Student.objects.get(
+                        user__username=username
+                    )
 
-                fee, created = Fee.objects.get_or_create(
-                    student=student
-                )
+                    # CREATE OR UPDATE FEE
+                    fee, created = Fee.objects.get_or_create(
+                        student=student,
+                        defaults={
+                            'total_amount': total_amount,
+                            'paid_amount': paid_amount
+                        }
+                    )
 
-                fee.total_amount = total_amount
-                fee.paid_amount = paid_amount
+                    fee.total_amount = total_amount
+                    fee.paid_amount = paid_amount
 
-                fee.save()
+                    fee.save()
 
-                updated += 1
+                    updated += 1
 
-            except Student.DoesNotExist:
-                continue
+                except Exception as e:
+                    print("CSV ROW ERROR:", e)
+                    continue
 
-        messages.success(
-            request,
-            f"{updated} fee records uploaded successfully"
-        )
+            messages.success(
+                request,
+                f"{updated} fee records uploaded successfully"
+            )
 
-        return redirect(
-            f'/fees_admin/?dept={dept}&cls={cls}'
-        )
+            return redirect(
+                f'/fees_admin/?dept={dept}&cls={cls}'
+            )
+
+        except Exception as e:
+
+            print("CSV UPLOAD ERROR:", e)
+
+            messages.error(
+                request,
+                f"Upload Failed: {e}"
+            )
+
+            return redirect(
+                f'/fees_admin/?dept={dept}&cls={cls}'
+            )
 
     # ================= STEP 1 =================
     if not dept:
@@ -477,20 +502,25 @@ def fees_admin(request):
     )
 
     # ================= ADD PAYMENT =================
-    if request.method == "POST" and request.POST.get("fee_id"):
+    if request.method == "POST" and request.POST.get("add_payment"):
 
-        fee = get_object_or_404(
-            Fee,
-            id=request.POST.get("fee_id")
-        )
+        try:
 
-        add_amount = int(
-            request.POST.get("add_amount")
-        )
+            fee = get_object_or_404(
+                Fee,
+                id=request.POST.get("fee_id")
+            )
 
-        fee.paid_amount += add_amount
+            add_amount = int(
+                request.POST.get("add_amount")
+            )
 
-        fee.save()
+            fee.paid_amount += add_amount
+
+            fee.save()
+
+        except Exception as e:
+            print("PAYMENT ERROR:", e)
 
         return redirect(
             f'/fees_admin/?dept={dept}&cls={cls}'
