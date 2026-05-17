@@ -40,56 +40,84 @@ class Student(models.Model):
         ('BE', 'BE'),
     ]
 
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default='BOYS')
-    department = models.CharField(max_length=10, choices=DEPARTMENT_CHOICES, default='CSE')
-    student_class = models.CharField(max_length=5, choices=CLASS_CHOICES, default='FY')
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
+    department = models.CharField(max_length=10, choices=DEPARTMENT_CHOICES)
+    student_class = models.CharField(max_length=5, choices=CLASS_CHOICES)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
 
-        # AUTO HOSTEL ID
+        # ================= HOSTEL ID =================
         if not self.hostel_id:
             last = Student.objects.order_by('-id').first()
             next_id = 1 if not last else last.id + 1
             self.hostel_id = f"HST{next_id:03d}"
 
-        # FLOOR MAP
-        floor_map = {
-            'FY': 1,
-            'SY': 2,
-            'TY': 3,
-            'BE': 4,
+        # ================= FLOOR MAP =================
+        class_floors = {
+            'FY': [0, 1],
+            'SY': [2],
+            'TY': [3],
+            'BE': [4],
         }
 
-        floor = floor_map[self.student_class]
-
-        # AUTO ROOM ALLOT
+        # ================= AUTO ROOM =================
         if not self.room_no:
 
-            for room in range(1, 19):   # 18 rooms
-                room_code = f"{floor}{room:02d}"
+            floors = class_floors[self.student_class]
+
+            room_list = []
+
+            for floor in floors:
+
+                blocks = [
+                    [1, 2, 3, 4],
+                    [5, 6, 7, 8],
+                    [9],
+                    [10],
+                    [11, 12, 13, 14],
+                    [15, 16, 17, 18],
+                ]
+
+                for block_index, block in enumerate(blocks, start=1):
+
+                    block_code = f"{floor}{block_index:02d}"
+
+                    for room in block:
+                        room_code = f"{block_code}-{room}"
+                        room_list.append(room_code)
+
+            # girls hostel only 86 rooms
+            if self.gender == "GIRLS":
+                room_list = room_list[:86]
+
+            # boys hostel only 90 rooms
+            if self.gender == "BOYS":
+                room_list = room_list[:90]
+
+            for room in room_list:
 
                 count = Student.objects.filter(
                     gender=self.gender,
-                    room_no=room_code
+                    room_no=room
                 ).count()
 
                 if count < 3:
-                    self.room_no = room_code
+                    self.room_no = room
                     break
 
             if not self.room_no:
-                raise ValidationError("No rooms available")
+                raise ValidationError("No room available")
 
-        # MAX 3 STUDENTS
+        # ================= MAX 3 STUDENTS =================
         existing = Student.objects.filter(
             gender=self.gender,
             room_no=self.room_no
         ).exclude(id=self.id).count()
 
         if existing >= 3:
-            raise ValidationError(f"Room {self.room_no} already full")
+            raise ValidationError("Room already full")
 
         super().save(*args, **kwargs)
 

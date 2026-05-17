@@ -300,9 +300,12 @@ def room_info(request):
         .annotate(total=Count('id'))
     )
 
-    total_rooms = 18
-    filled_rooms = sum(1 for r in rooms if r['total'] >= 3)
-    vacant_rooms = total_rooms - filled_rooms
+    if gender == "BOYS":
+         total_rooms = 90
+    else:
+        total_rooms = 86
+        filled_rooms = sum(1 for r in rooms if r['total'] >= 3)
+        vacant_rooms = total_rooms - filled_rooms
 
     return render(request, 'room_info.html', {
         'students': students,
