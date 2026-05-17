@@ -90,6 +90,8 @@ class Student(models.Model):
 
                 for block_index, block in enumerate(blocks, start=1):
 
+                    prefix = "B" if self.gender == "BOYS" else "G"
+
                     block_code = f"{floor}{block_index:02d}"
 
                     for room in block:
