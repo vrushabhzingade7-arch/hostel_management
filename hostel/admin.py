@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Student, LeaveRequest, Fee, Attendance, Outing, Feedback
-from import_export import resources, fields
+from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
@@ -8,26 +8,14 @@ from django.contrib.auth.hashers import make_password
 
 # ================= STUDENT =================
 class StudentResource(resources.ModelResource):
-    username = fields.Field(column_name='username')
-    password = fields.Field(column_name='password')
 
     class Meta:
         model = Student
-        import_id_fields = ('username',)
-        fields = (
-            'username',
-            'password',
-            'student_phone',
-            'parent_phone',
-            'department',
-            'student_class',
-            'gender',
-        )
-        exclude = ('id', 'hostel_id', 'room_no', 'user')
+        exclude = ('id', 'hostel_id', 'room_no')
 
     def before_import_row(self, row, **kwargs):
-        username = str(row['username']).strip()
-        password = str(row['password']).strip()
+        username = str(row.get('username')).strip()
+        password = str(row.get('password')).strip()
 
         user, created = User.objects.get_or_create(username=username)
 
@@ -36,6 +24,10 @@ class StudentResource(resources.ModelResource):
             user.save()
 
         row['user'] = user.id
+
+        # remove extra csv columns before Student save
+        row.pop('username', None)
+        row.pop('password', None)
 
 
 @admin.register(Student)
