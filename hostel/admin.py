@@ -1,11 +1,9 @@
 from django.contrib import admin
 from .models import Student, LeaveRequest, Fee, Attendance, Outing, Feedback
-from django import forms
 from import_export import resources, fields
 from import_export.admin import ImportExportModelAdmin
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
-
 
 
 # ================= STUDENT =================
@@ -15,11 +13,7 @@ class StudentResource(resources.ModelResource):
 
     class Meta:
         model = Student
-
         exclude = ('id', 'hostel_id', 'room_no')
-
-        import_id_fields = ('username',)
-
         fields = (
             'username',
             'password',
@@ -30,9 +24,9 @@ class StudentResource(resources.ModelResource):
             'gender',
         )
 
-def before_import_row(self, row, **kwargs):
-        username = str(row.get('username')).strip()
-        password = str(row.get('password')).strip()
+    def before_import_row(self, row, **kwargs):
+        username = str(row['username']).strip()
+        password = str(row['password']).strip()
 
         user, created = User.objects.get_or_create(username=username)
 
@@ -57,7 +51,7 @@ class StudentAdmin(ImportExportModelAdmin):
     )
 
     readonly_fields = ('hostel_id', 'room_no')
-
+    
 # ================= LEAVE =================
 @admin.register(LeaveRequest)
 class LeaveRequestAdmin(admin.ModelAdmin):
