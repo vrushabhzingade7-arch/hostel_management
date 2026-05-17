@@ -6,6 +6,8 @@ from django.views.decorators.cache import never_cache
 from django.db.models import Count, Sum
 
 from .models import Student, LeaveRequest, Attendance, Feedback, Fee, Outing
+import csv
+from django.http import HttpResponse
 
 
 # ================= HOME =================
@@ -586,3 +588,39 @@ def bulk_delete_students(request):
         return redirect('admin_dashboard')
 
     return render(request, 'bulk_delete.html')
+
+# ================= DOWNLOAD ATTENDANCE =================
+@login_required
+def download_attendance(request):
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="attendance.csv"'
+
+    writer = csv.writer(response)
+
+    # Header
+    writer.writerow([
+        'Username',
+        'Department',
+        'Class',
+        'Room No',
+        'Date',
+        'Status'
+    ])
+
+    attendance_data = Attendance.objects.select_related(
+        'student',
+        'student__user'
+    ).all().order_by('-date')
+
+    for attendance in attendance_data:
+        writer.writerow([
+            attendance.student.user.username,
+            attendance.student.department,
+            attendance.student.student_class,
+            attendance.student.room_no,
+            attendance.date,
+            attendance.status
+        ])
+
+    return response

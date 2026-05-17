@@ -81,5 +81,12 @@ urlpatterns = [
 
     path('bulk_upload/', views.bulk_upload_students, name='bulk_upload'),
     path('bulk_delete/', views.bulk_delete_students, name='bulk_delete'),
+
+
+    path(
+    'download_attendance/',
+    views.download_attendance,
+    name='download_attendance'
+),
     
 ]
