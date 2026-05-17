@@ -356,6 +356,7 @@ def student_room(request):
 # ================= FEES (STUDENT) =================
 @login_required
 def fees_student(request):
+
     student = Student.objects.filter(user=request.user).first()
 
     if not student:
@@ -363,9 +364,9 @@ def fees_student(request):
 
     fees = Fee.objects.filter(student=student)
 
-    total = fees.aggregate(total=Sum('amount'))['total'] or 0
-    paid = fees.filter(status="Paid").aggregate(total=Sum('amount'))['total'] or 0
-    pending = fees.filter(status="Pending").aggregate(total=Sum('amount'))['total'] or 0
+    total = sum(f.total_amount for f in fees)
+    paid = sum(f.paid_amount for f in fees)
+    pending = sum(f.pending_amount for f in fees)
 
     return render(request, 'fees_student.html', {
         'fees': fees,
@@ -373,18 +374,7 @@ def fees_student(request):
         'paid': paid,
         'pending': pending
     })
-
-
 # ================= FEES (ADMIN) =================
-
-import csv
-from io import TextIOWrapper
-from decimal import Decimal
-
-from django.contrib import messages
-from django.utils.timezone import now
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
 
 @login_required
 def fees_admin(request):
@@ -407,33 +397,21 @@ def fees_admin(request):
 
             username = row['username']
 
-            total_fees = Decimal(row['total_fees'])
-            paid_amount = Decimal(row['paid_amount'])
-
-            pending_amount = total_fees - paid_amount
+            total_amount = int(row['total_amount'])
+            paid_amount = int(row['paid_amount'])
 
             try:
+
                 student = Student.objects.get(
                     user__username=username
                 )
 
                 fee, created = Fee.objects.get_or_create(
-                    student=student,
-                    defaults={
-                        'amount': total_fees
-                    }
+                    student=student
                 )
 
-                fee.amount = total_fees
+                fee.total_amount = total_amount
                 fee.paid_amount = paid_amount
-                fee.pending_amount = pending_amount
-
-                if pending_amount <= 0:
-                    fee.status = "Paid"
-                    fee.paid_on = now()
-                else:
-                    fee.status = "Pending"
-                    fee.paid_on = None
 
                 fee.save()
 
@@ -444,23 +422,32 @@ def fees_admin(request):
 
         messages.success(
             request,
-            f"{updated} fee records updated successfully"
+            f"{updated} fee records uploaded successfully"
         )
 
-        return redirect(f'/fees_admin/?dept={dept}&cls={cls}')
+        return redirect(
+            f'/fees_admin/?dept={dept}&cls={cls}'
+        )
 
-    # ================= STEP 1: DEPARTMENT =================
+    # ================= STEP 1 =================
     if not dept:
-        departments = [choice[0] for choice in Student.DEPARTMENT_CHOICES]
+
+        departments = [
+            choice[0]
+            for choice in Student.DEPARTMENT_CHOICES
+        ]
 
         return render(request, 'fees_departments.html', {
             'departments': departments
         })
 
-    # ================= STEP 2: CLASS =================
+    # ================= STEP 2 =================
     if dept and not cls:
 
-        classes = [choice[0] for choice in Student.CLASS_CHOICES]
+        classes = [
+            choice[0]
+            for choice in Student.CLASS_CHOICES
+        ]
 
         return render(request, 'fees_classes.html', {
             'classes': classes,
@@ -477,11 +464,19 @@ def fees_admin(request):
     )
 
     # ================= TOTALS =================
-    total_amount = sum(f.amount for f in fees)
-    paid_amount = sum(f.paid_amount for f in fees)
-    pending_amount = sum(f.pending_amount for f in fees)
+    total_amount = sum(
+        f.total_amount for f in fees
+    )
 
-    # ================= SINGLE UPDATE =================
+    paid_amount = sum(
+        f.paid_amount for f in fees
+    )
+
+    pending_amount = sum(
+        f.pending_amount for f in fees
+    )
+
+    # ================= ADD PAYMENT =================
     if request.method == "POST" and request.POST.get("fee_id"):
 
         fee = get_object_or_404(
@@ -489,25 +484,17 @@ def fees_admin(request):
             id=request.POST.get("fee_id")
         )
 
-        action = request.POST.get("action")
+        add_amount = int(
+            request.POST.get("add_amount")
+        )
 
-        if action == "Paid":
-
-            fee.paid_amount = fee.amount
-            fee.pending_amount = 0
-            fee.status = "Paid"
-            fee.paid_on = now()
-
-        else:
-
-            fee.paid_amount = 0
-            fee.pending_amount = fee.amount
-            fee.status = "Pending"
-            fee.paid_on = None
+        fee.paid_amount += add_amount
 
         fee.save()
 
-        return redirect(f'/fees_admin/?dept={dept}&cls={cls}')
+        return redirect(
+            f'/fees_admin/?dept={dept}&cls={cls}'
+        )
 
     return render(request, 'fees_admin.html', {
         'fees': fees,
