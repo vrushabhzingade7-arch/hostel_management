@@ -26,6 +26,9 @@ class StudentResource(resources.ModelResource):
         model = Student
 
         fields = (
+            'username',
+            'password',
+            'email',
             'student_phone',
             'parent_phone',
             'department',
@@ -100,10 +103,11 @@ class LeaveRequestAdmin(admin.ModelAdmin):
 # ================= FEES =================
 @admin.register(Fee)
 class FeeAdmin(admin.ModelAdmin):
-
     list_display = (
         'student',
-        'amount',
+        'total_amount',
+        'paid_amount',
+        'pending_amount',
         'status',
         'paid_on',
         'created_at'
