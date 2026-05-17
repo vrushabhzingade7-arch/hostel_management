@@ -1,37 +1,47 @@
 from django.contrib import admin
 from .models import Student, LeaveRequest, Fee, Attendance, Outing, Feedback
-from import_export import resources
+from import_export import resources, fields
 from import_export.admin import ImportExportModelAdmin
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 
 
-# ================= STUDENT =================
-# ================= STUDENT =================
 class StudentResource(resources.ModelResource):
+    username = fields.Field(column_name='username')
+    password = fields.Field(column_name='password')
+    student_phone = fields.Field(column_name='student_phone')
+    parent_phone = fields.Field(column_name='parent_phone')
+    department = fields.Field(column_name='department')
+    student_class = fields.Field(column_name='student_class')
+    gender = fields.Field(column_name='gender')
 
     class Meta:
         model = Student
         fields = (
-            'user',
             'student_phone',
             'parent_phone',
             'department',
             'student_class',
             'gender',
         )
+        import_id_fields = ()
+        skip_unchanged = True
+        report_skipped = False
 
     def before_import_row(self, row, **kwargs):
-        username = str(row.pop('username')).strip()
-        password = str(row.pop('password')).strip()
+        username = str(row['username']).strip()
+        password = str(row['password']).strip()
 
-        user, created = User.objects.get_or_create(username=username)
-
-        if created:
-            user.password = make_password(password)
-            user.save()
+        user = User.objects.create(
+            username=username,
+            password=make_password(password)
+        )
 
         row['user'] = user.id
+
+        del row['username']
+        del row['password']
+
 
 @admin.register(Student)
 class StudentAdmin(ImportExportModelAdmin):
