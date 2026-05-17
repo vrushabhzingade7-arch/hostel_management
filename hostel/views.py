@@ -502,9 +502,17 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 
 
+# ================= BULK UPLOAD STUDENTS =================
+import csv
+from io import TextIOWrapper
+from django.contrib.auth.models import User
+from django.contrib import messages
+
 @login_required
 def bulk_upload_students(request):
+
     if request.method == "POST":
+
         csv_file = request.FILES.get('file')
 
         if not csv_file:
@@ -512,34 +520,44 @@ def bulk_upload_students(request):
             return redirect('bulk_upload')
 
         file_data = TextIOWrapper(csv_file.file, encoding='utf-8')
+
         reader = csv.DictReader(file_data)
 
         created = 0
 
         for row in reader:
+
             username = row['username']
             password = row['password']
+            email = row['email']
 
+            # Skip if username already exists
             if User.objects.filter(username=username).exists():
                 continue
 
+            # ================= CREATE USER =================
             user = User.objects.create_user(
                 username=username,
+                email=email,
                 password=password
             )
 
+            # ================= CREATE STUDENT =================
             Student.objects.create(
                 user=user,
+
                 gender=row['gender'].upper(),
                 department=row['department'].upper(),
                 student_class=row['student_class'].upper(),
+
                 student_phone=row['student_phone'],
                 parent_phone=row['parent_phone']
             )
 
             created += 1
 
-        messages.success(request, f"{created} students uploaded")
+        messages.success(request, f"{created} students uploaded successfully")
+
         return redirect('admin_dashboard')
 
     return render(request, 'bulk_upload.html')
