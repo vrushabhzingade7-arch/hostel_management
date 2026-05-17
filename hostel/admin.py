@@ -3,17 +3,11 @@ from .models import Student, LeaveRequest, Fee, Attendance, Outing, Feedback
 from django import forms
 
 
+
 # ================= STUDENT =================
-class StudentAdminForm(forms.ModelForm):
-    class Meta:
-        model = Student
-        fields = '__all__'
-
-
+from import_export.admin import ImportExportModelAdmin
 @admin.register(Student)
-class StudentAdmin(admin.ModelAdmin):
-    form = StudentAdminForm
-
+class StudentAdmin(ImportExportModelAdmin):
     list_display = (
         'user',
         'hostel_id',
@@ -24,9 +18,7 @@ class StudentAdmin(admin.ModelAdmin):
     )
 
     readonly_fields = ('hostel_id', 'room_no')
-
-    exclude = ('hostel_id', 'room_no')
-
+    
 # ================= LEAVE =================
 @admin.register(LeaveRequest)
 class LeaveRequestAdmin(admin.ModelAdmin):
