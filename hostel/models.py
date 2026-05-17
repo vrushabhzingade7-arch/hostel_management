@@ -194,30 +194,62 @@ class LeaveRequest(models.Model):
 
 # ================= FEES =================
 class Fee(models.Model):
+
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
+        ('Partial', 'Partial'),
         ('Paid', 'Paid'),
     ]
 
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="fees")
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,
+        related_name="fees"
+    )
 
-    amount = models.PositiveIntegerField()
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
+    total_amount = models.PositiveIntegerField()
+
+    paid_amount = models.PositiveIntegerField(default=0)
+
+    pending_amount = models.PositiveIntegerField(default=0)
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='Pending'
+    )
 
     paid_on = models.DateTimeField(null=True, blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['-created_at']
 
     def save(self, *args, **kwargs):
-        # Auto set paid date when marked Paid
-        if self.status == "Paid" and not self.paid_on:
+
+        # ================= PENDING =================
+        self.pending_amount = self.total_amount - self.paid_amount
+
+        # ================= STATUS =================
+        if self.pending_amount <= 0:
+            self.status = "Paid"
+            self.pending_amount = 0
+
+        elif self.paid_amount > 0:
+            self.status = "Partial"
+
+        else:
+            self.status = "Pending"
+
+        # ================= PAID DATE =================
+        if self.status == "Paid":
             self.paid_on = now()
+
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.student.user.username} - ₹{self.amount} ({self.status})"
+        return f"{self.student.user.username} - ₹{self.total_amount}"
 
 
 # ================= OUTING =================

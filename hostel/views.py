@@ -8,6 +8,9 @@ from django.db.models import Count, Sum
 from .models import Student, LeaveRequest, Attendance, Feedback, Fee, Outing
 import csv
 from django.http import HttpResponse
+from io import TextIOWrapper
+from decimal import Decimal
+from django.contrib import messages
 
 
 # ================= HOME =================
@@ -373,56 +376,137 @@ def fees_student(request):
 
 
 # ================= FEES (ADMIN) =================
+
+import csv
+from io import TextIOWrapper
+from decimal import Decimal
+
+from django.contrib import messages
 from django.utils.timezone import now
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
 @login_required
 def fees_admin(request):
+
     dept = request.GET.get('dept')
     cls = request.GET.get('cls')
 
-    # ================= STEP 1: DEPARTMENTS =================
+    # ================= CSV UPLOAD =================
+    if request.method == "POST" and request.FILES.get('csv_file'):
+
+        csv_file = request.FILES['csv_file']
+
+        file_data = TextIOWrapper(csv_file.file, encoding='utf-8')
+
+        reader = csv.DictReader(file_data)
+
+        updated = 0
+
+        for row in reader:
+
+            username = row['username']
+
+            total_fees = Decimal(row['total_fees'])
+            paid_amount = Decimal(row['paid_amount'])
+
+            pending_amount = total_fees - paid_amount
+
+            try:
+                student = Student.objects.get(
+                    user__username=username
+                )
+
+                fee, created = Fee.objects.get_or_create(
+                    student=student,
+                    defaults={
+                        'amount': total_fees
+                    }
+                )
+
+                fee.amount = total_fees
+                fee.paid_amount = paid_amount
+                fee.pending_amount = pending_amount
+
+                if pending_amount <= 0:
+                    fee.status = "Paid"
+                    fee.paid_on = now()
+                else:
+                    fee.status = "Pending"
+                    fee.paid_on = None
+
+                fee.save()
+
+                updated += 1
+
+            except Student.DoesNotExist:
+                continue
+
+        messages.success(
+            request,
+            f"{updated} fee records updated successfully"
+        )
+
+        return redirect(f'/fees_admin/?dept={dept}&cls={cls}')
+
+    # ================= STEP 1: DEPARTMENT =================
     if not dept:
         departments = [choice[0] for choice in Student.DEPARTMENT_CHOICES]
+
         return render(request, 'fees_departments.html', {
             'departments': departments
         })
 
-    # ================= STEP 2: CLASSES =================
+    # ================= STEP 2: CLASS =================
     if dept and not cls:
+
         classes = [choice[0] for choice in Student.CLASS_CHOICES]
+
         return render(request, 'fees_classes.html', {
             'classes': classes,
             'dept': dept
         })
 
-    # ================= STEP 3: FEES TABLE =================
-    fees = Fee.objects.select_related('student', 'student__user').filter(
+    # ================= FEES TABLE =================
+    fees = Fee.objects.select_related(
+        'student',
+        'student__user'
+    ).filter(
         student__department=dept,
         student__student_class=cls
     )
 
-    # ================= CALCULATIONS =================
+    # ================= TOTALS =================
     total_amount = sum(f.amount for f in fees)
-    paid_amount = sum(f.amount for f in fees if f.status == "Paid")
-    pending_amount = sum(f.amount for f in fees if f.status == "Pending")
+    paid_amount = sum(f.paid_amount for f in fees)
+    pending_amount = sum(f.pending_amount for f in fees)
 
-    # ================= UPDATE STATUS =================
-    if request.method == "POST":
-        fee = get_object_or_404(Fee, id=request.POST.get("fee_id"))
+    # ================= SINGLE UPDATE =================
+    if request.method == "POST" and request.POST.get("fee_id"):
+
+        fee = get_object_or_404(
+            Fee,
+            id=request.POST.get("fee_id")
+        )
+
         action = request.POST.get("action")
 
-        fee.status = action
-
         if action == "Paid":
+
+            fee.paid_amount = fee.amount
+            fee.pending_amount = 0
+            fee.status = "Paid"
             fee.paid_on = now()
+
         else:
+
+            fee.paid_amount = 0
+            fee.pending_amount = fee.amount
+            fee.status = "Pending"
             fee.paid_on = None
 
         fee.save()
 
-        # ✅ stay on same page
         return redirect(f'/fees_admin/?dept={dept}&cls={cls}')
 
     return render(request, 'fees_admin.html', {

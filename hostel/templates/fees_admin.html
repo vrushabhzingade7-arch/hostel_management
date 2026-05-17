@@ -1,166 +1,282 @@
-{% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Fees Management</title>
+<style>
+    *{
+        box-sizing:border-box;
+        margin:0;
+        padding:0;
+        font-family:'Segoe UI',sans-serif;
+    }
 
-    <style>
-        * { box-sizing: border-box; }
+    body{
+        background:#f4f7fb;
+    }
 
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-            background: #f4f7fb;
+    /* SIDEBAR */
+    .sidebar{
+        width:240px;
+        height:100vh;
+        background:#2c3e50;
+        color:white;
+        padding:20px;
+        position:fixed;
+        top:0;
+        left:0;
+    }
+
+    .sidebar-header{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:10px;
+        font-size:20px;
+        font-weight:bold;
+        margin-bottom:30px;
+    }
+
+    .sidebar-header .icon{
+        font-size:24px;
+    }
+
+    .sidebar ul{
+        list-style:none;
+        padding:0;
+    }
+
+    .sidebar ul li{
+        margin-bottom:8px;
+    }
+
+    .sidebar ul li a{
+        display:block;
+        padding:12px;
+        color:white;
+        text-decoration:none;
+        border-radius:8px;
+        transition:0.3s;
+    }
+
+    .sidebar ul li a:hover,
+    .sidebar ul li a.active{
+        background:rgba(255,255,255,0.2);
+        transform:translateX(5px);
+    }
+
+    /* MAIN */
+    .main{
+        margin-left:240px;
+        padding:30px;
+        width:calc(100% - 240px);
+    }
+
+    h2{
+        margin-bottom:20px;
+        color:#2c3e50;
+    }
+
+    .info{
+        margin-bottom:10px;
+        font-weight:bold;
+        color:#444;
+    }
+
+    /* SUMMARY CARDS */
+    .summary{
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+        gap:20px;
+        margin-bottom:25px;
+    }
+
+    .summary-card{
+        background:white;
+        padding:20px;
+        border-radius:14px;
+        box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .summary-card h3{
+        font-size:16px;
+        margin-bottom:10px;
+        color:#555;
+    }
+
+    .summary-card p{
+        font-size:26px;
+        font-weight:bold;
+    }
+
+    .total-card p{
+        color:#2563eb;
+    }
+
+    .paid-card p{
+        color:#16a34a;
+    }
+
+    .pending-card p{
+        color:#dc2626;
+    }
+
+    /* CSV UPLOAD */
+    .upload-box{
+        background:white;
+        padding:20px;
+        border-radius:14px;
+        margin-bottom:25px;
+        box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .upload-box h3{
+        margin-bottom:15px;
+        color:#2c3e50;
+    }
+
+    .upload-form{
+        display:flex;
+        gap:15px;
+        flex-wrap:wrap;
+        align-items:center;
+    }
+
+    .upload-form input[type=file]{
+        padding:10px;
+        background:#f8fafc;
+        border:1px solid #ddd;
+        border-radius:8px;
+        flex:1;
+    }
+
+    .upload-btn{
+        padding:12px 20px;
+        background:#2563eb;
+        color:white;
+        border:none;
+        border-radius:8px;
+        cursor:pointer;
+        transition:0.3s;
+        font-weight:bold;
+    }
+
+    .upload-btn:hover{
+        background:#1d4ed8;
+    }
+
+    /* MESSAGE */
+    .msg{
+        background:#dcfce7;
+        color:#166534;
+        padding:12px;
+        border-radius:8px;
+        margin-bottom:20px;
+        font-weight:500;
+    }
+
+    /* TABLE */
+    .table-container{
+        overflow-x:auto;
+        background:white;
+        border-radius:14px;
+        box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    table{
+        width:100%;
+        border-collapse:collapse;
+        min-width:900px;
+    }
+
+    th{
+        background:#3b82f6;
+        color:white;
+        padding:14px;
+        text-align:left;
+    }
+
+    td{
+        padding:14px;
+        border-bottom:1px solid #eee;
+    }
+
+    tr:hover{
+        background:#f9fafb;
+    }
+
+    /* STATUS */
+    .status{
+        padding:6px 12px;
+        border-radius:20px;
+        font-size:13px;
+        font-weight:bold;
+    }
+
+    .paid{
+        background:#dcfce7;
+        color:#16a34a;
+    }
+
+    .pending{
+        background:#fee2e2;
+        color:#dc2626;
+    }
+
+    /* BUTTONS */
+    .btn{
+        border:none;
+        padding:8px 14px;
+        margin:2px;
+        border-radius:6px;
+        font-size:13px;
+        cursor:pointer;
+        transition:0.3s;
+    }
+
+    .paid-btn{
+        background:#22c55e;
+        color:white;
+    }
+
+    .paid-btn:hover{
+        background:#16a34a;
+    }
+
+    .pending-btn{
+        background:#ef4444;
+        color:white;
+    }
+
+    .pending-btn:hover{
+        background:#dc2626;
+    }
+
+    .empty{
+        text-align:center;
+        padding:20px;
+        color:gray;
+    }
+
+    /* RESPONSIVE */
+    @media(max-width:768px){
+
+        .sidebar{
+            display:none;
         }
 
-        /* SIDEBAR */
-        .sidebar {
-            width: 240px;
-            height: 100vh;
-            background: #2c3e50;
-            color: white;
-            padding: 20px;
-            position: fixed;
-            top: 0;
-            left: 0;
+        .main{
+            margin-left:0;
+            width:100%;
+            padding:20px;
         }
 
-        .sidebar-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 30px;
+        .upload-form{
+            flex-direction:column;
+            align-items:stretch;
         }
 
-        .sidebar-header .icon {
-            font-size: 24px;
+        .upload-btn{
+            width:100%;
         }
+    }
 
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .sidebar ul li a {
-            display: block;
-            padding: 12px;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: 0.3s;
-        }
-
-        .sidebar ul li a:hover,
-        .sidebar ul li a.active {
-            background: rgba(255,255,255,0.2);
-            transform: translateX(5px);
-        }
-
-        /* MAIN */
-        .main {
-            margin-left: 240px;
-            padding: 30px;
-            width: calc(100% - 240px);
-        }
-
-        h2 {
-            margin-bottom: 20px;
-            color: #2c3e50;
-        }
-
-        .info {
-            margin-bottom: 10px;
-            font-weight: bold;
-            color: #444;
-        }
-
-        /* TABLE */
-        .table-container {
-            overflow-x: auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 600px;
-        }
-
-        th {
-            background: #3b82f6;
-            color: white;
-            padding: 14px;
-            text-align: left;
-        }
-
-        td {
-            padding: 14px;
-            border-bottom: 1px solid #eee;
-        }
-
-        tr:hover {
-            background: #f9fafb;
-        }
-
-        /* STATUS */
-        .status {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        .paid {
-            background: #dcfce7;
-            color: #16a34a;
-        }
-
-        .pending {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-
-        /* BUTTONS */
-        .btn {
-            border: none;
-            padding: 8px 14px;
-            margin: 2px;
-            border-radius: 6px;
-            font-size: 13px;
-            cursor: pointer;
-        }
-
-        .paid-btn {
-            background: #22c55e;
-            color: white;
-        }
-
-        .pending-btn {
-            background: #ef4444;
-            color: white;
-        }
-
-        .empty {
-            text-align: center;
-            padding: 20px;
-            color: gray;
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .sidebar { display: none; }
-            .main {
-                margin-left: 0;
-                width: 100%;
-            }
-        }
-
-    </style>
+</style>
 </head>
 
 <body>
@@ -205,50 +321,69 @@
         <table>
             <tr>
                 <th>Student</th>
-                <th>Amount</th>
+                <th>Total Fees</th>
+                <th>Paid</th>
+                <th>Pending</th>
                 <th>Status</th>
-                <th>Action</th>
+                <th>Add Payment</th>
             </tr>
 
-            {% for fee in fees %}
-            <tr>
-                <td>👤 {{ fee.student.user.username|default:"N/A" }}</td>
-                <td>₹ {{ fee.amount }}</td>
+{% for fee in fees %}
+<tr>
 
-                <td>
-                    {% if fee.status == "Paid" %}
-                        <span class="status paid">Paid</span>
-                    {% else %}
-                        <span class="status pending">Pending</span>
-                    {% endif %}
-                </td>
+    <td>👤 {{ fee.student.user.username }}</td>
 
-                <td>
-                    <form method="POST" style="display:inline;">
-                        {% csrf_token %}
-                        <input type="hidden" name="fee_id" value="{{ fee.id }}">
-                        <input type="hidden" name="action" value="Paid">
-                        <input type="hidden" name="dept" value="{{ dept }}">
-                        <input type="hidden" name="cls" value="{{ cls }}">
-                        <button class="btn paid-btn">✔ Paid</button>
-                    </form>
+    <td>₹ {{ fee.total_amount }}</td>
 
-                    <form method="POST" style="display:inline;">
-                        {% csrf_token %}
-                        <input type="hidden" name="fee_id" value="{{ fee.id }}">
-                        <input type="hidden" name="action" value="Pending">
-                        <input type="hidden" name="dept" value="{{ dept }}">
-                        <input type="hidden" name="cls" value="{{ cls }}">
-                        <button class="btn pending-btn">✖ Pending</button>
-                    </form>
-                </td>
-            </tr>
+    <td style="color:green;font-weight:bold;">
+        ₹ {{ fee.paid_amount }}
+    </td>
 
-            {% empty %}
-            <tr>
-                <td colspan="4" class="empty">No fee records available</td>
-            </tr>
-            {% endfor %}
+    <td style="color:red;font-weight:bold;">
+        ₹ {{ fee.pending_amount }}
+    </td>
+
+    <td>
+
+        {% if fee.status == "Paid" %}
+            <span class="status paid">Paid</span>
+
+        {% elif fee.status == "Partial" %}
+            <span class="status partial">Partial</span>
+
+        {% else %}
+            <span class="status pending">Pending</span>
+
+        {% endif %}
+
+    </td>
+
+    <td>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <input type="hidden"
+                   name="fee_id"
+                   value="{{ fee.id }}">
+
+            <input type="number"
+                   name="add_amount"
+                   placeholder="Enter Amount"
+                   required
+                   style="padding:8px; width:120px;">
+
+            <button class="btn paid-btn">
+                Add
+            </button>
+
+        </form>
+
+    </td>
+
+</tr>
+{% endfor %}
         </table>
     </div>
 
