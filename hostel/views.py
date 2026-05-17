@@ -541,3 +541,48 @@ def bulk_upload_students(request):
         return redirect('admin_dashboard')
 
     return render(request, 'bulk_upload.html')
+
+# ================= BULK DELETE STUDENTS =================
+import csv
+from io import TextIOWrapper
+from django.contrib import messages
+from django.contrib.auth.models import User
+
+
+@login_required
+def bulk_delete_students(request):
+
+    if request.method == "POST":
+
+        csv_file = request.FILES.get('file')
+
+        if not csv_file:
+            messages.error(request, "Please upload CSV file")
+            return redirect('bulk_delete')
+
+        file_data = TextIOWrapper(csv_file.file, encoding='utf-8')
+
+        reader = csv.DictReader(file_data)
+
+        deleted = 0
+
+        for row in reader:
+
+            username = row['username']
+
+            try:
+                user = User.objects.get(username=username)
+
+                # delete user + student
+                user.delete()
+
+                deleted += 1
+
+            except User.DoesNotExist:
+                continue
+
+        messages.success(request, f"{deleted} students deleted successfully")
+
+        return redirect('admin_dashboard')
+
+    return render(request, 'bulk_delete.html')

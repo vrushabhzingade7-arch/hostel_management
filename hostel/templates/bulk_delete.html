@@ -2,9 +2,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Bulk Upload Students</title>
+    <title>Bulk Delete Students</title>
 
     <style>
+
         *{
             margin:0;
             padding:0;
@@ -58,6 +59,10 @@
             transform:translateX(5px);
         }
 
+        .active{
+            background:#dc3545;
+        }
+
         /* MAIN */
         .main{
             margin-left:260px;
@@ -65,7 +70,7 @@
             width:100%;
         }
 
-        .upload-card{
+        .delete-card{
             max-width:650px;
             background:white;
             margin:auto;
@@ -74,25 +79,35 @@
             box-shadow:0 6px 20px rgba(0,0,0,0.1);
         }
 
-        .upload-card h2{
+        .delete-card h2{
             text-align:center;
-            color:#2c3e50;
+            color:#dc3545;
             margin-bottom:25px;
         }
 
-        .upload-card p{
+        .delete-card p{
             text-align:center;
             color:#666;
             margin-bottom:25px;
         }
 
+        .warning{
+            background:#fff3cd;
+            color:#856404;
+            padding:15px;
+            border-radius:10px;
+            margin-bottom:25px;
+            line-height:1.6;
+            text-align:center;
+        }
+
         .file-box{
-            border:2px dashed #3498db;
+            border:2px dashed #dc3545;
             padding:30px;
             text-align:center;
             border-radius:12px;
             margin-bottom:20px;
-            background:#f8fbff;
+            background:#fff5f5;
         }
 
         input[type=file]{
@@ -103,7 +118,7 @@
             width:100%;
             padding:14px;
             border:none;
-            background:#2c3e50;
+            background:#dc3545;
             color:white;
             font-size:16px;
             border-radius:8px;
@@ -112,23 +127,10 @@
         }
 
         .btn:hover{
-            background:#1a252f;
+            background:#bb2d3b;
         }
 
-        .sample{
-            display:block;
-            text-align:center;
-            margin-top:20px;
-            color:#3498db;
-            text-decoration:none;
-            font-weight:bold;
-        }
-
-        .sample:hover{
-            text-decoration:underline;
-        }
-
-        .msg{
+        .msg-success{
             background:#d4edda;
             color:#155724;
             padding:12px;
@@ -137,8 +139,31 @@
             text-align:center;
         }
 
+        .msg-error{
+            background:#f8d7da;
+            color:#721c24;
+            padding:12px;
+            border-radius:8px;
+            margin-bottom:20px;
+            text-align:center;
+        }
+
+        .sample{
+            display:block;
+            text-align:center;
+            margin-top:20px;
+            color:#dc3545;
+            text-decoration:none;
+            font-weight:bold;
+        }
+
+        .sample:hover{
+            text-decoration:underline;
+        }
+
     </style>
 </head>
+
 <body>
 
 <div class="container">
@@ -163,29 +188,53 @@
     <!-- MAIN -->
     <div class="main">
 
-        <div class="upload-card">
+        <div class="delete-card">
 
-            <h2>📤 Bulk Student Upload</h2>
+            <h2>🗑 Bulk Delete Students</h2>
 
-            <p>Upload CSV file to add multiple students automatically</p>
+            <p>
+                Upload CSV file containing usernames to remove students
+            </p>
 
             {% if messages %}
                 {% for message in messages %}
-                    <div class="msg">{{ message }}</div>
+
+                    <div class="
+                        {% if message.tags == 'success' %}
+                            msg-success
+                        {% else %}
+                            msg-error
+                        {% endif %}
+                    ">
+                        {{ message }}
+                    </div>
+
                 {% endfor %}
             {% endif %}
 
+            <div class="warning">
+                ⚠ Deleted students will permanently lose hostel access.
+                <br>
+                Vacant rooms will automatically become available again.
+            </div>
+
             <form method="POST" enctype="multipart/form-data">
+
                 {% csrf_token %}
 
                 <div class="file-box">
                     <input type="file" name="file" accept=".csv" required>
                 </div>
 
-                <button type="submit" class="btn">Upload Students</button>
+                <button type="submit" class="btn">
+                    Delete Students
+                </button>
+
             </form>
 
-            <a href="#" class="sample">⬇ Download Sample CSV Format</a>
+            <a href="#" class="sample">
+                ⬇ Download Sample Delete CSV
+            </a>
 
         </div>
 

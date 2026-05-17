@@ -80,5 +80,6 @@ urlpatterns = [
          name='password_reset_complete'),
 
     path('bulk_upload/', views.bulk_upload_students, name='bulk_upload'),
+    path('bulk_delete/', views.bulk_delete_students, name='bulk_delete'),
     
 ]
