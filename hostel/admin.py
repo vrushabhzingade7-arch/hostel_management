@@ -10,12 +10,16 @@ from django.contrib.auth.hashers import make_password
 
 # ================= STUDENT =================
 class StudentResource(resources.ModelResource):
-
     username = fields.Field(column_name='username')
     password = fields.Field(column_name='password')
 
     class Meta:
         model = Student
+
+        exclude = ('id', 'hostel_id', 'room_no')
+
+        import_id_fields = ('username',)
+
         fields = (
             'username',
             'password',
