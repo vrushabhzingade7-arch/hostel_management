@@ -46,12 +46,11 @@ class Student(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def save(self, *args, **kwargs):
-
+def save(self, *args, **kwargs):
 
     # ================= HOSTEL ID =================
-        if not self.hostel_id:
-            last_student = Student.objects.order_by('-hostel_id').first()
+    if not self.hostel_id:
+        last_student = Student.objects.order_by('-id').first()
 
         if last_student and last_student.hostel_id:
             num = int(last_student.hostel_id.replace('HST', '')) + 1
@@ -60,72 +59,69 @@ class Student(models.Model):
 
         self.hostel_id = f"HST{num:03d}"
 
-        # ================= FLOOR MAP =================
-        class_floors = {
-            'FY': [0, 1],
-            'SY': [2],
-            'TY': [3],
-            'BE': [4],
-        }
+    # ================= FLOOR MAP =================
+    class_floors = {
+        'FY': [0, 1],
+        'SY': [2],
+        'TY': [3],
+        'BE': [4],
+    }
 
-        # ================= AUTO ROOM =================
+    # ================= AUTO ROOM =================
+    if not self.room_no:
+
+        floors = class_floors[self.student_class]
+        room_list = []
+
+        for floor in floors:
+
+            blocks = [
+                [1, 2, 3, 4],
+                [5, 6, 7, 8],
+                [9],
+                [10],
+                [11, 12, 13, 14],
+                [15, 16, 17, 18],
+            ]
+
+            for block_index, block in enumerate(blocks, start=1):
+
+                block_code = f"{floor}{block_index:02d}"
+
+                for room in block:
+                    room_code = f"{block_code}-{room}"
+                    room_list.append(room_code)
+
+        if self.gender == "GIRLS":
+            room_list = room_list[:86]
+
+        if self.gender == "BOYS":
+            room_list = room_list[:90]
+
+        for room in room_list:
+
+            count = Student.objects.filter(
+                gender=self.gender,
+                room_no=room
+            ).count()
+
+            if count < 3:
+                self.room_no = room
+                break
+
         if not self.room_no:
+            raise ValidationError("No room available")
 
-            floors = class_floors[self.student_class]
+    # ================= MAX 3 STUDENTS =================
+    existing = Student.objects.filter(
+        gender=self.gender,
+        room_no=self.room_no
+    ).exclude(id=self.id).count()
 
-            room_list = []
+    if existing >= 3:
+        raise ValidationError("Room already full")
 
-            for floor in floors:
-
-                blocks = [
-                    [1, 2, 3, 4],
-                    [5, 6, 7, 8],
-                    [9],
-                    [10],
-                    [11, 12, 13, 14],
-                    [15, 16, 17, 18],
-                ]
-
-                for block_index, block in enumerate(blocks, start=1):
-
-                    block_code = f"{floor}{block_index:02d}"
-
-                    for room in block:
-                        room_code = f"{block_code}-{room}"
-                        room_list.append(room_code)
-
-            # girls hostel only 86 rooms
-            if self.gender == "GIRLS":
-                room_list = room_list[:86]
-
-            # boys hostel only 90 rooms
-            if self.gender == "BOYS":
-                room_list = room_list[:90]
-
-            for room in room_list:
-
-                count = Student.objects.filter(
-                    gender=self.gender,
-                    room_no=room
-                ).count()
-
-                if count < 3:
-                    self.room_no = room
-                    break
-
-            if not self.room_no:
-                raise ValidationError("No room available")
-
-        # ================= MAX 3 STUDENTS =================
-        existing = Student.objects.filter(
-            gender=self.gender,
-            room_no=self.room_no
-        ).exclude(id=self.id).count()
-
-        if existing >= 3:
-            raise ValidationError("Room already full")
-
-        super().save(*args, **kwargs)
+    super().save(*args, **kwargs)
 
     def __str__(self):
         return self.user.username
