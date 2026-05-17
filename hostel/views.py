@@ -492,3 +492,52 @@ def feedback_submit(request):
 def feedback_admin(request):
     feedbacks = Feedback.objects.select_related('user').all().order_by('-created_at')
     return render(request, 'feedback_admin.html', {'feedbacks': feedbacks})
+
+
+import csv
+from io import TextIOWrapper
+from django.contrib.auth.models import User
+from django.contrib import messages
+
+
+@login_required
+def bulk_upload_students(request):
+    if request.method == "POST":
+        csv_file = request.FILES.get('file')
+
+        if not csv_file:
+            messages.error(request, "Please select CSV file")
+            return redirect('bulk_upload')
+
+        file_data = TextIOWrapper(csv_file.file, encoding='utf-8')
+        reader = csv.DictReader(file_data)
+
+        created = 0
+
+        for row in reader:
+            username = row['username']
+            password = row['password']
+
+            if User.objects.filter(username=username).exists():
+                continue
+
+            user = User.objects.create_user(
+                username=username,
+                password=password
+            )
+
+            Student.objects.create(
+                user=user,
+                gender=row['gender'].upper(),
+                department=row['department'].upper(),
+                student_class=row['student_class'].upper(),
+                student_phone=row['student_phone'],
+                parent_phone=row['parent_phone']
+            )
+
+            created += 1
+
+        messages.success(request, f"{created} students uploaded")
+        return redirect('admin_dashboard')
+
+    return render(request, 'bulk_upload.html')

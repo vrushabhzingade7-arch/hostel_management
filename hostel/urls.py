@@ -78,5 +78,7 @@ urlpatterns = [
              template_name='password_reset_complete.html'
          ),
          name='password_reset_complete'),
+
+    path('bulk_upload/', views.bulk_upload_students, name='bulk_upload'),
     
 ]

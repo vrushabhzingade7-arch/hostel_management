@@ -1,0 +1,196 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bulk Upload Students</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Segoe UI',sans-serif;
+        }
+
+        body{
+            background:#f4f7fb;
+        }
+
+        .container{
+            display:flex;
+        }
+
+        /* SIDEBAR */
+        .sidebar{
+            width:240px;
+            height:100vh;
+            background:#2c3e50;
+            color:white;
+            padding:20px;
+            position:fixed;
+        }
+
+        .sidebar h2{
+            text-align:center;
+            margin-bottom:30px;
+        }
+
+        .sidebar ul{
+            list-style:none;
+            padding:0;
+        }
+
+        .sidebar ul li{
+            margin-bottom:8px;
+        }
+
+        .sidebar ul li a{
+            display:block;
+            padding:12px;
+            color:white;
+            text-decoration:none;
+            border-radius:8px;
+            transition:0.3s;
+        }
+
+        .sidebar ul li a:hover{
+            background:rgba(255,255,255,0.2);
+            transform:translateX(5px);
+        }
+
+        /* MAIN */
+        .main{
+            margin-left:260px;
+            padding:40px;
+            width:100%;
+        }
+
+        .upload-card{
+            max-width:650px;
+            background:white;
+            margin:auto;
+            padding:40px;
+            border-radius:16px;
+            box-shadow:0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        .upload-card h2{
+            text-align:center;
+            color:#2c3e50;
+            margin-bottom:25px;
+        }
+
+        .upload-card p{
+            text-align:center;
+            color:#666;
+            margin-bottom:25px;
+        }
+
+        .file-box{
+            border:2px dashed #3498db;
+            padding:30px;
+            text-align:center;
+            border-radius:12px;
+            margin-bottom:20px;
+            background:#f8fbff;
+        }
+
+        input[type=file]{
+            font-size:16px;
+        }
+
+        .btn{
+            width:100%;
+            padding:14px;
+            border:none;
+            background:#2c3e50;
+            color:white;
+            font-size:16px;
+            border-radius:8px;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        .btn:hover{
+            background:#1a252f;
+        }
+
+        .sample{
+            display:block;
+            text-align:center;
+            margin-top:20px;
+            color:#3498db;
+            text-decoration:none;
+            font-weight:bold;
+        }
+
+        .sample:hover{
+            text-decoration:underline;
+        }
+
+        .msg{
+            background:#d4edda;
+            color:#155724;
+            padding:12px;
+            border-radius:8px;
+            margin-bottom:20px;
+            text-align:center;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>⚙ Admin Panel</h2>
+
+        <ul>
+            <li><a href="{% url 'admin_dashboard' %}">📊 Dashboard</a></li>
+            <li><a href="{% url 'mark_attendance' %}">📝 Attendance</a></li>
+            <li><a href="{% url 'room_info' %}">🏠 Room Info</a></li>
+            <li><a href="{% url 'leave_requests' %}">📄 Leave Requests</a></li>
+            <li><a href="{% url 'fees_admin' %}">💰 Fees</a></li>
+            <li><a href="{% url 'outing_admin' %}">🚪 Outing</a></li>
+            <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
+            <li><a href="{% url 'bulk_upload' %}">📤 Bulk Upload</a></li>
+        </ul>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <div class="upload-card">
+
+            <h2>📤 Bulk Student Upload</h2>
+
+            <p>Upload CSV file to add multiple students automatically</p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="msg">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="file-box">
+                    <input type="file" name="file" accept=".csv" required>
+                </div>
+
+                <button type="submit" class="btn">Upload Students</button>
+            </form>
+
+            <a href="#" class="sample">⬇ Download Sample CSV Format</a>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
