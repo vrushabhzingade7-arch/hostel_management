@@ -1,11 +1,31 @@
 from django.contrib import admin
 from .models import Student, LeaveRequest, Fee, Attendance, Outing, Feedback
+from django import forms
 
 
 # ================= STUDENT =================
+class StudentAdminForm(forms.ModelForm):
+    class Meta:
+        model = Student
+        fields = '__all__'
+
+
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ('user', 'hostel_id', 'department', 'student_class', 'room_no')
+    form = StudentAdminForm
+
+    list_display = (
+        'user',
+        'hostel_id',
+        'gender',
+        'department',
+        'student_class',
+        'room_no'
+    )
+
+    readonly_fields = ('hostel_id', 'room_no')
+
+    exclude = ('hostel_id', 'room_no')
 
 # ================= LEAVE =================
 @admin.register(LeaveRequest)

@@ -1,16 +1,24 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
+from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 
 
 # ================= STUDENT PROFILE =================
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    room_no = models.CharField(max_length=10)
-    hostel_id = models.CharField(max_length=20, unique=True)
 
-    student_phone = models.CharField(max_length=15)
-    parent_phone = models.CharField(max_length=15)
+    room_no = models.CharField(max_length=10, blank=True)
+    hostel_id = models.CharField(max_length=20, unique=True, blank=True)
+
+    phone_validator = RegexValidator(
+        regex=r'^\d{10}$',
+        message="Enter valid 10 digit number"
+    )
+
+    student_phone = models.CharField(max_length=10, validators=[phone_validator])
+    parent_phone = models.CharField(max_length=10, validators=[phone_validator])
 
     GENDER_CHOICES = [
         ('BOYS', 'Boys'),
@@ -37,6 +45,53 @@ class Student(models.Model):
     student_class = models.CharField(max_length=5, choices=CLASS_CHOICES, default='FY')
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+
+        # AUTO HOSTEL ID
+        if not self.hostel_id:
+            last = Student.objects.order_by('-id').first()
+            next_id = 1 if not last else last.id + 1
+            self.hostel_id = f"HST{next_id:03d}"
+
+        # FLOOR MAP
+        floor_map = {
+            'FY': 1,
+            'SY': 2,
+            'TY': 3,
+            'BE': 4,
+        }
+
+        floor = floor_map[self.student_class]
+
+        # AUTO ROOM ALLOT
+        if not self.room_no:
+
+            for room in range(1, 19):   # 18 rooms
+                room_code = f"{floor}{room:02d}"
+
+                count = Student.objects.filter(
+                    gender=self.gender,
+                    room_no=room_code
+                ).count()
+
+                if count < 3:
+                    self.room_no = room_code
+                    break
+
+            if not self.room_no:
+                raise ValidationError("No rooms available")
+
+        # MAX 3 STUDENTS
+        existing = Student.objects.filter(
+            gender=self.gender,
+            room_no=self.room_no
+        ).exclude(id=self.id).count()
+
+        if existing >= 3:
+            raise ValidationError(f"Room {self.room_no} already full")
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.user.username

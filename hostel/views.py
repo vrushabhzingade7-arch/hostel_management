@@ -300,7 +300,7 @@ def room_info(request):
         .annotate(total=Count('id'))
     )
 
-    total_rooms = rooms.count()
+    total_rooms = 18
     filled_rooms = sum(1 for r in rooms if r['total'] >= 3)
     vacant_rooms = total_rooms - filled_rooms
 
