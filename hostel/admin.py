@@ -13,7 +13,7 @@ class StudentResource(resources.ModelResource):
 
     class Meta:
         model = Student
-        exclude = ('id', 'hostel_id', 'room_no')
+        import_id_fields = ('username',)
         fields = (
             'username',
             'password',
@@ -23,6 +23,7 @@ class StudentResource(resources.ModelResource):
             'student_class',
             'gender',
         )
+        exclude = ('id', 'hostel_id', 'room_no', 'user')
 
     def before_import_row(self, row, **kwargs):
         username = str(row['username']).strip()
@@ -51,7 +52,7 @@ class StudentAdmin(ImportExportModelAdmin):
     )
 
     readonly_fields = ('hostel_id', 'room_no')
-    
+
 # ================= LEAVE =================
 @admin.register(LeaveRequest)
 class LeaveRequestAdmin(admin.ModelAdmin):
