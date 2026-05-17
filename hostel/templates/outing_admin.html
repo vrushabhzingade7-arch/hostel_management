@@ -5,139 +5,224 @@
     <title>Outing Admin</title>
 
     <style>
-        * {
-            box-sizing: border-box;
+
+        *{
+            box-sizing:border-box;
+            margin:0;
+            padding:0;
+            font-family:"Segoe UI",sans-serif;
         }
 
-        body {
-            margin: 0;
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            background: #f4f6f9;
+        body{
+            background:#f4f6f9;
         }
 
-        .container {
-            display: flex;
+        .container{
+            display:flex;
         }
 
-        /* SIDEBAR */
-        .sidebar {
-            width: 240px;
-            height: 100vh;
-            background: #2c3e50;
-            color: white;
-            padding: 20px;
-            position: fixed;
-            top: 0;
-            left: 0;
+        /* ================= SIDEBAR ================= */
+
+        .sidebar{
+            width:240px;
+            height:100vh;
+            background:#2c3e50;
+            color:white;
+            padding:20px;
+            position:fixed;
+            top:0;
+            left:0;
+            overflow-y:auto;
         }
 
-        .sidebar-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 30px;
+        .sidebar-header{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:10px;
+            font-size:20px;
+            font-weight:bold;
+            margin-bottom:30px;
         }
 
-        .sidebar-header .icon {
-            font-size: 24px;
+        .sidebar-header .icon{
+            font-size:24px;
         }
 
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
+        .sidebar ul{
+            list-style:none;
+            padding:0;
         }
 
-        .sidebar ul li a {
-            display: block;
-            padding: 12px;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: 0.3s;
+        .sidebar ul li{
+            margin-bottom:8px;
+        }
+
+        .sidebar ul li a{
+            display:block;
+            padding:12px;
+            color:white;
+            text-decoration:none;
+            border-radius:8px;
+            transition:0.3s;
         }
 
         .sidebar ul li a:hover,
-        .sidebar ul li a.active {
-            background: rgba(255,255,255,0.2);
-            transform: translateX(5px);
+        .sidebar ul li a.active{
+            background:rgba(255,255,255,0.2);
+            transform:translateX(5px);
         }
 
-        /* MAIN */
-        .main {
-            margin-left: 240px;
-            width: calc(100% - 240px);
-            padding: 30px;
+        /* ================= MAIN ================= */
+
+        .main{
+            margin-left:240px;
+            width:calc(100% - 240px);
+            padding:30px;
         }
 
-        h2 {
-            margin-bottom: 20px;
-            color: #2c3e50;
+        h2{
+            margin-bottom:25px;
+            color:#2c3e50;
         }
 
-        /* TABLE */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        /* ================= SUMMARY ================= */
+
+        .summary{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+            gap:20px;
+            margin-bottom:30px;
         }
 
-        th {
-            background: #3498db;
-            color: white;
-            padding: 12px;
-            text-align: left;
+        .summary-card{
+            background:white;
+            padding:22px;
+            border-radius:16px;
+            box-shadow:0 4px 14px rgba(0,0,0,0.08);
         }
 
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
+        .summary-card h3{
+            font-size:15px;
+            color:#666;
+            margin-bottom:10px;
         }
 
-        tr:hover {
-            background: #f9f9f9;
+        .summary-card p{
+            font-size:28px;
+            font-weight:bold;
         }
 
-        /* STATUS */
-        .badge {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
+        .out-card p{
+            color:#e74c3c;
         }
 
-        .returned {
-            background: #d4edda;
-            color: #155724;
+        .in-card p{
+            color:#27ae60;
         }
 
-        .not-returned {
-            background: #f8d7da;
-            color: #721c24;
+        .total-card p{
+            color:#3498db;
         }
 
-        .empty {
-            text-align: center;
-            padding: 20px;
-            color: gray;
+        /* ================= TABLE ================= */
+
+        .table-container{
+            overflow-x:auto;
+            background:white;
+            border-radius:16px;
+            box-shadow:0 4px 14px rgba(0,0,0,0.08);
         }
 
-        /* MOBILE */
-        @media (max-width: 768px) {
-            .sidebar {
-                display: none;
+        table{
+            width:100%;
+            border-collapse:collapse;
+            min-width:1200px;
+        }
+
+        th{
+            background:#3498db;
+            color:white;
+            padding:14px;
+            text-align:left;
+            font-size:14px;
+        }
+
+        td{
+            padding:14px;
+            border-bottom:1px solid #eee;
+            font-size:14px;
+            color:#2c3e50;
+        }
+
+        tr:hover{
+            background:#f9fafb;
+        }
+
+        /* ================= STATUS ================= */
+
+        .badge{
+            padding:7px 14px;
+            border-radius:30px;
+            font-size:12px;
+            font-weight:700;
+        }
+
+        .returned{
+            background:#d4edda;
+            color:#155724;
+        }
+
+        .not-returned{
+            background:#f8d7da;
+            color:#721c24;
+        }
+
+        /* ================= BUTTONS ================= */
+
+        .map-btn{
+            display:inline-block;
+            padding:9px 14px;
+            background:#16a34a;
+            color:white;
+            text-decoration:none;
+            border-radius:8px;
+            font-size:13px;
+            font-weight:600;
+            transition:0.3s;
+        }
+
+        .map-btn:hover{
+            background:#15803d;
+        }
+
+        /* ================= EMPTY ================= */
+
+        .empty{
+            text-align:center;
+            padding:20px;
+            color:gray;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media(max-width:768px){
+
+            .sidebar{
+                display:none;
             }
 
-            .main {
-                margin-left: 0;
-                width: 100%;
+            .main{
+                margin-left:0;
+                width:100%;
+                padding:20px;
+            }
+
+            table{
+                min-width:1000px;
             }
         }
+
     </style>
 
 </head>
@@ -146,7 +231,8 @@
 
 <div class="container">
 
-    <!-- ✅ FIXED SIDEBAR -->
+    <!-- ================= SIDEBAR ================= -->
+
     <div class="sidebar">
 
         <div class="sidebar-header">
@@ -163,53 +249,194 @@
             <li><a href="{% url 'outing_admin' %}" class="active">🚪 Outing</a></li>
             <li><a href="{% url 'feedback_admin' %}">💬 Feedback</a></li>
             <li><a href="{% url 'bulk_upload' %}">📤 Bulk Upload</a></li>
-            <li><a href="{% url 'bulk_delete' %}" >🗑 Bulk Delete </a></li>
-            <li><a href="{% url 'logout' %}">🚪Logout</a></li>
+            <li><a href="{% url 'bulk_delete' %}">🗑 Bulk Delete</a></li>
+            <li><a href="{% url 'logout' %}">🚪 Logout</a></li>
         </ul>
 
     </div>
 
-    <!-- MAIN -->
+    <!-- ================= MAIN ================= -->
+
     <div class="main">
 
         <h2>🚶‍♂️ Outing Records</h2>
 
-        <table>
-            <tr>
-                <th>Student</th>
-                <th>Out Time</th>
-                <th>In Time</th>
-                <th>Status</th>
-            </tr>
+        <!-- ================= SUMMARY ================= -->
 
-            {% for outing in outings %}
-            <tr>
-                <td>👤 {{ outing.student.user.username }}</td>
-                <td>{{ outing.out_time }}</td>
+        <div class="summary">
 
-                <td>
-                    {% if outing.in_time %}
-                        {{ outing.in_time }}
-                    {% else %}
-                        -
-                    {% endif %}
-                </td>
+            <div class="summary-card total-card">
 
-                <td>
-                    {% if outing.in_time %}
-                        <span class="badge returned">Returned</span>
-                    {% else %}
-                        <span class="badge not-returned">Not Returned</span>
-                    {% endif %}
-                </td>
-            </tr>
+                <h3>Total Outings</h3>
 
-            {% empty %}
-            <tr>
-                <td colspan="4" class="empty">No outing records found</td>
-            </tr>
-            {% endfor %}
-        </table>
+                <p>{{ outings|length }}</p>
+
+            </div>
+
+            <div class="summary-card out-card">
+
+                <h3>Currently OUT</h3>
+
+                <p>
+                    {{ out_count }}
+                </p>
+
+            </div>
+
+            <div class="summary-card in-card">
+
+                <h3>Returned Students</h3>
+
+                <p>
+                    {{ returned_count }}
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- ================= TABLE ================= -->
+
+        <div class="table-container">
+
+            <table>
+
+                <tr>
+
+                    <th>Student</th>
+                    <th>Department</th>
+                    <th>Class</th>
+                    <th>Destination</th>
+                    <th>Reason</th>
+                    <th>Out Time</th>
+                    <th>In Time</th>
+                    <th>Status</th>
+                    <th>OUT Location</th>
+                    <th>IN Location</th>
+
+                </tr>
+
+                {% for outing in outings %}
+
+                <tr>
+
+                    <td>
+                        👤 {{ outing.student.user.username }}
+                    </td>
+
+                    <td>
+                        {{ outing.student.department }}
+                    </td>
+
+                    <td>
+                        {{ outing.student.student_class }}
+                    </td>
+
+                    <td>
+                        {{ outing.destination }}
+                    </td>
+
+                    <td>
+                        {{ outing.reason }}
+                    </td>
+
+                    <td>
+                        {{ outing.out_time|date:"d M Y, h:i A" }}
+                    </td>
+
+                    <td>
+
+                        {% if outing.in_time %}
+
+                            {{ outing.in_time|date:"d M Y, h:i A" }}
+
+                        {% else %}
+
+                            -
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        {% if outing.status == "IN" %}
+
+                            <span class="badge returned">
+                                Returned
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge not-returned">
+                                OUT
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <!-- OUT LOCATION -->
+
+                    <td>
+
+                        {% if outing.out_latitude %}
+
+                        <a href="https://maps.google.com/?q={{ outing.out_latitude }},{{ outing.out_longitude }}"
+                           target="_blank"
+                           class="map-btn">
+
+                            📍 View
+
+                        </a>
+
+                        {% else %}
+
+                            -
+
+                        {% endif %}
+
+                    </td>
+
+                    <!-- IN LOCATION -->
+
+                    <td>
+
+                        {% if outing.in_latitude %}
+
+                        <a href="https://maps.google.com/?q={{ outing.in_latitude }},{{ outing.in_longitude }}"
+                           target="_blank"
+                           class="map-btn">
+
+                            📍 View
+
+                        </a>
+
+                        {% else %}
+
+                            -
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="10" class="empty">
+                        No outing records found
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </table>
+
+        </div>
 
     </div>
 

@@ -131,10 +131,11 @@ class OutingAdmin(admin.ModelAdmin):
 
     list_display = (
         'student',
+        'destination',
+        'status',
         'out_time',
         'in_time'
     )
-
 
 # ================= FEEDBACK =================
 @admin.register(Feedback)

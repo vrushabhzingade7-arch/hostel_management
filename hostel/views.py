@@ -535,46 +535,142 @@ def fees_admin(request):
         'pending_amount': pending_amount,
     })
 
-## ================= OUTING =================
+# ================= OUTING =================
+
 @login_required
 def outing_student(request):
-    student = Student.objects.filter(user=request.user).first()
+
+    student = Student.objects.filter(
+        user=request.user
+    ).first()
 
     if not student:
         return redirect('student_dashboard')
 
-    outings = Outing.objects.filter(student=student).order_by('-out_time')
-    return render(request, 'outing_student.html', {'outings': outings})
+    outings = Outing.objects.filter(
+        student=student
+    ).order_by('-out_time')
 
+    return render(
+        request,
+        'outing_student.html',
+        {
+            'outings': outings
+        }
+    )
+
+
+# ================= MARK OUT =================
 
 @login_required
 def mark_out(request):
-    student = Student.objects.filter(user=request.user).first()
+
+    student = Student.objects.filter(
+        user=request.user
+    ).first()
 
     if not student:
         return redirect('student_dashboard')
 
-    if not Outing.objects.filter(student=student, in_time__isnull=True).exists():
-        Outing.objects.create(student=student, out_time=now())
+    # prevent multiple active outings
+    active = Outing.objects.filter(
+        student=student,
+        status="OUT"
+    ).exists()
+
+    if active:
+        return redirect('outing_student')
+
+    if request.method == "POST":
+
+        destination = request.POST.get(
+            'destination'
+        )
+
+        reason = request.POST.get(
+            'reason'
+        )
+
+        latitude = request.POST.get(
+            'latitude'
+        )
+
+        longitude = request.POST.get(
+            'longitude'
+        )
+
+        Outing.objects.create(
+
+            student=student,
+
+            destination=destination,
+
+            reason=reason,
+
+            out_time=now(),
+
+            out_latitude=latitude,
+
+            out_longitude=longitude,
+
+            status="OUT"
+        )
 
     return redirect('outing_student')
 
 
+# ================= MARK IN =================
+
 @login_required
 def mark_in(request, outing_id):
-    outing = get_object_or_404(Outing, id=outing_id)
 
-    if outing.in_time is None:
+    outing = get_object_or_404(
+        Outing,
+        id=outing_id
+    )
+
+    if request.method == "POST":
+
+        latitude = request.POST.get(
+            'latitude'
+        )
+
+        longitude = request.POST.get(
+            'longitude'
+        )
+
         outing.in_time = now()
+
+        outing.in_latitude = latitude
+
+        outing.in_longitude = longitude
+
+        outing.status = "IN"
+
         outing.save()
 
     return redirect('outing_student')
 
 
+# ================= ADMIN OUTING =================
+
 @login_required
 def outing_admin(request):
-    outings = Outing.objects.select_related('student', 'student__user').all().order_by('-out_time')
-    return render(request, 'outing_admin.html', {'outings': outings})
+
+    outings = Outing.objects.select_related(
+        'student',
+        'student__user'
+    ).all().order_by('-out_time')
+
+    out_count = outings.filter(status="OUT").count()
+
+    returned_count = outings.filter(status="IN").count()
+
+    return render(request, 'outing_admin.html', {
+        'outings': outings,
+        'out_count': out_count,
+        'returned_count': returned_count,
+    })
 
 
 # ================= FEEDBACK =================

@@ -46,6 +46,7 @@ urlpatterns = [
     path('mark_out/', views.mark_out, name='mark_out'),
     path('mark_in/<int:outing_id>/', views.mark_in, name='mark_in'),
     path('outing_admin/', views.outing_admin, name='outing_admin'),
+  
 
     # ================= FEEDBACK =================
     path('feedback/', views.feedback_submit, name='feedback_submit'),

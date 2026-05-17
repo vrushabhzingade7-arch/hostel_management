@@ -254,19 +254,65 @@ class Fee(models.Model):
 
 # ================= OUTING =================
 class Outing(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="outings")
 
-    out_time = models.DateTimeField()
-    in_time = models.DateTimeField(null=True, blank=True)
+    STATUS_CHOICES = [
+        ('OUT', 'OUT'),
+        ('RETURNED', 'RETURNED'),
+    ]
 
-    date = models.DateField(auto_now_add=True)
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE
+    )
 
-    class Meta:
-        ordering = ['-out_time']
+    reason = models.TextField()
+
+    destination = models.CharField(
+        max_length=200
+    )
+
+    out_time = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    in_time = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+    # ================= LIVE LOCATION =================
+    out_latitude = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    out_longitude = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    in_latitude = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    in_longitude = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='OUT'
+    )
 
     def __str__(self):
-        return f"{self.student.user.username} | Out: {self.out_time}"
-
+        return self.student.user.username
 # ================= ATTENDANCE =================
 class Attendance(models.Model):
     STATUS_CHOICES = [
