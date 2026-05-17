@@ -290,22 +290,27 @@ def room_info(request):
         return render(request, 'room_gender_select.html')
 
     # ================= FILTER STUDENTS =================
-    students = Student.objects.filter(gender=gender)
+    students = Student.objects.filter(gender=gender).order_by('room_no')
 
     # ================= ROOM COUNT =================
     rooms = (
         Student.objects
         .filter(gender=gender)
+        .exclude(room_no="")
         .values('room_no')
         .annotate(total=Count('id'))
+        .order_by('room_no')
     )
 
+    # total hostel rooms
     if gender == "BOYS":
-         total_rooms = 90
+        total_rooms = 90
     else:
         total_rooms = 86
-        filled_rooms = sum(1 for r in rooms if r['total'] >= 3)
-        vacant_rooms = total_rooms - filled_rooms
+
+    # common calculation
+    filled_rooms = sum(1 for r in rooms if r['total'] >= 3)
+    vacant_rooms = total_rooms - len(rooms)
 
     return render(request, 'room_info.html', {
         'students': students,

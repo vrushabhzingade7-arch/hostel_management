@@ -48,11 +48,17 @@ class Student(models.Model):
 
     def save(self, *args, **kwargs):
 
-        # ================= HOSTEL ID =================
+
+    # ================= HOSTEL ID =================
         if not self.hostel_id:
-            last = Student.objects.order_by('-id').first()
-            next_id = 1 if not last else last.id + 1
-            self.hostel_id = f"HST{next_id:03d}"
+            last_student = Student.objects.order_by('-hostel_id').first()
+
+        if last_student and last_student.hostel_id:
+            num = int(last_student.hostel_id.replace('HST', '')) + 1
+        else:
+            num = 1
+
+        self.hostel_id = f"HST{num:03d}"
 
         # ================= FLOOR MAP =================
         class_floors = {
