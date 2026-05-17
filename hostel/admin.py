@@ -7,15 +7,23 @@ from django.contrib.auth.hashers import make_password
 
 
 # ================= STUDENT =================
+# ================= STUDENT =================
 class StudentResource(resources.ModelResource):
 
     class Meta:
         model = Student
-        exclude = ('id', 'hostel_id', 'room_no')
+        fields = (
+            'user',
+            'student_phone',
+            'parent_phone',
+            'department',
+            'student_class',
+            'gender',
+        )
 
     def before_import_row(self, row, **kwargs):
-        username = str(row.get('username')).strip()
-        password = str(row.get('password')).strip()
+        username = str(row.pop('username')).strip()
+        password = str(row.pop('password')).strip()
 
         user, created = User.objects.get_or_create(username=username)
 
@@ -24,11 +32,6 @@ class StudentResource(resources.ModelResource):
             user.save()
 
         row['user'] = user.id
-
-        # remove extra csv columns before Student save
-        row.pop('username', None)
-        row.pop('password', None)
-
 
 @admin.register(Student)
 class StudentAdmin(ImportExportModelAdmin):
