@@ -19,8 +19,15 @@ class Student(models.Model):
         message="Enter valid 10 digit number"
     )
 
-    student_phone = models.CharField(max_length=10, validators=[phone_validator])
-    parent_phone = models.CharField(max_length=10, validators=[phone_validator])
+    student_phone = models.CharField(
+        max_length=10,
+        validators=[phone_validator]
+    )
+
+    parent_phone = models.CharField(
+        max_length=10,
+        validators=[phone_validator]
+    )
 
     GENDER_CHOICES = [
         ('BOYS', 'Boys'),
@@ -43,8 +50,16 @@ class Student(models.Model):
     ]
 
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
-    department = models.CharField(max_length=10, choices=DEPARTMENT_CHOICES)
-    student_class = models.CharField(max_length=5, choices=CLASS_CHOICES)
+
+    department = models.CharField(
+        max_length=10,
+        choices=DEPARTMENT_CHOICES
+    )
+
+    student_class = models.CharField(
+        max_length=5,
+        choices=CLASS_CHOICES
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -57,7 +72,9 @@ class Student(models.Model):
             last_student = Student.objects.order_by('-id').first()
 
             if last_student and last_student.hostel_id:
-                num = int(last_student.hostel_id.replace('HST', '')) + 1
+                num = int(
+                    last_student.hostel_id.replace('HST', '')
+                ) + 1
             else:
                 num = 1
 
@@ -75,6 +92,7 @@ class Student(models.Model):
         if not self.room_no:
 
             floors = class_floors[self.student_class]
+
             room_list = []
 
             for floor in floors:
@@ -90,22 +108,25 @@ class Student(models.Model):
 
                 for block_index, block in enumerate(blocks, start=1):
 
+                    # ✅ PREFIX
                     prefix = "B" if self.gender == "BOYS" else "G"
 
                     block_code = f"{floor}{block_index:02d}"
 
                     for room in block:
-                        room_code = f"{block_code}-{room}"
+
+                        room_code = f"{prefix}{block_code}-{room}"
+
                         room_list.append(room_code)
 
-            # hostel room limits
+            # ================= ROOM LIMIT =================
             if self.gender == "GIRLS":
                 room_list = room_list[:86]
 
             if self.gender == "BOYS":
                 room_list = room_list[:90]
 
-            # assign room
+            # ================= AUTO ASSIGN =================
             for room in room_list:
 
                 count = Student.objects.filter(
