@@ -5,11 +5,12 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 
 
+
 # ================= STUDENT PROFILE =================
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-    room_no = models.CharField(max_length=10, blank=True)
+    room_no = models.CharField(max_length=20, blank=True)
     hostel_id = models.CharField(max_length=20, unique=True, blank=True)
 
     phone_validator = RegexValidator(
@@ -46,71 +47,88 @@ class Student(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
-def save(self, *args, **kwargs):
+    # ================= SAVE =================
+    def save(self, *args, **kwargs):
 
-    # ================= HOSTEL ID =================
-    if not self.hostel_id:
-        last_student = Student.objects.order_by('-id').first()
+        # ================= HOSTEL ID =================
+        if not self.hostel_id:
+            last_student = Student.objects.order_by('-id').first()
 
-        if last_student and last_student.hostel_id:
-            num = int(last_student.hostel_id.replace('HST', '')) + 1
-        else:
-            num = 1
+            if last_student and last_student.hostel_id:
+                num = int(last_student.hostel_id.replace('HST', '')) + 1
+            else:
+                num = 1
 
-        self.hostel_id = f"HST{num:03d}"
+            self.hostel_id = f"HST{num:03d}"
 
-    # ================= FLOOR MAP =================
-    class_floors = {
-        'FY': [0, 1],
-        'SY': [2],
-        'TY': [3],
-        'BE': [4],
-    }
+        # ================= FLOOR MAP =================
+        class_floors = {
+            'FY': [0, 1],
+            'SY': [2],
+            'TY': [3],
+            'BE': [4],
+        }
 
-    # ================= AUTO ROOM =================
-    if not self.room_no:
-
-        floors = class_floors[self.student_class]
-        room_list = []
-
-        for floor in floors:
-
-            blocks = [
-                [1, 2, 3, 4],
-                [5, 6, 7, 8],
-                [9],
-                [10],
-                [11, 12, 13, 14],
-                [15, 16, 17, 18],
-            ]
-
-            for block_index, block in enumerate(blocks, start=1):
-
-                block_code = f"{floor}{block_index:02d}"
-
-                for room in block:
-                    room_code = f"{block_code}-{room}"
-                    room_list.append(room_code)
-
-        if self.gender == "GIRLS":
-            room_list = room_list[:86]
-
-        if self.gender == "BOYS":
-            room_list = room_list[:90]
-
-        for room in room_list:
-
-            count = Student.objects.filter(
-                gender=self.gender,
-                room_no=room
-            ).count()
-
-            if count < 3:
-                self.room_no = room
-                break
-
+        # ================= AUTO ROOM =================
         if not self.room_no:
-            raise ValidationError("No room available")
+
+            floors = class_floors[self.student_class]
+            room_list = []
+
+            for floor in floors:
+
+                blocks = [
+                    [1, 2, 3, 4],
+                    [5, 6, 7, 8],
+                    [9],
+                    [10],
+                    [11, 12, 13, 14],
+                    [15, 16, 17, 18],
+                ]
+
+                for block_index, block in enumerate(blocks, start=1):
+
+                    block_code = f"{floor}{block_index:02d}"
+
+                    for room in block:
+                        room_code = f"{block_code}-{room}"
+                        room_list.append(room_code)
+
+            # hostel limits
+            if self.gender == "GIRLS":
+                room_list = room_list[:86]
+
+            if self.gender == "BOYS":
+                room_list = room_list[:90]
+
+            # allocate room
+            for room in room_list:
+
+                count = Student.objects.filter(
+                    gender=self.gender,
+                    room_no=room
+                ).count()
+
+                if count < 3:
+                    self.room_no = room
+                    break
+
+            if not self.room_no:
+                raise ValidationError("No room available")
+
+        # ================= MAX 3 STUDENTS =================
+        existing = Student.objects.filter(
+            gender=self.gender,
+            room_no=self.room_no
+        ).exclude(id=self.id).count()
+
+        if existing >= 3:
+            raise ValidationError("Room already full")
+
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.user.username
 
     # ================= MAX 3 STUDENTS =================
     existing = Student.objects.filter(
