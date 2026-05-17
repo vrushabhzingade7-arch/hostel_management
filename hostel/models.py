@@ -8,6 +8,7 @@ from django.core.validators import RegexValidator
 
 # ================= STUDENT PROFILE =================
 class Student(models.Model):
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     room_no = models.CharField(max_length=20, blank=True)
@@ -52,6 +53,7 @@ class Student(models.Model):
 
         # ================= HOSTEL ID =================
         if not self.hostel_id:
+
             last_student = Student.objects.order_by('-id').first()
 
             if last_student and last_student.hostel_id:
@@ -94,14 +96,14 @@ class Student(models.Model):
                         room_code = f"{block_code}-{room}"
                         room_list.append(room_code)
 
-            # hostel limits
+            # hostel room limits
             if self.gender == "GIRLS":
                 room_list = room_list[:86]
 
             if self.gender == "BOYS":
                 room_list = room_list[:90]
 
-            # allocate room
+            # assign room
             for room in room_list:
 
                 count = Student.objects.filter(
@@ -126,20 +128,6 @@ class Student(models.Model):
             raise ValidationError("Room already full")
 
         super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.user.username
-
-    # ================= MAX 3 STUDENTS =================
-    existing = Student.objects.filter(
-        gender=self.gender,
-        room_no=self.room_no
-    ).exclude(id=self.id).count()
-
-    if existing >= 3:
-        raise ValidationError("Room already full")
-
-    super().save(*args, **kwargs)
 
     def __str__(self):
         return self.user.username
