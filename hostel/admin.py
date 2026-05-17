@@ -30,9 +30,9 @@ class StudentResource(resources.ModelResource):
             'gender',
         )
 
-    def before_import_row(self, row, **kwargs):
-        username = row['username']
-        password = row['password']
+def before_import_row(self, row, **kwargs):
+        username = str(row.get('username')).strip()
+        password = str(row.get('password')).strip()
 
         user, created = User.objects.get_or_create(username=username)
 
